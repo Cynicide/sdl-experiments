@@ -27,10 +27,12 @@ void Ball::Move(float dt) {
 void Ball::RandSetBallVelocity() {
     std::random_device rd;
     std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> speed(current_vel, current_vel + 1);
     std::uniform_int_distribution<int> direction(0, 1);
 
     vel.x = current_vel;
-    vel.y = current_vel;
+    //vel.y = current_vel;
+    vel.y = speed(gen);
 
     if (direction(gen) == 1) {
         vel.x = vel.x * -1; 
@@ -85,8 +87,14 @@ void Ball::Render() {
 void Ball::ChangeAngle(int hitLocation) {
     
     // Hit Location should be between 50 and -50
+    // Smaller numbers are generated closer to the center
     std::cout << "HitLocation: " << hitLocation << "\n";
     
+    // No divide by zero errors
+    if (hitLocation == 0) {
+        hitLocation = 1;
+    }
+
     // Remove the sign
     int sgnHitLocation =  abs(hitLocation);
 
@@ -100,17 +108,17 @@ void Ball::ChangeAngle(int hitLocation) {
         angle = 1.0f;
     }
 
-    if ( angle < 0.0f ) {
-        angle = 0.0f;
+    if ( angle < 0.01f ) {
+        angle = 0.01f;
     }    
 
     // Check the sign and apply the Y Velocity to make an angle
     if (sgn(vel.y) == 1) {
-        vel.y = vel.y + (angle * 2);
+        vel.y = current_vel * (angle * 1.5);
     }
     else
     {
-        vel.y = vel.y - (angle * 2);
+        vel.y = -(current_vel * (angle * 1.5));
     }
 
     std::cout << "Bounce Resolved: VX: " << vel.x <<" VY: " << vel.y << "\n";
