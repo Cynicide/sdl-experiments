@@ -38,7 +38,7 @@ void StartState::handleEvent( SDL_Event& e )
     }
 }
 
-void StartState::update()
+void StartState::update(float dt)
 {
 
 }

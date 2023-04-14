@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <GameState.h>
+#include <SDL2/SDL_mixer.h> 
 
 // Screen Dimensions
 const int SCREEN_WIDTH = 640;
@@ -24,5 +25,10 @@ extern GameState* gNextState;
 // Fonts
 extern TTF_Font * font;
 extern TTF_Font * smallfont;
+
+// Sounds
+
+extern Mix_Chunk *gPing;
+extern Mix_Chunk *gPong;
 
 #endif

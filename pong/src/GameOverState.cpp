@@ -36,7 +36,7 @@ void GameOverState::handleEvent( SDL_Event& e )
     }
 }
 
-void GameOverState::update()
+void GameOverState::update(float dt)
 {
 
 }

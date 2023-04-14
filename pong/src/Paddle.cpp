@@ -26,17 +26,17 @@ void Paddle::ResetScore() {
     score = 0;
 }
 
-void Paddle::MoveUp() {
+void Paddle::MoveUp(float dt) {
     if (pos.y > 0) 
     {
-        pos.y -= vel.y;
+        pos.y -= vel.y * dt;
     }
 }
 
-void Paddle::MoveDown(int sHeight) {
+void Paddle::MoveDown(int sHeight, float dt) {
     if (pos.y < sHeight - height) 
     {
-        pos.y += vel.y;
+        pos.y += vel.y * dt;
     }
 }
 

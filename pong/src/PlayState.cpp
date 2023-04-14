@@ -3,7 +3,7 @@
 PlayState PlayState::sPlayState;
 
 PlayState::PlayState() {
-    
+
 }
 
 PlayState* PlayState::get()
@@ -24,8 +24,9 @@ bool PlayState::enter()
     ball.pos.y = SCREEN_HEIGHT /2 - ball.height / 2;
     
     ball.starting_vel = starting_vel;
-    ball.current_vel = starting_vel;
-    ball.speedup_vel = speedup_val;
+    ball.current_vel = ball.starting_vel;
+    ball.speedup_vel = speedup_vel;
+    ball.max_vel = max_vel;
 
     ball.RandSetBallVelocity();
 
@@ -52,9 +53,6 @@ bool PlayState::enter()
 
 bool PlayState::exit()
 {
-    Mix_FreeChunk(gPing);
-    Mix_FreeChunk(gPong);
-
     paddle_p1.Destroy();
     paddle_p2.Destroy();
     SDL_Log("Exited PlayState\n");
@@ -66,7 +64,7 @@ void PlayState::handleEvent( SDL_Event& e )
 
 }
 
-void PlayState::update()
+void PlayState::update(float dt)
 {
     if (substate == SERVE ) 
     {
@@ -89,8 +87,8 @@ void PlayState::update()
     else 
     {   
         // Move the Ball
-        ball.Move();
-    
+        ball.Move(dt);
+
         if (ball.pos.y < 0 ) 
         {
             if (sgn(ball.vel.y) != 1) {
@@ -109,53 +107,45 @@ void PlayState::update()
         // Collision Detection. Only do so if the ball is on the same side of the screen as the paddle.
         if (ball.pos.x < SCREEN_WIDTH / 2) 
         {
-            //checkCollision(ball, paddle_p1, gPing);
             bpb = physics.GetSweptBroadphaseBox(ball);
-            //if (physics.AABBCheck(bpb, paddle_p2)) 	
-            //    {                
-                std::cout << "---------------------- PLAYER 1 PHYSICS EVENT ----------------------\n";
-                std::cout << "Broadphase Box - TopLeft: " << bpb.pos.x <<"," << bpb.pos.y << "\n";
-                std::cout << "Broadphase Box - TopRight:" << bpb.pos.x + bpb.width << "," << bpb.pos.y << "\n";
-                std::cout << "Broadphase Box - BottomLeft: " << bpb.pos.x << "," << bpb.pos.y + bpb.height << "\n";
-                std::cout << "Broadphase Box - BottomRight:" << bpb.pos.x + bpb.width << "," << bpb.pos.y + bpb.height << "\n";
-                physics.ProcessCollision(ball, paddle_p2);
+            if (physics.AABBCheck(bpb, paddle_p1)) 	
+                {                
+                std::cout << "---------------------------------\n";
+                ball.SpeedUp();                
+                physics.ProcessCollision(ball, paddle_p1);
+                Mix_PlayChannel( -1, gPing, 0 );
                 bpb.UpdateRect();
-              //  }
+                }
         }
         
         if (ball.pos.x > SCREEN_WIDTH / 2) {
-            //checkCollision(ball, paddle_p2, gPing);
-            //bool collision = physics.BallVsPaddleCollision(ball, paddle_p2);
-
             bpb = physics.GetSweptBroadphaseBox(ball);
-            //if (physics.AABBCheck(bpb, paddle_p2)) 	
-            //    {
-                std::cout << "---------------------- PLAYER 2 PHYSICS EVENT ----------------------\n";
-                std::cout << "Broadphase Box - TopLeft: " << bpb.pos.x <<"," << bpb.pos.y << "\n";
-                std::cout << "Broadphase Box - TopRight:" << bpb.pos.x + bpb.width << "," << bpb.pos.y << "\n";
-                std::cout << "Broadphase Box - BottomLeft: " << bpb.pos.x << "," << bpb.pos.y + bpb.height << "\n";
-                std::cout << "Broadphase Box - BottomRight:" << bpb.pos.x + bpb.width << "," << bpb.pos.y + bpb.height << "\n";
+            if (physics.AABBCheck(bpb, paddle_p2)) 	
+                {
+                std::cout << "---------------------------------\n";
+                ball.SpeedUp();
                 physics.ProcessCollision(ball, paddle_p2);
+                Mix_PlayChannel( -1, gPing, 0 );
                 bpb.UpdateRect();
-            //    }
+                }
         } 
         
         // Player Controls
         if(keyboardState[SDL_SCANCODE_A]) 
         {
-            paddle_p1.MoveUp();
+            paddle_p1.MoveUp(dt);
         }
         if(keyboardState[SDL_SCANCODE_Z]) 
         {
-            paddle_p1.MoveDown(SCREEN_HEIGHT);
+            paddle_p1.MoveDown(SCREEN_HEIGHT, dt);
         }
         if(keyboardState[SDL_SCANCODE_K]) 
         {
-            paddle_p2.MoveUp();
+            paddle_p2.MoveUp(dt);
         }
         if(keyboardState[SDL_SCANCODE_M]) 
         {
-            paddle_p2.MoveDown(SCREEN_HEIGHT);
+            paddle_p2.MoveDown(SCREEN_HEIGHT, dt);
         }
         paddle_p1.UpdateRect();
         paddle_p2.UpdateRect();
@@ -189,9 +179,6 @@ void PlayState::update()
 void PlayState::render()
 {
     SDL_RenderDrawLine(gRenderer, SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT);
-
-    SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-    bpb.Render();
     SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     ball.Render();
     paddle_p1.Render();

@@ -40,13 +40,6 @@ bool Physics::BallVsPaddleCollision(Ball &ball, Paddle paddle) {
 float Physics::SweptAABB(Ball ball, Paddle paddle, float &normalx, float &normaly) {
     // https://www.gamedev.net/articles/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/
     // https://www.amanotes.com/post/using-swept-aabb-to-detect-and-process-collision
-    // https://noonat.github.io/intersect/#aabb-vs-swept-aabb
-    // https://luisreis.net/blog/aabb_collision_handling/
-    // https://blog.hamaluik.ca/posts/simple-aabb-collision-using-minkowski-difference/
-    // https://tavianator.com/2011/ray_box.html
-
-
-
 
 
     float xInvEntry, yInvEntry;
@@ -56,34 +49,27 @@ float Physics::SweptAABB(Ball ball, Paddle paddle, float &normalx, float &normal
     float xExit, yExit;
 
     // Find the distance between the objects on the near and far sides for both X and Y
-
-    std::cout << "BX: " << ball.pos.x << " BY: " << ball.pos.y << "\n";
-    std::cout << "PX: " << paddle.pos.x << " PY: " << paddle.pos.y << "\n";
-
     if (ball.vel.x > 0.0f) 
     {
         xInvEntry = paddle.pos.x - (ball.pos.x + ball.width);
         xInvExit = (paddle.pos.x + paddle.width) - ball.pos.x;
-        std::cout << "Ball X Vel > 0.0f. xInvEntry: " << xInvEntry << " XInvExit: " << xInvExit << "\n";
+
     }
     else
     {
         xInvEntry = (paddle.pos.x + paddle.width) - ball.pos.x;
         xInvExit = paddle.pos.x - (ball.pos.x + ball.width);
-        std::cout << "Ball X Vel <= 0.0f. xInvEntry: "<< "xInvEntry: " << xInvEntry << " XInvExit: " << xInvExit << "\n";
     }
 
     if (ball.vel.y > 0.0f)
     {
         yInvEntry = paddle.pos.y - (ball.pos.y + ball.height);
         yInvExit = (paddle.pos.y + paddle.height) - ball.pos.y;
-        std::cout << "Ball Y Vel > 0.0f. yInvEntry: " << yInvEntry << " yInvExit: " << yInvExit << "\n";
     }
     else
     {
         yInvEntry = (paddle.pos.y + paddle.height) - ball.pos.y;
-        yInvExit = paddle.pos.y = (ball.pos.y + ball.height);
-        std::cout << "Ball Y Vel <= 0.0f. yInvEntry: " << yInvEntry << " yInvExit: " << yInvExit << "\n";
+        yInvExit = paddle.pos.y - (ball.pos.y + ball.height);
     }
 
     // Find time of collision and time of leaving for each axis (if statement to prevent divide by zero)
@@ -113,9 +99,6 @@ float Physics::SweptAABB(Ball ball, Paddle paddle, float &normalx, float &normal
     // Find the earliest/latest times of collision
     float entryTime = std::max(xEntry, yEntry);
     float exitTime = std::min(xExit, yExit);
-
-    std::cout << "EntryTime: " << entryTime << "\n";
-    std::cout << "ExitTime: " << exitTime << "\n";
 
     // If there was no collision
     if (entryTime > exitTime || (xEntry < 0.0f && yEntry < 0.0f) || xEntry > 1.0f || yEntry > 1.0f)
@@ -161,22 +144,26 @@ float Physics::SweptAABB(Ball ball, Paddle paddle, float &normalx, float &normal
 }
 
 void Physics::ProcessCollision(Ball &ball, Paddle paddle) {
+
     float normalx, normaly;
-    std::cout << "Applying Swept AAB\n";
-
     float collisiontime = SweptAABB(ball, paddle, normalx, normaly);
-    std::cout << "CollisionTime: " << collisiontime << " NormalX: " << normalx << " NormalY: " << normaly << "\n";
 
-    //ball.pos.x += ball.vel.x * collisiontime;
-    //ball.pos.y += ball.vel.y * collisiontime;
+    ball.pos.x += ball.vel.x * collisiontime;
+    ball.pos.y += ball.vel.y * collisiontime;
 
     if (abs(normalx) > 0.0001f) {
+        // Change the angle a bit if we hit the paddle on the front.
+
         ball.vel.x = -ball.vel.x;
-        std::cout << "Deflecting X\n";   
+
+        int ball_mid = ball.pos.y + (ball.height / 2);
+        int paddle_mid = paddle.pos.y + (paddle.height / 2);
+        int hitLocation = paddle_mid - ball_mid;
+
+        ball.ChangeAngle(hitLocation);
     } 
     if (abs(normaly) > 0.0001f) {
         ball.vel.y = -ball.vel.y;
-        std::cout << "Deflecting Y\n"; 
     } 
 }
 
@@ -194,4 +181,8 @@ Ball Physics::GetSweptBroadphaseBox(Ball b)
 bool Physics::AABBCheck(Ball ball, Paddle paddle) 
 { 
   return !(ball.pos.x + ball.width < paddle.pos.x || ball.pos.x > paddle.pos.x + paddle.width || ball.pos.y + ball.height < paddle.pos.y || ball.pos.y > paddle.pos.y + paddle.height); 
+}
+
+void Physics::Render() {
+    
 }

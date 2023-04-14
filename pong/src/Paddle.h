@@ -22,8 +22,8 @@ class Paddle {
         void Destroy();
         void ResetPos(int sHeight);
         void ResetScore();
-        void MoveUp();
-        void MoveDown(int sHeight);
+        void MoveUp(float dt);
+        void MoveDown(int sHeight, float dt);
         void UpdateRect();
         void Render();
 };

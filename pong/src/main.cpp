@@ -11,6 +11,7 @@
 #include <GameOverState.h>
 #include <PlayState.h>
 #include <ExitState.h>
+#include <Timer.h>
 
 // Method  Definitions
 bool initSDL();
@@ -51,9 +52,12 @@ bool initSDL () {
         return false;
     }
 
+    gPing = loadAudio("assets\\sounds\\ping.wav");
+    gPong = loadAudio("assets\\sounds\\pong.wav");
+
     SDL_Log("Creating Renderer.\n");
     gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
-    SDL_RenderSetVSync(gRenderer, 1);
+    //SDL_RenderSetVSync(gRenderer, 1);
     return true;
 }
 
@@ -61,6 +65,10 @@ void closeSDL()
 {
     SDL_DestroyWindow( gWindow );
     TTF_Quit();
+    
+    Mix_FreeChunk(gPing);
+    Mix_FreeChunk(gPong);
+    
     gWindow = NULL;
     SDL_Quit();
 }
@@ -100,8 +108,12 @@ int main (int argc, char* args[])
             }
         }
 
+        float dt = Timer::get()->GetDeltaTime();
+        
+        //std::cout << dt << "\n";
+        
         //Do state logic
-        gCurrentState->update();
+        gCurrentState->update(dt);
 
         //Change state if needed
         changeState();
@@ -116,6 +128,8 @@ int main (int argc, char* args[])
 
         //Update screen
         SDL_RenderPresent( gRenderer );
+
+        Timer::get()->Tick();
 		}
     SDL_Log("Quitting SDL Pong.\n");
     closeSDL();

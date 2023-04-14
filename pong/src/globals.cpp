@@ -1,6 +1,8 @@
     #include <GameState.h>
+    #include <globals.h>
     #include <SDL2/SDL.h>
     #include <SDL2/SDL_ttf.h>
+    #include <SDL2/SDL_mixer.h> 
 
     // Keyboard Events
     int NumKeys;
@@ -17,3 +19,7 @@
     // State Pointers
     GameState* gCurrentState = NULL;
     GameState* gNextState = NULL;
+
+    // Sounds
+    Mix_Chunk *gPing = NULL;
+    Mix_Chunk *gPong = NULL;
