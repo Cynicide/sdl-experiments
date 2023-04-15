@@ -11,7 +11,8 @@
     // Fonts
     TTF_Font * font = NULL;
     TTF_Font * smallfont = NULL;
-    
+    TTF_Font * bigfont = NULL;
+
     // Window and Renderer
     SDL_Window* gWindow = NULL;
     SDL_Renderer* gRenderer = NULL;

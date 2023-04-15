@@ -20,3 +20,8 @@ void Text::Destroy() {
 void Text::Render() {
     SDL_RenderCopy(gRenderer, texture, NULL, &textRect);
 }
+
+void Text::SetPos(int x, int y) {
+    textRect.x = x;
+    textRect.y = y;
+}

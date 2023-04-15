@@ -7,6 +7,7 @@
 #include <Text.h>
 #include <globals.h>
 #include <statemanagers.h>
+#include <string>
 
 #include <SDL2/SDL.h>
 
@@ -20,6 +21,8 @@ public:
     bool enter();
     bool exit();
 
+    std::string winner;
+
     //Main loop functions
     void handleEvent( SDL_Event& e );
     void update(float dt);
@@ -31,6 +34,7 @@ private:
 
     Text gameOverText;
     Text playAgainText;
+    Text winnerText;
 
     //Private constructor
     GameOverState();

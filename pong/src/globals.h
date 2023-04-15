@@ -25,6 +25,7 @@ extern GameState* gNextState;
 // Fonts
 extern TTF_Font * font;
 extern TTF_Font * smallfont;
+extern TTF_Font * bigfont;
 
 // Sounds
 

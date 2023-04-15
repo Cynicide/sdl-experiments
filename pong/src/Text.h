@@ -16,7 +16,7 @@ class Text {
         int textH;
         Text();
         Text(TTF_Font * font, const char * text, int x_loc, int y_loc, SDL_Renderer* gRenderer);
-        
+        void SetPos(int x, int y);
         void Destroy();
         void Render();
 };

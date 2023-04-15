@@ -37,6 +37,7 @@ bool initSDL () {
     SDL_Log("Initializing Fonts.\n");
     font = TTF_OpenFont("assets\\fonts\\PublicPixel.ttf", 14);
     smallfont = TTF_OpenFont("assets\\fonts\\PublicPixel.ttf", 12);
+    bigfont = TTF_OpenFont("assets\\fonts\\PublicPixel.ttf", 20);
 
     SDL_Log("Creating Window.\n");
     gWindow = SDL_CreateWindow("SDL Pong", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);

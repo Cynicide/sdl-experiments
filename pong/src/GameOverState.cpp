@@ -17,12 +17,23 @@ bool GameOverState::enter()
     //Loading success flag
     bool success = true;
     gameOverText = Text(font, "Game Over!", 0, 0, gRenderer);
-    playAgainText = Text(smallfont, "Press Space to try again!", 0, 30, gRenderer);
+    gameOverText.SetPos((SCREEN_WIDTH / 2) - (gameOverText.textRect.w / 2 ), SCREEN_HEIGHT / 2 - (gameOverText.textRect.h / 2 )); 
+
+    playAgainText = Text(smallfont, "Press Space to try again!", 0, 0, gRenderer);
+    playAgainText.SetPos((SCREEN_WIDTH / 2) - (playAgainText.textRect.w / 2 ), SCREEN_HEIGHT / 2 - (playAgainText.textRect.h / 2 ) + 60); 
+
+    std::string wtext = winner + " wins.";
+    winnerText = Text(font, wtext.c_str(), 0, 0, gRenderer);
+    winnerText.SetPos((SCREEN_WIDTH / 2) - (winnerText.textRect.w / 2 ), SCREEN_HEIGHT / 2 - (winnerText.textRect.h / 2 ) + 20); 
+
     return success;
 }
 
 bool GameOverState::exit()
 {
+    gameOverText.Destroy();
+    playAgainText.Destroy();
+    winnerText.Destroy();
     return true;
 }
 
@@ -43,6 +54,7 @@ void GameOverState::update(float dt)
 
 void GameOverState::render()
 {
-    SDL_RenderCopy(gRenderer, gameOverText.texture, NULL, &gameOverText.textRect);
-    SDL_RenderCopy(gRenderer, playAgainText.texture, NULL, &playAgainText.textRect);
+    gameOverText.Render();
+    playAgainText.Render();
+    winnerText.Render();
 }

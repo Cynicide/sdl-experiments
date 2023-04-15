@@ -6,6 +6,7 @@
 #include <Text.h>
 #include <globals.h>
 #include <statemanagers.h>
+#include <Vector2d.h>
 
 #include <SDL2/SDL.h>
 
@@ -27,7 +28,10 @@ private:
     //Static instance
     static StartState sStartState;
 
+    Text titleText;
     Text attractText;
+    Text playeroneControls;
+    Text playertwoControls;
 
     //Private constructor
     StartState();

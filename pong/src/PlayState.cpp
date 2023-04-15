@@ -167,9 +167,18 @@ void PlayState::update(float dt)
         }
 
         // TODO: Move this.
-        if (paddle_p1.score == 10 || paddle_p2.score == 10) 
+        if (paddle_p1.score == 10) 
         {
             {
+                GameOverState::get()->winner = "Player One";
+                setNextState( GameOverState::get() );
+            }
+        }
+
+        if (paddle_p2.score == 10) 
+        {
+            {
+                GameOverState::get()->winner = "Player Two";
                 setNextState( GameOverState::get() );
             }
         }
