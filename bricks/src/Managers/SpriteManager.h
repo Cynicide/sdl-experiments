@@ -14,10 +14,18 @@ public:
     // Background Sprite
 
     SDL_Texture* background;
+    SDL_Texture* paddle;
+    SDL_Texture* ball;
+    SDL_Texture* border;
+    SDL_Texture* lightning;
+    SDL_Texture* brickLight;
+    SDL_Texture* brickDark;
 
     SDL_Surface* loadSurface(std::string path);
     SDL_Texture* loadAlphaTexture(std::string path);
     SDL_Texture* loadTexture(std::string path);
+
+    void loadSprites();
 
 private:
     //Static instance

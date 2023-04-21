@@ -92,6 +92,8 @@ int main (int argc, char* args[])
         return 1;
     }
 
+    SpriteManager::get()->loadSprites();
+
     SDL_Event e;
 
     SDL_Log("Getting Start State.\n");

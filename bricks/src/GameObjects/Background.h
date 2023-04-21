@@ -6,6 +6,7 @@ class Background
 {
 public:
     void render();
+    void update(float dt);
     void destroy();
 
     Background();
@@ -14,6 +15,6 @@ public:
 
 private:
     // Background Sprite
-    SDL_Texture* background;
+    SDL_Texture* backgroundSprite;
 
 };

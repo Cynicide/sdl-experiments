@@ -1,12 +1,12 @@
 #include <SpriteManager.h>
 
 #include <SDL2/SDL_image.h>
+#include <iostream>
 
 SpriteManager SpriteManager::sSpriteManager;
 
 SpriteManager::SpriteManager() {
 
-    background = loadTexture("assets\\images\\background2.png");
 
 }
 
@@ -60,4 +60,14 @@ SDL_Texture* SpriteManager::loadTexture(std::string path) {
     SDL_FreeSurface(surface);
     return texture;
 
+}
+
+void SpriteManager::loadSprites() {
+    background = loadTexture("assets\\images\\background.png");
+    paddle = loadAlphaTexture("assets\\images\\paddle.png");
+    ball = loadAlphaTexture("assets\\images\\ball.png");
+    border = loadTexture("assets\\images\\border-sheet.png");
+    lightning = loadAlphaTexture("assets\\images\\lightning.png");
+    brickLight = loadAlphaTexture("assets\\images\\brick-light-sheet.png");
+    brickDark = loadAlphaTexture("assets\\images\\brick-dark-sheet.png");
 }

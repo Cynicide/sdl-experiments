@@ -8,7 +8,12 @@ Text::Text(TTF_Font * font, const char * text, int x_loc, int y_loc, SDL_Rendere
     SDL_Color color = { 255, 255, 255 };
     surface = TTF_RenderText_Solid(font, text, color);
     texture = SDL_CreateTextureFromSurface(gRenderer, surface);
-    SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
+    
+    bool bQuery = SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
+    if (bQuery == 1) {
+        SDL_Log( SDL_GetError());
+    }
+    
     textRect = {x_loc, y_loc, textW, textH};
 }
 
