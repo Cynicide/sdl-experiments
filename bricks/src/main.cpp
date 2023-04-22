@@ -96,6 +96,8 @@ int main (int argc, char* args[])
 
     SDL_Event e;
 
+    double before_time = (double)SDL_GetPerformanceCounter() / SDL_GetPerformanceFrequency();
+
     SDL_Log("Getting Start State.\n");
 	gCurrentState = StartState::get();
 	gCurrentState->enter();
@@ -122,8 +124,14 @@ int main (int argc, char* args[])
             }
         }
 
-        float dt = Timer::get()->GetDeltaTime();
-        
+        //float dt = Timer::get()->GetDeltaTime();
+
+        double current_time = (double)SDL_GetPerformanceCounter() / SDL_GetPerformanceFrequency();
+        // How long it's been since the last frame in seconds.
+        double dt = static_cast<double>(current_time - before_time);
+        // Prime beforeTime for the next frame.
+        before_time = current_time;
+
         //Do state logic
         gCurrentState->update(dt);
 

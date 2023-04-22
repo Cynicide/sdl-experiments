@@ -12,7 +12,7 @@ public:
 
     //Main loop functions
     virtual void handleEvent( SDL_Event& e ) = 0;
-    virtual void update(float dt) = 0;
+    virtual void update(double dt) = 0;
     virtual void render() = 0;
 
     //Make sure to call child destructors

@@ -6,8 +6,10 @@ class Paddle
 {
 public:
     void render();
-    void update(float dt);
+    void update(double dt);
     void destroy();
+
+    SDL_Rect paddleRect;
 
     Paddle();
 
@@ -16,6 +18,6 @@ public:
 private:
     // Background Sprite
     SDL_Texture* paddleSprite;
-    SDL_Rect paddleRect;
+
 
 };

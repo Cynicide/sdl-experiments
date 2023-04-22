@@ -12,6 +12,8 @@
 #include <Lightning.h>
 #include <BrickManager.h>
 
+#include <Physics.h>
+
 class PlayState : public GameState
 {
 public:
@@ -24,7 +26,7 @@ public:
 
     //Main loop functions
     void handleEvent( SDL_Event& e );
-    void update(float dt);
+    void update(double dt);
     void render();
 
 private:
@@ -37,6 +39,17 @@ private:
     Border border;
     Lightning lightning;
     BrickManager brickManager;
+
+    Physics physics;
+
+    enum SubState {
+        SERVING,
+        PLAYING,
+        DYING,
+        GAMEOVER
+    };
+
+    SubState subState = SERVING;
 
     //Private constructor
     PlayState();

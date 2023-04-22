@@ -7,10 +7,10 @@ class Lightning
 {
 public:
     void render();
-    void update(float dt);
+    void update(double dt);
     void destroy();
 
-    SDL_Rect bBorder;
+    SDL_FRect bBorder;
 
     Lightning();
 
@@ -20,4 +20,7 @@ private:
     // Background Sprite
     SDL_Texture* lightningSprite;
     SDL_Rect lightningRect;
+
+    int borderHeight = 16;
+    int borderWidth = 32;
 };

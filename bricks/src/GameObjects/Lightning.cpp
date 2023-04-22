@@ -4,9 +4,10 @@
 
 Lightning::Lightning() {
     lightningSprite = SpriteManager::get()->lightning;
+    bBorder = {(float)borderWidth, (float)(SCREEN_HEIGHT - borderHeight), (float)(SCREEN_WIDTH - borderWidth * 2), (float)borderHeight};
 }
 
-void Lightning::update(float dt) {
+void Lightning::update(double dt) {
 }
 
 void Lightning::render() 
@@ -35,6 +36,10 @@ void Lightning::render()
         SDL_RenderCopyEx(gRenderer, lightningSprite, NULL, &location_b, 0, NULL, flip);
         flip = SDL_FLIP_NONE;
     }
+    
+    // Draw Collision Boxes
+    SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRectF(gRenderer, &bBorder);
 }
 
 void Lightning::destroy() {

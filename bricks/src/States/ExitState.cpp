@@ -21,7 +21,7 @@ void ExitState::handleEvent( SDL_Event& e )
 
 }
 
-void ExitState::update(float dt)
+void ExitState::update(double dt)
 {
 
 }

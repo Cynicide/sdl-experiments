@@ -5,7 +5,7 @@ Background::Background() {
 }
 
 
-void Background::update(float dt) {
+void Background::update(double dt) {
 }
 
 void Background::render() {

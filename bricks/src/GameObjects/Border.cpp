@@ -3,6 +3,9 @@
 Border::Border() {
     borderSprite = SpriteManager::get()->border;
     SliceSpriteSheet();
+    lBorder = {0.f, 0.f, (float)borderWidth, (float)SCREEN_HEIGHT};
+    rBorder = {(float)(SCREEN_WIDTH - borderWidth), 0.f, (float)borderWidth, (float)SCREEN_HEIGHT};
+    tBorder = {(float)borderWidth, 0.f, (float)(SCREEN_WIDTH - borderWidth * 2), (float)borderHeight};
 }
 
 
@@ -18,7 +21,7 @@ for( int i = 0; i <= numSprites - 1; i++ )
     }
 }
 
-void Border::update(float dt) {
+void Border::update(double dt) {
 
 
 }
@@ -52,6 +55,11 @@ void Border::render()
     SDL_RenderCopyEx(gRenderer, borderSprite, &cornerSprite, &location_tr, 90, NULL, SDL_FLIP_NONE);
     SDL_RenderCopyEx(gRenderer, borderSprite, &cornerSprite, &location_tl, 0, NULL, SDL_FLIP_NONE);
 
+    SDL_SetRenderDrawColor(gRenderer, 0,255,0, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRectF(gRenderer, &rBorder);
+    SDL_RenderDrawRectF(gRenderer, &lBorder);
+    SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRectF(gRenderer, &tBorder);
 
 }
 

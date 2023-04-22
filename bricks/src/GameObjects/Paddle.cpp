@@ -5,11 +5,11 @@ Paddle::Paddle() {
 }
 
 
-void Paddle::update(float dt) {
+void Paddle::update(double dt) {
         int textureHeight = 0;
         int textureWidth = 0;
         int borderHeight = 16;
-        int borderWidth = 16;
+        int borderWidth = 32;
 
         bool bQuery = SDL_QueryTexture(paddleSprite, NULL, NULL, &textureWidth, &textureHeight);
         if (bQuery == 1) {
@@ -37,6 +37,8 @@ void Paddle::render()
 {
 
     SDL_RenderCopy(gRenderer, paddleSprite, NULL, &paddleRect );
+    SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRect(gRenderer, &paddleRect);
 }
 
 void Paddle::destroy() {

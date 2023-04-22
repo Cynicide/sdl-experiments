@@ -10,7 +10,7 @@ BrickManager::BrickManager() {
 
 }
 
-void BrickManager::update(float dt) {
+void BrickManager::update(double dt) {
 }
 
 void BrickManager::render() 

@@ -7,7 +7,7 @@ class Brick
 {
 public:
     void render();
-    void update(float dt);
+    void update(double dt);
     void destroy();
     void setVectorRef(std::vector<Brick>& _vectorRef);
     void removeFromVector();

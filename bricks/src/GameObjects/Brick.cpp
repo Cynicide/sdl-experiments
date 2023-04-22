@@ -24,7 +24,7 @@ void Brick::SliceSpriteSheet() {
         }
 }
 
-void Brick::update(float dt) {
+void Brick::update(double dt) {
 }
 
 void Brick::render() 

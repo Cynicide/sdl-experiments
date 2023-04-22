@@ -12,7 +12,7 @@ class BrickManager
 {
 public:
     void render();
-    void update(float dt);
+    void update(double dt);
     void destroy();
 
     void LoadLevel();

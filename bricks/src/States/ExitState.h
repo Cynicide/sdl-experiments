@@ -16,7 +16,7 @@ public:
 
 	//Main loop functions
 	void handleEvent( SDL_Event& e );
-	void update(float dt);
+	void update(double dt);
 	void render();
 
 private:

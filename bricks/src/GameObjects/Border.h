@@ -6,12 +6,12 @@ class Border
 {
 public:
     void render();
-    void update(float dt);
+    void update(double dt);
     void destroy();
 
-    SDL_Rect lBorder;
-    SDL_Rect rBorder;
-    SDL_Rect tBorder;
+    SDL_FRect lBorder;
+    SDL_FRect rBorder;
+    SDL_FRect tBorder;
 
     Border();
 

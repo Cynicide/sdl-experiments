@@ -6,7 +6,7 @@ class Background
 {
 public:
     void render();
-    void update(float dt);
+    void update(double dt);
     void destroy();
 
     Background();
