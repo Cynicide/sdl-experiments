@@ -4,37 +4,39 @@
 
 Ball::Ball() {
     ballSprite = SpriteManager::get()->ball;
+    vel.x = startingVel.x;
+    vel.y = startingVel.y;
     reset();
 }
 
-
 void Ball::reset() {
-        height = 0;
-        width = 0;
+    height = 0;
+    width = 0;
 
-        bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &height, &width);
-        if (bQuery == 1) {
-            SDL_Log( SDL_GetError());
-        }
+    vel.x = startingVel.x;
+    vel.y = startingVel.y;
 
-        ballRect.x = SCREEN_WIDTH / 2 - width / 2;
-        ballRect.y = SCREEN_HEIGHT / 2  - height / 2;
-        ballRect.w = width;
-        ballRect.h = height;
+    bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &height, &width);
+    if (bQuery == 1) {
+        SDL_Log( SDL_GetError());
+    }
+
+    ballRect.x = SCREEN_WIDTH / 2 - width / 2;
+    ballRect.y = SCREEN_HEIGHT / 2  - height / 2;
+    ballRect.w = width;
+    ballRect.h = height;
 }
 
 void Ball::update(double dt) {
-    move(dt);
+    move();
 }
 
-void Ball::move(double dt) {
-    ballRect.x += xVel * dt;
-    ballRect.y += yVel * dt;
-    std::cout << "X: " << ballRect.x << " Y: " << ballRect.y << "\n";
-    std::cout << "XVel: " << xVel << " YVel: " << yVel << " DT: " << dt << "\n";
+void Ball::move() {
+    ballRect.x += vel.x;
+    ballRect.y += vel.y;
 }
 
-void Ball::update(double dt, SDL_Rect paddleRect) {
+void Ball::update(double dt, SDL_FRect paddleRect) {
     height = 0;
     width = 0;
 
@@ -47,15 +49,14 @@ void Ball::update(double dt, SDL_Rect paddleRect) {
     ballRect.y = paddleRect.y - paddleRect.h;
     ballRect.w = width;
     ballRect.h = height;
-
 }
 
 void Ball::flipY() {
-    yVel = yVel * -1;
+    vel.y = vel.y * -1;
 }
 
 void Ball::flipX() {
-    xVel = xVel * -1;
+    vel.x = vel.x * -1;
 }
 
 void Ball::randomizeXDirection() {
@@ -63,13 +64,11 @@ void Ball::randomizeXDirection() {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> direction(0, 1);
     if (direction(gen) == 1) {
-        xVel = xVel * -1;
+        vel.x = vel.x * -1;
     }
 }
 
-void Ball::render() 
-{
-
+void Ball::render() {
     SDL_RenderCopyF(gRenderer, ballSprite, NULL, &ballRect );
     SDL_SetRenderDrawColor(gRenderer, 255,255,0, SDL_ALPHA_OPAQUE);
     SDL_RenderDrawRectF(gRenderer, &ballRect);

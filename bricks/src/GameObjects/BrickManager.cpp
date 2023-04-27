@@ -51,29 +51,22 @@ void BrickManager::LoadLevel() {
     }
     else 
     {
-        std::cout<<"file cannot be opened"<<std::endl;
+        spdlog::error("Error loading level. File cannot be opened");
     }
     
     inFile.close();
-
     // Testing
-
-    for(std::vector<int> &newvec: level)
-    {
-        for(const int &elem: newvec)
-        {
-            std::cout<<elem<<" ";
-        }
-        std::cout<<std::endl;
-    }
-
+    //spdlog::debug("Level Data");
+    //for(std::vector<int> &newvec: level)
+    //{
+    //    spdlog::debug("{}", newvec);
+    //}
 }
 
 void BrickManager::CreateLevel() {
 
-    int posX = startX;
-    int posY = startY;
-
+    float posX = startX;
+    float posY = startY;
 
     for(std::vector<int> &newvec: level)
         {
@@ -91,5 +84,4 @@ void BrickManager::CreateLevel() {
         posX = startX;
         posY = posY + brickSizeY;
         }
-    std::cout << "break";
 }   

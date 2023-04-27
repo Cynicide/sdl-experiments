@@ -9,7 +9,7 @@ public:
     void update(double dt);
     void destroy();
 
-    SDL_Rect paddleRect;
+    SDL_FRect paddleRect;
 
     Paddle();
 

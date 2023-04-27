@@ -1,5 +1,10 @@
 #pragma once
 #include <vector>
+
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/fmt/ranges.h"
+
 #include <Brick.h>
 // Notes
 
@@ -22,14 +27,14 @@ public:
 
     ~BrickManager(){};
 
+    std::vector<Brick> brickList;
 private:
 
     std::vector<std::vector<int>> level;
-    std::vector<Brick> brickList;
-
-    int startX = 32;
-    int startY = 116;
-    int brickSizeX = 64;
-    int brickSizeY = 32;
+    
+    float startX = 32;
+    float startY = 116;
+    float brickSizeX = 64;
+    float brickSizeY = 32;
 
 };

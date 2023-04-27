@@ -2,13 +2,13 @@
 #include <iostream>
 #include <algorithm>
 
-Brick::Brick(int _xpos, int _ypos) {
+Brick::Brick(float _xpos, float _ypos) {
     brickLightSprite = SpriteManager::get()->brickLight;
     brickDarkSprite = SpriteManager::get()->brickDark;
     SliceSpriteSheet();
     xpos = _xpos;
     ypos = _ypos;
-
+    brickRect = {xpos, ypos, brickWidth, brickHeight};
 }
 
 
@@ -30,8 +30,10 @@ void Brick::update(double dt) {
 void Brick::render() 
 {
     SDL_Rect solidSprite = {brickSpriteClips[0].x, brickSpriteClips[0].y, brickSpriteClips[0].w, brickSpriteClips[0].h};
-    SDL_Rect tile = {xpos, ypos, brickWidth, brickHeight};
-    SDL_RenderCopy(gRenderer, brickLightSprite, &solidSprite, &tile );
+    
+    SDL_RenderCopyF(gRenderer, brickLightSprite, &solidSprite, &brickRect );
+    SDL_SetRenderDrawColor(gRenderer, 255,255,255, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRectF(gRenderer, &brickRect);
 }
 
 void Brick::destroy() {

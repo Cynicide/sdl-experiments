@@ -23,7 +23,6 @@ for( int i = 0; i <= numSprites - 1; i++ )
 
 void Border::update(double dt) {
 
-
 }
 
 void Border::render() 

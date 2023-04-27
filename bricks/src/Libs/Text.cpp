@@ -4,9 +4,9 @@ Text::Text() {
 
 }
 
-Text::Text(TTF_Font * font, const char * text, int x_loc, int y_loc, SDL_Renderer* gRenderer) {
+Text::Text(TTF_Font * font, std::string text, int x_loc, int y_loc, SDL_Renderer* gRenderer) {
     SDL_Color color = { 255, 255, 255 };
-    surface = TTF_RenderText_Solid(font, text, color);
+    surface = TTF_RenderText_Solid(font, text.c_str(), color);
     texture = SDL_CreateTextureFromSurface(gRenderer, surface);
     
     bool bQuery = SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);

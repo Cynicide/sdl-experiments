@@ -16,7 +16,7 @@ bool StartState::enter()
 {
     //Loading success flag
     bool success = true;
-    SDL_Log("Entered StartState\n");
+    spdlog::info("Entered StartState.");
 
     background = Background(); 
 
@@ -25,7 +25,7 @@ bool StartState::enter()
 
 bool StartState::exit()
 {
-    SDL_Log("Exited StartState\n");
+    spdlog::info("Exited StartState");
 
     return true;
 }

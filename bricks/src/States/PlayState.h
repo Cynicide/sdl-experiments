@@ -11,6 +11,11 @@
 #include <Brick.h>
 #include <Lightning.h>
 #include <BrickManager.h>
+#include <Sign.h>
+#include <Text.h>
+
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
 
 #include <Physics.h>
 
@@ -40,7 +45,16 @@ private:
     Lightning lightning;
     BrickManager brickManager;
 
+    SDL_FRect bpb;
     Physics physics;
+
+    Text ballCoord;
+    Text bpbCoord;
+    Text ballVel;
+
+    bool gPause = false;
+    int UpdateLoop = 0;
+    int RenderLoop = 0;
 
     enum SubState {
         SERVING,

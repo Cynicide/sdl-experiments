@@ -6,6 +6,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
+// App Details
+
+extern const char * appName;
 
 // Screen Dimensions
 const int SCREEN_WIDTH = 1280;

@@ -36,9 +36,9 @@ void Paddle::update(double dt) {
 void Paddle::render() 
 {
 
-    SDL_RenderCopy(gRenderer, paddleSprite, NULL, &paddleRect );
+    SDL_RenderCopyF(gRenderer, paddleSprite, NULL, &paddleRect );
     SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRect(gRenderer, &paddleRect);
+    SDL_RenderDrawRectF(gRenderer, &paddleRect);
 }
 
 void Paddle::destroy() {

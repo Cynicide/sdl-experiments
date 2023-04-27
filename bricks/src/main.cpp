@@ -3,12 +3,16 @@
 #include <SDL2/SDL_mixer.h> 
 #include <SDL2/SDL_image.h>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 #include <globals.h>
 #include <statemanagers.h>
 
 #include <StartState.h>
 #include <ExitState.h>
 #include <Timer.h>
+#include <sstream>
 
 // Method  Definitions
 bool initSDL();
@@ -17,34 +21,34 @@ void closeSDL();
 // Methods
 bool initSDL () {
 
-    SDL_Log("Initializing SDL.\n");
+    spdlog::info("Initializing SDL.");
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
     {
-        SDL_LogError(1, "SDL Could not be initialized! SDL_Error: %s\n", SDL_GetError());
+        spdlog::error("SDL Could not be initialized! SDL_Error: ",  SDL_GetError());
         return false;
     } 
     
-    SDL_Log("Initializing SDL TTF.\n");
+    spdlog::info("Initializing SDL TTF.");
     if (TTF_Init() < 0)
     {
-        SDL_LogError(1, "SDL TTF Could not be initialized! SDL_Error: %s\n", SDL_GetError());
+        spdlog::error("SDL TTF Could not be initialized! SDL_Error: ", SDL_GetError());
         return false;
     }
 
-    SDL_Log("Initializing Fonts.\n");
-    font = TTF_OpenFont("assets\\fonts\\PublicPixel.ttf", 40);
+    spdlog::info("Initializing Fonts.");
+    font = TTF_OpenFont("assets\\fonts\\PublicPixel.ttf", 12);
 
-    SDL_Log("Creating Window.\n");
-    gWindow = SDL_CreateWindow("Calamity", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    spdlog::info("Creating Window.");
+    gWindow = SDL_CreateWindow(appName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (gWindow == NULL) 
     {
-        SDL_LogError(1, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        spdlog::error("Window could not be created! SDL_Error: ", SDL_GetError());
         return false;
     } 
 
-   SDL_Log("Creating Audio Mixer.\n");
+    spdlog::info("Creating Audio Mixer.");
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        SDL_LogError(1,"SDL Mixer cannot be created! SDL_Error: %s\n", SDL_GetError());
+        spdlog::error("SDL Mixer cannot be created! SDL_Error: ", SDL_GetError());
         return false;
     }
 
@@ -52,7 +56,7 @@ bool initSDL () {
     int imgFlags = IMG_INIT_PNG;
     if( !( IMG_Init( imgFlags ) & imgFlags ) )
     {
-        SDL_Log( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+        spdlog::error( "SDL_image could not initialize! SDL_image Error: ", IMG_GetError() );
         return false;
     }
     else
@@ -61,8 +65,8 @@ bool initSDL () {
         gScreenSurface = SDL_GetWindowSurface( gWindow );
     }
 
-    SDL_Log("Creating Renderer.\n");
-    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+    spdlog::info("Creating Renderer.");
+    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     return true;
 }
@@ -83,60 +87,61 @@ void closeSDL()
 // Main
 int main (int argc, char* args[]) 
 {
+    // Start Logging
+    auto console = spdlog::stdout_color_mt("console");  
+    spdlog::info("Starting Bricks!");
+    
+    // Remove old Log Files
+    std::remove("./game.txt");
 
-    SDL_Log("SDL starting...\n");
+    // Starting SDL    
+    spdlog::info("SDL starting...");
     if( !initSDL()) 
     {
-        SDL_LogError(1, "Failed to Initialize!\n");
+        spdlog::error("Failed to Initialize!");
         closeSDL();
         return 1;
     }
 
+    // Loading Sprites
     SpriteManager::get()->loadSprites();
 
+    // Get Event Structure
     SDL_Event e;
 
-    double before_time = (double)SDL_GetPerformanceCounter() / SDL_GetPerformanceFrequency();
-
-    SDL_Log("Getting Start State.\n");
+    // TODO: Deltatime implemtation based on https://gafferongames.com/post/fix_your_timestep/ fix.
+    spdlog::info("Getting Start State.");
 	gCurrentState = StartState::get();
 	gCurrentState->enter();
 
     //While the user hasn't quit
-    SDL_Log("Starting Game Loop.\n");
+    spdlog::info("Starting Game Loop.");
     while( gCurrentState != ExitState::get() )
     {
-        //Do state event handling
-        while( SDL_PollEvent( &e ) != 0 )
-        {
-            //Handle state events
-            gCurrentState->handleEvent( e );
-
-            //Exit on quit
-            if( e.type == SDL_QUIT )
+            //Do state event handling
+            while( SDL_PollEvent( &e ) != 0 )
             {
-                setNextState( ExitState::get() );
+                //Handle state events
+                gCurrentState->handleEvent( e );
+
+                //Exit on quit
+                if( e.type == SDL_QUIT )
+                {
+                    setNextState( ExitState::get() );
+                }
+
+                if( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_q ) )
+                {
+                    setNextState( ExitState::get() );
+                }
             }
 
-            if( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_q ) )
-            {
-                setNextState( ExitState::get() );
-            }
-        }
+            //Do state logic
+            float dt =1.f;
+            gCurrentState->update(dt);
 
-        //float dt = Timer::get()->GetDeltaTime();
-
-        double current_time = (double)SDL_GetPerformanceCounter() / SDL_GetPerformanceFrequency();
-        // How long it's been since the last frame in seconds.
-        double dt = static_cast<double>(current_time - before_time);
-        // Prime beforeTime for the next frame.
-        before_time = current_time;
-
-        //Do state logic
-        gCurrentState->update(dt);
-
-        //Change state if needed
-        changeState();
+            //Change state if needed
+            changeState();
 
         SDL_RenderClear(gRenderer);
 
@@ -145,10 +150,8 @@ int main (int argc, char* args[])
 
         //Update screen
         SDL_RenderPresent( gRenderer );
-
-        Timer::get()->Tick();
 		}
-    SDL_Log("Quitting SDL\n");
+    spdlog::info("Quitting SDL");
     closeSDL();
     return 0;
 }

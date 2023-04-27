@@ -4,6 +4,9 @@
 #include <PlayState.h>
 #include <ExitState.h>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 #include <statemanagers.h>
 
 #include <Background.h> 

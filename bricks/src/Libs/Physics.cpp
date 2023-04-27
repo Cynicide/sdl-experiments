@@ -5,10 +5,10 @@ Physics::Physics() {
 
 }
 
+
 float Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, float &normalx, float &normaly) {
     // https://www.gamedev.net/articles/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/
     // https://www.amanotes.com/post/using-swept-aabb-to-detect-and-process-collision
-
 
     float xInvEntry, yInvEntry;
     float xInvExit, yInvExit;
@@ -21,7 +21,6 @@ float Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, fl
     {
         xInvEntry = rectB.x - (rectA.x + rectA.w);
         xInvExit = (rectB.x + rectB.w) - rectA.x;
-
     }
     else
     {
@@ -49,8 +48,8 @@ float Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, fl
     }
     else
     {
-        xEntry = xInvEntry / rectAVel.x;
-        xExit = xInvExit / rectAVel.x; 
+        xEntry = xInvEntry / (rectAVel.x);
+        xExit = xInvExit / (rectAVel.x); 
     }
 
     if (rectAVel.y == 0.0f)
@@ -60,8 +59,8 @@ float Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, fl
     }
     else
     {
-        yEntry = yInvEntry / rectAVel.y;
-        yExit = yInvExit / rectAVel.y; 
+        yEntry = yInvEntry / (rectAVel.y);
+        yExit = yInvExit / (rectAVel.y);
     } 
 
     // Find the earliest/latest times of collision
@@ -71,6 +70,7 @@ float Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, fl
     // If there was no collision
     if (entryTime > exitTime || (xEntry < 0.0f && yEntry < 0.0f) || xEntry > 1.0f || yEntry > 1.0f)
     {
+        Logger("There Was No Collision");
         normalx = 0.0f;
         normaly = 0.0f;
         return 1.0f;
@@ -111,13 +111,20 @@ float Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, fl
     }
 }
 
-void Physics::ProcessCollision(SDL_FRect &rectA, SDL_FRect rectB, Vector2d rectAVel) {
+void Physics::ProcessCollision(SDL_FRect &rectA, SDL_FRect rectB, Vector2d &rectAVel, double dt) 
+{
+
+    spdlog::info("----------------------- COLLISION -----------------------");
+    spdlog::info("Processing Collision for RectB Location: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y));     
+    spdlog::info("RectA: " + std::to_string(rectA.x) + " : " + std::to_string(rectA.y) + " : " + std::to_string(rectA.w) + " : " + std::to_string(rectA.h));    
+    spdlog::info("RectB: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y) + " : " + std::to_string(rectB.w) + " : " + std::to_string(rectB.h));    
 
     float normalx, normaly;
     float collisiontime = SweptAABB(rectA, rectB, rectAVel, normalx, normaly);
 
-    rectA.x += rectAVel.x * collisiontime;
-    rectA.y += rectAVel.y * collisiontime;
+    // Do not need if we are not going to accelerate out of bounce
+    //rectA.x += (rectAVel.x * dt) * collisiontime;
+    //rectA.y += (rectAVel.y * dt) * collisiontime;
 
     if (abs(normalx) > 0.0001f) {
         rectAVel.x = -rectAVel.x;
@@ -127,13 +134,21 @@ void Physics::ProcessCollision(SDL_FRect &rectA, SDL_FRect rectB, Vector2d rectA
     } 
 }
 
-SDL_FRect Physics::GetSweptBroadphaseBox(SDL_FRect object, int velx, int vely) 
+SDL_FRect Physics::GetSweptBroadphaseBox(SDL_FRect object, float velx, float vely) 
 { 
   SDL_FRect broadphasebox;  
-  broadphasebox.x = velx > 0 ? object.x : object.x + velx;  
-  broadphasebox.y = vely > 0 ? object.y : object.y + vely;  
-  broadphasebox.w = velx > 0 ? velx + object.w : object.w - velx;  
-  broadphasebox.h = vely > 0 ? vely + object.h : object.h - vely;  
+  //broadphasebox.x = velx > 0.f ? object.x : object.x + velx;  
+  if (velx > 0.f) {
+      broadphasebox.x = object.x;
+  }
+  else 
+  {
+      broadphasebox.x = object.x + velx;
+  }
+  
+  broadphasebox.y = vely > 0.f ? object.y : object.y + vely;  
+  broadphasebox.w = velx > 0.f ? velx + object.w : object.w - velx;  
+  broadphasebox.h = vely > 0.f ? vely + object.h : object.h - vely;  
 
   return broadphasebox; 
 }

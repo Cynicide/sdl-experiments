@@ -1,12 +1,13 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SpriteManager.h>
+#include <Vector2d.h>
 
 class Ball
 {
 public:
     void render();
-    void update(double dt, SDL_Rect paddleRect);
+    void update(double dt, SDL_FRect paddleRect);
     void update(double dt);
     void destroy();
 
@@ -16,18 +17,18 @@ public:
     void flipX();
 
     Ball();
-
     ~Ball(){};
 
-    float yVel = -150.f;
-    float xVel = 150.f;
+    Vector2d vel;
     SDL_FRect ballRect;
 
 private:
-    // Background Sprite
     SDL_Texture* ballSprite;
+    
     int height = 0;
     int width = 0;
-
-    void move(double dt);
+    
+    Vector2d startingVel = {2, -2};
+    
+    void move();
 };

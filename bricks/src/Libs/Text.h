@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <globals.h>
+#include <string>
 
 // ToDo: Turn this into a Manager Class
 
@@ -15,7 +16,7 @@ class Text {
         int textW;
         int textH;
         Text();
-        Text(TTF_Font * font, const char * text, int x_loc, int y_loc, SDL_Renderer* gRenderer);
+        Text(TTF_Font * font, std::string text, int x_loc, int y_loc, SDL_Renderer* gRenderer);
         void SetPos(int x, int y);
         void Destroy();
         void Render();
