@@ -28,7 +28,7 @@ private:
     int height = 0;
     int width = 0;
     
-    Vector2d startingVel = {2, -2};
+    Vector2d startingVel = {9, -9};
     
     void move();
 };

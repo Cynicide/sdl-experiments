@@ -48,6 +48,9 @@ bool PlayState::enter()
 
 bool PlayState::exit()
 {
+    ballCoord.Destroy();
+    bpbCoord.Destroy();
+    ballVel.Destroy();
     spdlog::info("Exited PlayState\n");
     return true;
 }
@@ -83,37 +86,42 @@ void PlayState::update(double dt)
         ball.update(dt); 
         bpb = physics.GetSweptBroadphaseBox(ball.ballRect, ball.vel.x, ball.vel.y);    
         
+        
+        ballCoord.Destroy();
         ballCoord = Text(font, "BX: " + std::to_string(ball.ballRect.x) +
                             " BY: " + std::to_string(ball.ballRect.y) +
                             " BW: " + std::to_string(ball.ballRect.w) +
                             " BH: " + std::to_string(ball.ballRect.h), 10, 10, gRenderer);
 
+        bpbCoord.Destroy();
         bpbCoord = Text(font, "BPX: " + std::to_string(bpb.x) +
                             " BPY: " + std::to_string(bpb.y) +
                             " BPW: " + std::to_string(bpb.w) +
                             " BPH: " + std::to_string(bpb.h), 10, 50, gRenderer);
 
+        ballVel.Destroy();
         ballVel = Text(font, "VX: " + std::to_string(ball.vel.x) +
                             " VY: " + std::to_string(ball.vel.y), 10, 90, gRenderer);
-
+        
 
         // Check for Collision
 
         if (physics.AABBCheck(ball.ballRect, lightning.bBorder)) 
         {
-            subState = SERVING;
-            break;
+            ball.flipY();
+            //subState = SERVING;
+            //break;
         }
 
         if (physics.AABBCheck(ball.ballRect, border.tBorder)) 
         {
-            spdlog::info("########### Vertical Wall to Paddle Collision ###########");
+            spdlog::debug("########### Vertical Wall to Paddle Collision ###########");
             ball.flipY();
         }
 
         if (physics.AABBCheck(ball.ballRect, border.rBorder) || physics.AABBCheck(ball.ballRect, border.lBorder))  
         {
-            spdlog::info("########### Horizontal Wall to Paddle Collision ###########");
+            spdlog::debug("########### Horizontal Wall to Paddle Collision ###########");
             ball.flipX();
         }
 
@@ -121,24 +129,31 @@ void PlayState::update(double dt)
         {
             if (physics.AABBCheck(bpb, paddle.paddleRect)) 	
             {                             
-            spdlog::info("########### BPB to Paddle Collision ###########");
-            spdlog::info("BPB: " + std::to_string(bpb.x) + " : " + std::to_string(bpb.y) + " : " + std::to_string(bpb.w) + " : " + std::to_string(bpb.h));
-            spdlog::info("Brick: " + std::to_string(paddle.paddleRect.x) + " : " + std::to_string(paddle.paddleRect.y) + " : " + std::to_string(paddle.paddleRect.w) + " : " + std::to_string(paddle.paddleRect.h));  
+            spdlog::debug("########### BPB to Paddle Collision ###########");
+            spdlog::debug("BPB: " + std::to_string(bpb.x) + " : " + std::to_string(bpb.y) + " : " + std::to_string(bpb.w) + " : " + std::to_string(bpb.h));
+            spdlog::debug("Brick: " + std::to_string(paddle.paddleRect.x) + " : " + std::to_string(paddle.paddleRect.y) + " : " + std::to_string(paddle.paddleRect.w) + " : " + std::to_string(paddle.paddleRect.h));  
             physics.ProcessCollision(ball.ballRect, paddle.paddleRect, ball.vel, dt);
             }
         }
+
+
+        std::vector<Brick> collisionList = {};
 
         for (auto &i : brickManager.brickList) 
         {
             if (physics.AABBCheck(bpb, i.brickRect))
             {                             
-            spdlog::info("########### BPB to Brick Collision ###########");
-            spdlog::info("BPB: " + std::to_string(bpb.x) + " : " + std::to_string(bpb.y) + " : " + std::to_string(bpb.w) + " : " + std::to_string(bpb.h));
-            spdlog::info("Brick: " + std::to_string(i.brickRect.x) + " : " + std::to_string(i.brickRect.y) + " : " + std::to_string(i.brickRect.w) + " : " + std::to_string(i.brickRect.h));                      
+            collisionList.push_back(i);
+            spdlog::debug("########### BPB to Brick Collision ###########");
+            spdlog::debug("BPB: " + std::to_string(bpb.x) + " : " + std::to_string(bpb.y) + " : " + std::to_string(bpb.w) + " : " + std::to_string(bpb.h));
+            spdlog::debug("Brick: " + std::to_string(i.brickRect.x) + " : " + std::to_string(i.brickRect.y) + " : " + std::to_string(i.brickRect.w) + " : " + std::to_string(i.brickRect.h));                      
             physics.ProcessCollision(ball.ballRect, i.brickRect, ball.vel, dt);
-            gPause = true;
-            break;
+            i.removeFromVector();
             }
+        }
+
+        if (collisionList.size() > 1) {
+            spdlog::info("@@@@@@@@@@@@@@@@@@@@@@ COLLISION POSSIBLE FOR MORE THAN ONE BLOCK (" + std::to_string(collisionList.size()) + ")");
         }
 
         break;

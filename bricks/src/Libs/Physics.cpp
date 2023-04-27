@@ -137,15 +137,7 @@ void Physics::ProcessCollision(SDL_FRect &rectA, SDL_FRect rectB, Vector2d &rect
 SDL_FRect Physics::GetSweptBroadphaseBox(SDL_FRect object, float velx, float vely) 
 { 
   SDL_FRect broadphasebox;  
-  //broadphasebox.x = velx > 0.f ? object.x : object.x + velx;  
-  if (velx > 0.f) {
-      broadphasebox.x = object.x;
-  }
-  else 
-  {
-      broadphasebox.x = object.x + velx;
-  }
-  
+  broadphasebox.x = velx > 0.f ? object.x : object.x + velx;    
   broadphasebox.y = vely > 0.f ? object.y : object.y + vely;  
   broadphasebox.w = velx > 0.f ? velx + object.w : object.w - velx;  
   broadphasebox.h = vely > 0.f ? vely + object.h : object.h - vely;  

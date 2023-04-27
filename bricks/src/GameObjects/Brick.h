@@ -28,17 +28,15 @@ private:
     SDL_Texture* brickLightSprite;
     SDL_Texture* brickDarkSprite;
 
-
     float brickHeight = 32.f;
     float brickWidth = 64.f;
-
     float xpos, ypos;
 
     int numSprites = 10;
     SDL_Rect brickSpriteClips[10];
 
-    void SliceSpriteSheet();
-
     std::vector<Brick>* vectorRef = nullptr;
+
+    void SliceSpriteSheet();
 
 };

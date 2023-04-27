@@ -74,7 +74,6 @@ void BrickManager::CreateLevel() {
         {
             if (elem == 1) 
             {
-                
                 Brick tmpBrick(posX, posY);
                 brickList.push_back(tmpBrick);
                 tmpBrick.setVectorRef(brickList);

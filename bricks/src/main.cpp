@@ -73,14 +73,23 @@ bool initSDL () {
 
 void closeSDL() 
 {
+    spdlog::info("Destroying Renderer");
+
     SDL_DestroyRenderer(gRenderer);
+    
+    spdlog::info("Destroying Window");
     SDL_DestroyWindow( gWindow );
+
+    spdlog::info("Quitting TTF");
     TTF_Quit();
+
+    spdlog::info("Closing Mixer");
     Mix_CloseAudio();
     
     gWindow = NULL;
     gRenderer = NULL;
 
+    spdlog::info("SDL Quit");
     SDL_Quit();
 }
 
