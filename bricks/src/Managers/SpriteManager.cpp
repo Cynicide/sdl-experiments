@@ -3,6 +3,9 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 SpriteManager SpriteManager::sSpriteManager;
 
 SpriteManager::SpriteManager() {
@@ -24,7 +27,7 @@ SDL_Surface* SpriteManager::loadSurface( std::string path) {
     SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
     if( loadedSurface == NULL )
     {
-        SDL_Log( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
+        spdlog::error( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
     }
     else
     {
@@ -32,7 +35,7 @@ SDL_Surface* SpriteManager::loadSurface( std::string path) {
         optimizedSurface = SDL_ConvertSurface( loadedSurface, gScreenSurface->format, 0 );
         if( optimizedSurface == NULL )
         {
-            SDL_Log( "Unable to optimize image %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+            spdlog::error( "Unable to optimize image %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
         }
 
         //Get rid of old loaded surface
@@ -68,6 +71,9 @@ void SpriteManager::loadSprites() {
     ball = loadAlphaTexture("assets\\images\\ball.png");
     border = loadTexture("assets\\images\\border-sheet.png");
     lightning = loadAlphaTexture("assets\\images\\lightning.png");
-    brickLight = loadAlphaTexture("assets\\images\\brick-light-sheet.png");
-    brickDark = loadAlphaTexture("assets\\images\\brick-dark-sheet.png");
+    brickRed = loadAlphaTexture("assets\\images\\brick-red-sheet.png");
+    brickBlue = loadAlphaTexture("assets\\images\\brick-blue-sheet.png");
+    brickYellow = loadAlphaTexture("assets\\images\\brick-yellow-sheet.png");
+    brickTough = loadAlphaTexture("assets\\images\\brick-tough-sheet.png");
+    brickIndestructable = loadAlphaTexture("assets\\images\\brick-indestructable-sheet.png");
 }

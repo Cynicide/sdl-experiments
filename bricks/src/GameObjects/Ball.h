@@ -23,12 +23,12 @@ public:
     SDL_FRect ballRect;
 
 private:
-    SDL_Texture* ballSprite;
+    SDL_Texture* ballSprite = NULL;
     
     int height = 0;
     int width = 0;
     
-    Vector2d startingVel = {9, -9};
+    Vector2d startingVel = {6, -6};
     
     void move();
 };

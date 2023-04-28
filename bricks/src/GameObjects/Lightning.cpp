@@ -38,8 +38,8 @@ void Lightning::render()
     }
     
     // Draw Collision Boxes
-    SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRectF(gRenderer, &bBorder);
+    //SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
+    //SDL_RenderDrawRectF(gRenderer, &bBorder);
 }
 
 void Lightning::destroy() {

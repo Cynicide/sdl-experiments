@@ -35,12 +35,12 @@ bool PlayState::enter()
     ballCoord = Text(font, "BX: " + std::to_string(ball.ballRect.x) +
                            " BY: " + std::to_string(ball.ballRect.y) +
                            " BW: " + std::to_string(ball.ballRect.w) +
-                           " BH: " + std::to_string(ball.ballRect.h), 10, 10, gRenderer);
+                           " BH: " + std::to_string(ball.ballRect.h), 30, 20, gRenderer);
 
-    bpbCoord = Text(font, "BPX: 0 BPY: 0 BPW: 0 BPH: 0", 10, 50, gRenderer);
+    bpbCoord = Text(font, "BPX: 0 BPY: 0 BPW: 0 BPH: 0", 30, 60, gRenderer);
 
     ballVel = Text(font, "VX: " + std::to_string(ball.vel.x) +
-                        " VY: " + std::to_string(ball.vel.y), 10, 90, gRenderer);
+                        " VY: " + std::to_string(ball.vel.y), 30, 100, gRenderer);
     subState = SERVING;
 
     return success;
@@ -51,7 +51,7 @@ bool PlayState::exit()
     ballCoord.Destroy();
     bpbCoord.Destroy();
     ballVel.Destroy();
-    spdlog::info("Exited PlayState\n");
+    spdlog::info("Exited PlayState");
     return true;
 }
 
@@ -73,7 +73,7 @@ void PlayState::update(double dt)
         Uint32 mouseState = SDL_GetMouseState(&mx, &my);
         if (mouseState == SDL_BUTTON(1)) 
         {
-            //ball.randomizeXDirection();
+            ball.randomizeXDirection();
             subState = PLAYING;
         }
         break;
@@ -91,17 +91,17 @@ void PlayState::update(double dt)
         ballCoord = Text(font, "BX: " + std::to_string(ball.ballRect.x) +
                             " BY: " + std::to_string(ball.ballRect.y) +
                             " BW: " + std::to_string(ball.ballRect.w) +
-                            " BH: " + std::to_string(ball.ballRect.h), 10, 10, gRenderer);
+                            " BH: " + std::to_string(ball.ballRect.h), 30, 20, gRenderer);
 
         bpbCoord.Destroy();
         bpbCoord = Text(font, "BPX: " + std::to_string(bpb.x) +
                             " BPY: " + std::to_string(bpb.y) +
                             " BPW: " + std::to_string(bpb.w) +
-                            " BPH: " + std::to_string(bpb.h), 10, 50, gRenderer);
+                            " BPH: " + std::to_string(bpb.h), 30, 60, gRenderer);
 
         ballVel.Destroy();
         ballVel = Text(font, "VX: " + std::to_string(ball.vel.x) +
-                            " VY: " + std::to_string(ball.vel.y), 10, 90, gRenderer);
+                            " VY: " + std::to_string(ball.vel.y), 30, 100, gRenderer);
         
 
         // Check for Collision
@@ -148,7 +148,7 @@ void PlayState::update(double dt)
             spdlog::debug("BPB: " + std::to_string(bpb.x) + " : " + std::to_string(bpb.y) + " : " + std::to_string(bpb.w) + " : " + std::to_string(bpb.h));
             spdlog::debug("Brick: " + std::to_string(i.brickRect.x) + " : " + std::to_string(i.brickRect.y) + " : " + std::to_string(i.brickRect.w) + " : " + std::to_string(i.brickRect.h));                      
             physics.ProcessCollision(ball.ballRect, i.brickRect, ball.vel, dt);
-            i.removeFromVector();
+            i.hit();
             }
         }
 
@@ -184,8 +184,8 @@ void PlayState::render()
     ballVel.Render();
 
     ball.render();
-    SDL_SetRenderDrawColor(gRenderer, 0,255,255, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRectF(gRenderer, &bpb);
+    //SDL_SetRenderDrawColor(gRenderer, 0,255,255, SDL_ALPHA_OPAQUE);
+    //SDL_RenderDrawRectF(gRenderer, &bpb);
 
 
 }

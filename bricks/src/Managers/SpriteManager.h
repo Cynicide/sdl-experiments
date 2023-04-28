@@ -18,8 +18,11 @@ public:
     SDL_Texture* ball;
     SDL_Texture* border;
     SDL_Texture* lightning;
-    SDL_Texture* brickLight;
-    SDL_Texture* brickDark;
+    SDL_Texture* brickRed;
+    SDL_Texture* brickBlue;
+    SDL_Texture* brickYellow;
+    SDL_Texture* brickTough;
+    SDL_Texture* brickIndestructable;
 
     SDL_Surface* loadSurface(std::string path);
     SDL_Texture* loadAlphaTexture(std::string path);

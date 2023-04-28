@@ -54,11 +54,11 @@ void Border::render()
     SDL_RenderCopyEx(gRenderer, borderSprite, &cornerSprite, &location_tr, 90, NULL, SDL_FLIP_NONE);
     SDL_RenderCopyEx(gRenderer, borderSprite, &cornerSprite, &location_tl, 0, NULL, SDL_FLIP_NONE);
 
-    SDL_SetRenderDrawColor(gRenderer, 0,255,0, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRectF(gRenderer, &rBorder);
-    SDL_RenderDrawRectF(gRenderer, &lBorder);
-    SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRectF(gRenderer, &tBorder);
+    //SDL_SetRenderDrawColor(gRenderer, 0,255,0, SDL_ALPHA_OPAQUE);
+    //SDL_RenderDrawRectF(gRenderer, &rBorder);
+    //SDL_RenderDrawRectF(gRenderer, &lBorder);
+    //SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
+    //SDL_RenderDrawRectF(gRenderer, &tBorder);
 
 }
 

@@ -2,11 +2,13 @@
 #include <iostream>
 #include <random>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 Ball::Ball() {
     ballSprite = SpriteManager::get()->ball;
     vel.x = startingVel.x;
     vel.y = startingVel.y;
-    reset();
 }
 
 void Ball::reset() {
@@ -18,7 +20,7 @@ void Ball::reset() {
 
     bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &height, &width);
     if (bQuery == 1) {
-        SDL_Log( SDL_GetError());
+        spdlog::error("Issue querying Ball Texture: ", SDL_GetError());
     }
 
     ballRect.x = SCREEN_WIDTH / 2 - width / 2;
@@ -70,8 +72,8 @@ void Ball::randomizeXDirection() {
 
 void Ball::render() {
     SDL_RenderCopyF(gRenderer, ballSprite, NULL, &ballRect );
-    SDL_SetRenderDrawColor(gRenderer, 255,255,0, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRectF(gRenderer, &ballRect);
+    //SDL_SetRenderDrawColor(gRenderer, 255,255,0, SDL_ALPHA_OPAQUE);
+    //SDL_RenderDrawRectF(gRenderer, &ballRect);
 }
 
 void Ball::destroy() {

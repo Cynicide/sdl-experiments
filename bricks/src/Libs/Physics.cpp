@@ -114,10 +114,10 @@ float Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, fl
 void Physics::ProcessCollision(SDL_FRect &rectA, SDL_FRect rectB, Vector2d &rectAVel, double dt) 
 {
 
-    spdlog::info("----------------------- COLLISION -----------------------");
-    spdlog::info("Processing Collision for RectB Location: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y));     
-    spdlog::info("RectA: " + std::to_string(rectA.x) + " : " + std::to_string(rectA.y) + " : " + std::to_string(rectA.w) + " : " + std::to_string(rectA.h));    
-    spdlog::info("RectB: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y) + " : " + std::to_string(rectB.w) + " : " + std::to_string(rectB.h));    
+    spdlog::debug("----------------------- COLLISION -----------------------");
+    spdlog::debug("Processing Collision for RectB Location: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y));     
+    spdlog::debug("RectA: " + std::to_string(rectA.x) + " : " + std::to_string(rectA.y) + " : " + std::to_string(rectA.w) + " : " + std::to_string(rectA.h));    
+    spdlog::debug("RectB: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y) + " : " + std::to_string(rectB.w) + " : " + std::to_string(rectB.h));    
 
     float normalx, normaly;
     float collisiontime = SweptAABB(rectA, rectB, rectAVel, normalx, normaly);
