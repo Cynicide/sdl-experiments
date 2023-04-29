@@ -6,12 +6,6 @@
 #include "spdlog/fmt/ranges.h"
 
 #include <Brick.h>
-// Notes
-
-// List of Bricks for Rendering and Collision Detection
-// Loading the level
-// Clearing the lists
-// may need a Level manager too
 
 class BrickManager
 {
@@ -28,6 +22,7 @@ public:
     ~BrickManager(){};
 
     std::vector<Brick> brickList;
+
 private:
 
     std::vector<std::vector<int>> level;

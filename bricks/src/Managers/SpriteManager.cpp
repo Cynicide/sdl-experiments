@@ -74,6 +74,9 @@ void SpriteManager::loadSprites() {
     brickRed = loadAlphaTexture("assets\\images\\brick-red-sheet.png");
     brickBlue = loadAlphaTexture("assets\\images\\brick-blue-sheet.png");
     brickYellow = loadAlphaTexture("assets\\images\\brick-yellow-sheet.png");
+    brickGreen = loadAlphaTexture("assets\\images\\brick-green-sheet.png");
+    brickPurple = loadAlphaTexture("assets\\images\\brick-purple-sheet.png");
+    brickOrange = loadAlphaTexture("assets\\images\\brick-orange-sheet.png");
     brickTough = loadAlphaTexture("assets\\images\\brick-tough-sheet.png");
     brickIndestructable = loadAlphaTexture("assets\\images\\brick-indestructable-sheet.png");
 }

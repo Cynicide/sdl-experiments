@@ -1,4 +1,6 @@
 #include <BrickManager.h>
+#include <Definitions.h>
+
 #include <iostream>
 
 #include <string>
@@ -15,7 +17,7 @@ void BrickManager::update(double dt) {
 
 void BrickManager::render() 
 {
-    for (auto i : brickList) {
+    for (auto &i : brickList) {
         i.render();
     }
 }
@@ -55,12 +57,6 @@ void BrickManager::LoadLevel() {
     }
     
     inFile.close();
-    // Testing
-    //spdlog::debug("Level Data");
-    //for(std::vector<int> &newvec: level)
-    //{
-    //    spdlog::debug("{}", newvec);
-    //}
 }
 
 void BrickManager::CreateLevel() {
@@ -74,7 +70,46 @@ void BrickManager::CreateLevel() {
         {
             if (elem != 0) 
             {
-                Brick tmpBrick(posX, posY, elem);
+                Definitions::BrickType type = Definitions::BrickType::Red;
+                switch (elem) {
+                    case 1: {
+                        type = Definitions::BrickType::Red;
+                        break;  
+                    }
+                    case 2: {
+                        type = Definitions::BrickType::Blue;
+                        break;  
+                    }
+                    case 3: {
+                        type = Definitions::BrickType::Yellow;
+                        break;  
+                    }
+                    case 4: {
+                        type = Definitions::BrickType::Tough;
+                        break;  
+                    }
+                    case 5: {
+                        type = Definitions::BrickType::Indestructable;
+                        break; 
+                    }
+                    case 6: {
+                        type = Definitions::BrickType::Orange;
+                        break; 
+                    }
+                    case 7: {
+                        type = Definitions::BrickType::Green;
+                        break; 
+                    }
+                    case 8: {
+                        type = Definitions::BrickType::Purple;
+                        break; 
+                    }
+                    default: {
+                        type = Definitions::BrickType::Red;
+                        break;  
+                    }
+                }
+                Brick tmpBrick(posX, posY, type);
                 tmpBrick.setVectorRef(brickList);
                 brickList.push_back(tmpBrick);
             }

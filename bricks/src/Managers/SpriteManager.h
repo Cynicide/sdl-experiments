@@ -23,6 +23,9 @@ public:
     SDL_Texture* brickYellow;
     SDL_Texture* brickTough;
     SDL_Texture* brickIndestructable;
+    SDL_Texture* brickGreen;
+    SDL_Texture* brickPurple;
+    SDL_Texture* brickOrange;
 
     SDL_Surface* loadSurface(std::string path);
     SDL_Texture* loadAlphaTexture(std::string path);

@@ -1,4 +1,5 @@
 #include <PlayState.h>
+#include <Definitions.h>
 
 PlayState PlayState::sPlayState;
 
@@ -73,7 +74,7 @@ void PlayState::update(double dt)
         Uint32 mouseState = SDL_GetMouseState(&mx, &my);
         if (mouseState == SDL_BUTTON(1)) 
         {
-            ball.randomizeXDirection();
+            //ball.randomizeXDirection();
             subState = PLAYING;
         }
         break;
@@ -129,10 +130,13 @@ void PlayState::update(double dt)
         {
             if (physics.AABBCheck(bpb, paddle.paddleRect)) 	
             {                             
+            bool collision;
+
             spdlog::debug("########### BPB to Paddle Collision ###########");
             spdlog::debug("BPB: " + std::to_string(bpb.x) + " : " + std::to_string(bpb.y) + " : " + std::to_string(bpb.w) + " : " + std::to_string(bpb.h));
             spdlog::debug("Brick: " + std::to_string(paddle.paddleRect.x) + " : " + std::to_string(paddle.paddleRect.y) + " : " + std::to_string(paddle.paddleRect.w) + " : " + std::to_string(paddle.paddleRect.h));  
-            physics.ProcessCollision(ball.ballRect, paddle.paddleRect, ball.vel, dt);
+
+            collision = physics.ProcessCollision(ball.ballRect, paddle.paddleRect, ball.vel, dt);
             }
         }
 
@@ -141,14 +145,23 @@ void PlayState::update(double dt)
 
         for (auto &i : brickManager.brickList) 
         {
-            if (physics.AABBCheck(bpb, i.brickRect))
-            {                             
-            collisionList.push_back(i);
-            spdlog::debug("########### BPB to Brick Collision ###########");
-            spdlog::debug("BPB: " + std::to_string(bpb.x) + " : " + std::to_string(bpb.y) + " : " + std::to_string(bpb.w) + " : " + std::to_string(bpb.h));
-            spdlog::debug("Brick: " + std::to_string(i.brickRect.x) + " : " + std::to_string(i.brickRect.y) + " : " + std::to_string(i.brickRect.w) + " : " + std::to_string(i.brickRect.h));                      
-            physics.ProcessCollision(ball.ballRect, i.brickRect, ball.vel, dt);
-            i.hit();
+            if (i.brickStatus != Definitions::BrickStatus::Destroyed) {
+
+                if (physics.AABBCheck(bpb, i.brickRect))
+                {                             
+                bool collision;
+                collisionList.push_back(i);
+                spdlog::debug("########### BPB to Brick Collision ###########");
+                spdlog::debug("BPB: " + std::to_string(bpb.x) + " : " + std::to_string(bpb.y) + " : " + std::to_string(bpb.w) + " : " + std::to_string(bpb.h));
+                spdlog::debug("Brick: " + std::to_string(i.brickRect.x) + " : " + std::to_string(i.brickRect.y) + " : " + std::to_string(i.brickRect.w) + " : " + std::to_string(i.brickRect.h));                      
+                collision = physics.ProcessCollision(ball.ballRect, i.brickRect, ball.vel, dt);
+    
+                if (collision == true) {
+                    i.hit();
+                    }
+                
+                }
+
             }
         }
 
