@@ -1,14 +1,11 @@
     #include <globals.h>
 
     // App Details
-    const char * appName = "Bricks!";
+    const char * appName = "Bricks Dreams";
 
     // Keyboard Events
     int NumKeys;
     const Uint8* keyboardState = SDL_GetKeyboardState(&NumKeys);
-    
-    // Fonts
-    TTF_Font * font = NULL;
 
     // Window and Renderer
     SDL_Window* gWindow = NULL;

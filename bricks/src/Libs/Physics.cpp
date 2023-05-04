@@ -111,10 +111,8 @@ float Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, fl
     }
 }
 
-bool Physics::ProcessCollision(SDL_FRect &rectA, SDL_FRect rectB, Vector2d &rectAVel, double dt) 
+Vector2d Physics::ProcessCollision(SDL_FRect &rectA, SDL_FRect rectB, Vector2d &rectAVel, double dt) 
 {
-
-    bool collision = false;
 
     spdlog::debug("----------------------- COLLISION -----------------------");
     spdlog::debug("Processing Collision for RectB Location: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y));     
@@ -128,15 +126,20 @@ bool Physics::ProcessCollision(SDL_FRect &rectA, SDL_FRect rectB, Vector2d &rect
     //rectA.x += (rectAVel.x * dt) * collisiontime;
     //rectA.y += (rectAVel.y * dt) * collisiontime;
 
+    Vector2d normals;
+
+    normals.x = 0.f;
+    normals.y = 0.f;
+
     if (abs(normalx) > 0.0001f) {
-        rectAVel.x = -rectAVel.x;
-        collision = true;
+        //rectAVel.x = -rectAVel.x;
+        normals.x = normalx;
     } 
     if (abs(normaly) > 0.0001f) {
-        rectAVel.y = -rectAVel.y;
-        collision = true;
+        //rectAVel.y = -rectAVel.y;
+        normals.y = normaly;
     }
-    return collision;
+    return normals;
 }
 
 SDL_FRect Physics::GetSweptBroadphaseBox(SDL_FRect object, float velx, float vely) 

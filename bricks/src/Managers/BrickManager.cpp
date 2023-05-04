@@ -18,7 +18,10 @@ void BrickManager::update(double dt) {
 void BrickManager::render() 
 {
     for (auto &i : brickList) {
-        i.render();
+        if (i.brickStatus != Definitions::BrickStatus::Destroyed) {
+            i.render();
+        }
+
     }
 }
 
@@ -63,6 +66,40 @@ void BrickManager::CreateLevel() {
 
     float posX = startX;
     float posY = startY;
+/*
+    // Static Map of all Brick Types to their representation in Level files.
+
+    // Maybe put this in defitions?
+    static const std::unordered_map<int, Definitions::BrickType> typeMap {
+        {1, Definitions::BrickType::Red},
+        {2, Definitions::BrickType::Blue},
+        {3, Definitions::BrickType::Yellow},
+        {4, Definitions::BrickType::Tough},
+        {5, Definitions::BrickType::Indestructable},
+        {6, Definitions::BrickType::Orange},
+        {7, Definitions::BrickType::Green},
+        {8, Definitions::BrickType::Purple},
+    };
+
+
+    for (auto &newvec: level) {
+        for(const int &elem: newvec) {
+            
+            // Find the Brick Type in the Static Map
+            auto brickType = typeMap.find(elem);
+            Definitions::BrickType type = (brickType != typeMap.end()) ? brickType->second : Definitions::BrickType::Red;
+
+            if (elem != 0) {
+                // Create a Brick Object with the constructor parameters
+                brickList.emplace_back(posX, posY, type, &brickList);
+                //Brick tmpBrick(posX, posY, type, &brickList);
+                //brickList.push_back(tmpBrick);
+            } 
+            posX = posX + brickSizeX;
+        }
+        posX = startX;
+        posY += brickSizeY;
+    }*/
 
     for(std::vector<int> &newvec: level)
         {
@@ -110,7 +147,6 @@ void BrickManager::CreateLevel() {
                     }
                 }
                 Brick tmpBrick(posX, posY, type);
-                tmpBrick.setVectorRef(brickList);
                 brickList.push_back(tmpBrick);
             }
             posX = posX + brickSizeX;

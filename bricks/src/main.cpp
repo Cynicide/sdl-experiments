@@ -14,6 +14,8 @@
 #include <Timer.h>
 #include <sstream>
 
+#include <TextManager.h>
+
 // Method  Definitions
 bool initSDL();
 void closeSDL();
@@ -34,9 +36,6 @@ bool initSDL () {
         spdlog::error("SDL TTF Could not be initialized! SDL_Error: ", SDL_GetError());
         return false;
     }
-
-    spdlog::info("Initializing Fonts.");
-    font = TTF_OpenFont("assets\\fonts\\PublicPixel.ttf", 12);
 
     spdlog::info("Creating Window.");
     gWindow = SDL_CreateWindow(appName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -68,6 +67,10 @@ bool initSDL () {
     spdlog::info("Creating Renderer.");
     gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
+
+    // Capture the Mouse
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+    
     return true;
 }
 
@@ -112,8 +115,10 @@ int main (int argc, char* args[])
         return 1;
     }
 
-    // Loading Sprites
+    // Loading Resources
     SpriteManager::get()->loadSprites();
+    AudioManager::get()->loadAudio();
+    TextManager::get()->loadFonts();
 
     // Get Event Structure
     SDL_Event e;

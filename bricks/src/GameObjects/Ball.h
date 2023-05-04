@@ -8,13 +8,20 @@ class Ball
 public:
     void render();
     void update(double dt, SDL_FRect paddleRect);
-    void update(double dt);
-    void destroy();
+    void update(double dt); 
 
     void reset();
     void randomizeXDirection();
-    void flipY();
-    void flipX();
+
+
+    void hitTopWall(SDL_FRect border);
+    void hitRightWall(SDL_FRect border);
+    void hitLeftWall(SDL_FRect border);    
+    void hitPaddle(Vector2d normals, SDL_FRect paddleRect);
+    void hitBrick(Vector2d normals);
+    void hitLightning();
+
+    void ChangeAngle(int hitLocation, int paddleSize);
 
     Ball();
     ~Ball(){};
@@ -28,7 +35,10 @@ private:
     int height = 0;
     int width = 0;
     
-    Vector2d startingVel = {6, -6};
+    Vector2d startingVel;
+    Vector2d currentVel;
+    void flipY();
+    void flipX();
     
     void move();
 };

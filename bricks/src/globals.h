@@ -27,7 +27,4 @@ extern SDL_Surface* gScreenSurface;
 extern GameState* gCurrentState;
 extern GameState* gNextState;
 
-// Fonts
-extern TTF_Font * font;
-
 #endif

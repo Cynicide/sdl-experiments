@@ -16,7 +16,26 @@ namespace Definitions
 
     enum BrickStatus {
         Good,
-        Destroyed
+        Exploding,
+        Destroyed,
     };
+
+    enum SubState {
+        SERVING,
+        PLAYING,
+        DYING,
+        GAMEOVER
+    };
+
+    /*static const std::unordered_map<int, Definitions::BrickType> typeMap {
+        {1, Definitions::BrickType::Red},
+        {2, Definitions::BrickType::Blue},
+        {3, Definitions::BrickType::Yellow},
+        {4, Definitions::BrickType::Tough},
+        {5, Definitions::BrickType::Indestructable},
+        {6, Definitions::BrickType::Orange},
+        {7, Definitions::BrickType::Green},
+        {8, Definitions::BrickType::Purple},
+    };*/
 }
 #endif

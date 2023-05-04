@@ -6,8 +6,6 @@
 #include <globals.h>
 #include <string>
 
-// ToDo: Turn this into a Manager Class
-
 class Text {
     public:
         SDL_Texture * texture;

@@ -5,14 +5,18 @@
 #include <string>
 #include <SDL2/SDL.h>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 class SpriteManager
 {
 public:
     //Static accessor
     static SpriteManager* get();
 
-    // Background Sprite
-
+    // Sprites
+    SDL_Texture* stars;
+    SDL_Texture* logo;
     SDL_Texture* background;
     SDL_Texture* paddle;
     SDL_Texture* ball;
@@ -26,6 +30,7 @@ public:
     SDL_Texture* brickGreen;
     SDL_Texture* brickPurple;
     SDL_Texture* brickOrange;
+    SDL_Texture* shipExplosion;
 
     SDL_Surface* loadSurface(std::string path);
     SDL_Texture* loadAlphaTexture(std::string path);

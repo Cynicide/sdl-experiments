@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include <GameState.h>
 
-#include <Background.h>
+#include <TiledBackground.h>
 #include <Paddle.h>
 #include <Ball.h>
 #include <Border.h>
@@ -13,6 +13,8 @@
 #include <BrickManager.h>
 #include <Sign.h>
 #include <Text.h>
+
+#include <Definitions.h>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -38,7 +40,7 @@ private:
     //Static instance
     static PlayState sPlayState;
 
-    Background background;
+    TiledBackground background;
     Paddle paddle;
     Ball ball;
     Border border;
@@ -52,18 +54,9 @@ private:
     Text bpbCoord;
     Text ballVel;
 
-    bool gPause = false;
-    int UpdateLoop = 0;
-    int RenderLoop = 0;
+    TTF_Font * font;
 
-    enum SubState {
-        SERVING,
-        PLAYING,
-        DYING,
-        GAMEOVER
-    };
-
-    SubState subState = SERVING;
+    Definitions::SubState subState = Definitions::SubState::SERVING;
 
     //Private constructor
     PlayState();

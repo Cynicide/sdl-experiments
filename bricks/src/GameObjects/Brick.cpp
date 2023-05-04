@@ -8,6 +8,8 @@
 
 Brick::Brick(float _xpos, float _ypos, Definitions::BrickType type) {
     
+    collisionSound = AudioManager::get()->ping;
+
     brickType = type;
 
     switch (brickType) {
@@ -77,12 +79,12 @@ void Brick::update(double dt) {
 
 void Brick::render() 
 {
-    if (brickStatus == Definitions::BrickStatus::Destroyed) {
+    if (brickStatus == Definitions::BrickStatus::Exploding) {
             SDL_Rect solidSprite = {brickSpriteClips[currentdestructionFrame].x, brickSpriteClips[currentdestructionFrame].y, brickSpriteClips[currentdestructionFrame].w, brickSpriteClips[currentdestructionFrame].h};
             SDL_RenderCopyF(gRenderer, brickSprite, &solidSprite, &brickRect );
             currentdestructionFrame = currentdestructionFrame + 1;
             if (currentdestructionFrame == destructionEndFrame) {
-                removeFromVector(brickRef);
+                brickStatus = Definitions::BrickStatus::Destroyed;
             }
 
     } else {
@@ -101,36 +103,20 @@ void Brick::render()
 
     }
     
-    
-    
-
-
     //SDL_SetRenderDrawColor(gRenderer, 255,255,255, SDL_ALPHA_OPAQUE);
     //SDL_RenderDrawRectF(gRenderer, &brickRect);
 }
 
-void Brick::setVectorRef(std::vector<Brick> &_brickRef) {
-    brickRef = &_brickRef;
-}
-
-void Brick::removeFromVector(std::vector<Brick>* vectorRef) {
-    // Ensure the vector is still valid
-    if (vectorRef) {
-        // Find this object in the vector and remove it
-        auto it = std::find(vectorRef->begin(), vectorRef->end(), *this);
-        if (it != vectorRef->end()) {
-            vectorRef->erase(it);
-        }
-    }
-}
-
 void Brick::hit() {
+    
+    Mix_PlayChannel( -1, collisionSound, 0 );
+    
     if (destructable == true) {
         health = health - 1;
 
         if (health == 0) {
-            brickStatus = Definitions::BrickStatus::Destroyed;
-            //removeFromVector(brickRef);
+            spdlog::info("Brick at: " + std::to_string(xpos) + "," + std::to_string(ypos) + " has been marked as destroyed.");
+            brickStatus = Definitions::BrickStatus::Exploding;      
         }
     }
 }

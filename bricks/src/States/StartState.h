@@ -9,7 +9,7 @@
 
 #include <statemanagers.h>
 
-#include <Background.h> 
+#include <ScrollingBackground.h> 
 
 #include <SDL2/SDL.h>
 
@@ -18,11 +18,12 @@ class StartState : public GameState
 public:
     //Static accessor
     static StartState* get();
+
     //Transitions
     bool enter();
     bool exit();
 
-    //Main loop functions
+    //Game loop functions
     void handleEvent( SDL_Event& e );
     void update(double dt);
     void render();
@@ -31,10 +32,13 @@ private:
     //Static instance
     static StartState sStartState;
 
-    Background background;
+    // Resources
+    SDL_Texture* logoSprite = NULL;
+    int logoX;
+    int logoY;
+    ScrollingBackground background;
 
     //Private constructor
     StartState();
-
 };
 #endif

@@ -20,41 +20,28 @@ SpriteManager* SpriteManager::get()
 }
 
 SDL_Surface* SpriteManager::loadSurface( std::string path) {
-    //The final optimized image
-    SDL_Surface* optimizedSurface = NULL;
-
     //Load image at specified path
     SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
     if( loadedSurface == NULL )
     {
         spdlog::error( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
     }
-    else
-    {
-        //Convert surface to screen format
-        optimizedSurface = SDL_ConvertSurface( loadedSurface, gScreenSurface->format, 0 );
-        if( optimizedSurface == NULL )
-        {
-            spdlog::error( "Unable to optimize image %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
-        }
-
-        //Get rid of old loaded surface
-        SDL_FreeSurface( loadedSurface );
-    }
-
-    return optimizedSurface;
+    return loadedSurface;
 }
 
 SDL_Texture* SpriteManager::loadAlphaTexture(std::string path) {
     SDL_Surface* surface = loadSurface(path);
 
-    Uint32 bgcolorkey = SDL_MapRGB(surface->format, 0, 0, 0);
-    SDL_SetColorKey(surface, SDL_TRUE, bgcolorkey);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(gRenderer, surface);
-    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+
+    bool bQuery = SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+    if (bQuery == 1) {
+        spdlog::info("Error setting Texture Blend Mode: ");
+        spdlog::info(SDL_GetError());
+    }
     SDL_FreeSurface(surface);
     return texture;
-
+    
 }
 
 SDL_Texture* SpriteManager::loadTexture(std::string path) {
@@ -66,7 +53,9 @@ SDL_Texture* SpriteManager::loadTexture(std::string path) {
 }
 
 void SpriteManager::loadSprites() {
-    background = loadTexture("assets\\images\\background.png");
+    stars = loadAlphaTexture("assets\\images\\stars.png");
+    logo = loadAlphaTexture("assets\\images\\logo.png");
+    background = loadAlphaTexture("assets\\images\\background.png");
     paddle = loadAlphaTexture("assets\\images\\paddle.png");
     ball = loadAlphaTexture("assets\\images\\ball.png");
     border = loadTexture("assets\\images\\border-sheet.png");
@@ -79,4 +68,5 @@ void SpriteManager::loadSprites() {
     brickOrange = loadAlphaTexture("assets\\images\\brick-orange-sheet.png");
     brickTough = loadAlphaTexture("assets\\images\\brick-tough-sheet.png");
     brickIndestructable = loadAlphaTexture("assets\\images\\brick-indestructable-sheet.png");
+    shipExplosion = loadAlphaTexture("assets\\images\\explosion-sheet.png");
 }
