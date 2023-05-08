@@ -27,7 +27,7 @@ private:
 
     std::vector<std::vector<int>> level;
     
-    float startX = 32;
+    float startX = PLAYFIELD_STARTX + 32;
     float startY = 116;
     float brickSizeX = 64;
     float brickSizeY = 32;

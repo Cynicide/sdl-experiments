@@ -1,6 +1,4 @@
-
-#ifndef EXITSTATE_H
-#define EXITSTATE_H
+#pragma once
 
 #include <GameState.h>
 #include <SDL2/SDL.h>
@@ -26,4 +24,3 @@ private:
 	//Private constructor
 	ExitState();
 };
-#endif

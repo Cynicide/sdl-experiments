@@ -1,5 +1,4 @@
-#ifndef CONFIGMANAGER_H
-#define CONFIGMANAGER_H
+#pragma once
 
 class ConfigManager
 {
@@ -20,4 +19,3 @@ private:
     ~ConfigManager(){};
 
 };
-#endif

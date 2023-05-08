@@ -24,10 +24,12 @@ void ScrollingBackground::update(double dt) {
 
 void ScrollingBackground::render() {
 
-    SDL_Rect upperBackground = {0, scrollingOffset, textureWidth, textureHeight};
-    SDL_Rect lowerBackground = {0, scrollingOffset + textureHeight, textureWidth, textureHeight};
+    SDL_Rect upperBackground = {PLAYFIELD_STARTX, scrollingOffset, textureWidth, textureHeight};
+    SDL_Rect lowerBackground = {PLAYFIELD_STARTX, scrollingOffset + textureHeight, textureWidth, textureHeight};
+    SDL_Rect bottomBackground = {PLAYFIELD_STARTX, scrollingOffset + (textureHeight * 2), textureWidth, textureHeight};
     SDL_RenderCopy(gRenderer, backgroundSprite, NULL, &upperBackground );
     SDL_RenderCopy(gRenderer, backgroundSprite, NULL, &lowerBackground );
+    SDL_RenderCopy(gRenderer, backgroundSprite, NULL, &bottomBackground );
 }
 
 void ScrollingBackground::destroy() {

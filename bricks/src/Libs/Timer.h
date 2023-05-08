@@ -1,5 +1,4 @@
-#ifndef TIMER_H
-#define TIMER_H
+#pragma once
 
 const int TARGET_FPS = 60;
 const float TARGET_DELTATIME = 1.5f;
@@ -17,5 +16,3 @@ class Timer {
         float mDeltaTime;
         float mLastTime;
 };
-
-#endif

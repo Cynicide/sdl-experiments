@@ -35,12 +35,12 @@ void Paddle::update(double dt) {
 
         paddleRect.x = x;
 
-        if (paddleRect.x < borderWidth) {
-            paddleRect.x = borderWidth;
+        if (paddleRect.x < PLAYFIELD_STARTX + borderWidth) {
+            paddleRect.x = PLAYFIELD_STARTX + borderWidth;
         } 
 
-        if (paddleRect.x > SCREEN_WIDTH - textureWidth - borderWidth) {
-            paddleRect.x = SCREEN_WIDTH - textureWidth - borderWidth;
+        if (paddleRect.x > PLAYFIELD_STARTX + PLAYFIELD_WIDTH - textureWidth - borderWidth) {
+            paddleRect.x = PLAYFIELD_STARTX + PLAYFIELD_WIDTH - textureWidth - borderWidth;
         }
         paddleRect.y = SCREEN_HEIGHT - textureHeight - borderHeight;
         paddleRect.w = textureWidth;
@@ -66,20 +66,24 @@ void Paddle::render(Definitions::SubState subState)
         case Definitions::SubState::DYING: {
             spdlog::debug("Rendering Explosion");
 
-            SDL_FRect explosionRect;
-            float paddleMidX = paddleRect.x + (paddleRect.w / 2);
-            float paddleMidY = paddleRect.y + (paddleRect.h /2 );
+            if (currentdestructionFrame != destructionEndFrame) {
+                SDL_FRect explosionRect;
+                float paddleMidX = paddleRect.x + (paddleRect.w / 2);
+                float paddleMidY = paddleRect.y + (paddleRect.h /2 );
 
-            explosionRect.x = paddleMidX - (explosionWidth / 2);
-            explosionRect.y = paddleMidY - (explosionHeight / 2);
-            explosionRect.w = explosionWidth;
-            explosionRect.h = explosionHeight;
+                explosionRect.x = paddleMidX - (explosionWidth / 2);
+                explosionRect.y = paddleMidY - (explosionHeight / 2);
+                explosionRect.w = explosionWidth;
+                explosionRect.h = explosionHeight;
 
-            SDL_Rect solidSprite = {explosionSpriteClips[currentdestructionFrame].x, explosionSpriteClips[currentdestructionFrame].y, explosionSpriteClips[currentdestructionFrame].w, explosionSpriteClips[currentdestructionFrame].h};
-            SDL_RenderCopyF(gRenderer, explosionSprite, &solidSprite, &explosionRect);
-            currentdestructionFrame = currentdestructionFrame + 1;
-            if (currentdestructionFrame == destructionEndFrame) {
-                currentdestructionFrame = 1;
+                SDL_Rect solidSprite = {explosionSpriteClips[currentdestructionFrame].x, explosionSpriteClips[currentdestructionFrame].y, explosionSpriteClips[currentdestructionFrame].w, explosionSpriteClips[currentdestructionFrame].h};
+                SDL_RenderCopyF(gRenderer, explosionSprite, &solidSprite, &explosionRect);
+                innerExplosionTimer = innerExplosionTimer + 1;
+                if (innerExplosionTimer == innerExplosionTimerMax) {
+                    currentdestructionFrame = currentdestructionFrame + 1;
+                    innerExplosionTimer = 0;
+                }
+                
             }
             break;
         }
@@ -92,6 +96,11 @@ void Paddle::render(Definitions::SubState subState)
 
 void Paddle::destroy() {
 
+}
+
+void Paddle::reset() {
+    currentdestructionFrame = destructionStartFrame;
+    innerExplosionTimer = 0;
 }
 
 void Paddle::hit() {
@@ -107,4 +116,5 @@ void Paddle::sliceExplosionSheet() {
         explosionSpriteClips[ i ].w =  explosionWidth;
         explosionSpriteClips[ i ].h = explosionHeight;
         }
+        spdlog::info("Slicing paddle Sprite Sheet");
 }

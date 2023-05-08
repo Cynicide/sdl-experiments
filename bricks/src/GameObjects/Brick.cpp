@@ -64,9 +64,7 @@ Brick::Brick(float _xpos, float _ypos, Definitions::BrickType type) {
 
 
 void Brick::SliceSpriteSheet() {
-
-    for( int i = 0; i <= numSprites - 1; i++ ) 
-        {
+    for( int i = 0; i <= numSprites - 1; i++ ) {
         brickSpriteClips[ i ].x =   i * brickWidth;
         brickSpriteClips[ i ].y =   0;
         brickSpriteClips[ i ].w =  brickWidth;

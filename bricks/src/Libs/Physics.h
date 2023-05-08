@@ -1,5 +1,4 @@
-#ifndef PHYSICS_H
-#define PHYSICS_H
+#pragma once
 
 #include <Vector2d.h>
 #include <SDL2/SDL.h>
@@ -22,15 +21,4 @@ class Physics {
 
     private:
 
-        inline void Logger( std::string logMsg ){
-            using namespace std;
-            
-            string filePath = "./game.txt";
-
-            ofstream ofs(filePath.c_str(), std::ios_base::out | std::ios_base::app );
-            ofs << logMsg << '\n';
-            ofs.close();
-        }
 };
-
-#endif

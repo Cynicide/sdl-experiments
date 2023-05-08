@@ -16,9 +16,10 @@ Ball::Ball() {
     vel.x = currentVel.x;
     vel.y = currentVel.y;
 
-    bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &height, &width);
+    bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &ballHeight, &ballWidth);
     if (bQuery == 1) {
-        spdlog::error("Issue querying Ball Texture: ", SDL_GetError());
+        spdlog::error("Issue querying Ball Texture: ");
+        spdlog::error(SDL_GetError());
     }
 }
 
@@ -26,10 +27,10 @@ void Ball::reset() {
     vel.x = startingVel.x;
     vel.y = startingVel.y;
 
-    ballRect.x = SCREEN_WIDTH / 2 - width / 2;
-    ballRect.y = SCREEN_HEIGHT / 2  - height / 2;
-    ballRect.w = width;
-    ballRect.h = height;
+    ballRect.x = SCREEN_WIDTH / 2 - ballWidth / 2;
+    ballRect.y = SCREEN_HEIGHT / 2  - ballHeight / 2;
+    ballRect.w = ballWidth;
+    ballRect.h = ballHeight;
 }
 
 void Ball::update(double dt) {
@@ -37,18 +38,18 @@ void Ball::update(double dt) {
 }
 
 void Ball::update(double dt, SDL_FRect paddleRect) {
-    height = 0;
-    width = 0;
+    ballHeight = 0;
+    ballWidth = 0;
 
-    bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &height, &width);
+    bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &ballHeight, &ballWidth);
     if (bQuery == 1) {
         SDL_Log( SDL_GetError());
     }
 
-    ballRect.x = (paddleRect.x + (paddleRect.w / 2)) - (width / 2);
+    ballRect.x = (paddleRect.x + (paddleRect.w / 2)) - (ballWidth / 2);
     ballRect.y = paddleRect.y - paddleRect.h;
-    ballRect.w = width;
-    ballRect.h = height;
+    ballRect.w = ballWidth;
+    ballRect.h = ballHeight;
 }
 
 void Ball::move() {
@@ -75,11 +76,13 @@ void Ball::randomizeXDirection() {
 
 void Ball::render() {
     SDL_RenderCopyF(gRenderer, ballSprite, NULL, &ballRect );
+
+    // DEBUG: Bounding Boxes
     //SDL_SetRenderDrawColor(gRenderer, 255,255,0, SDL_ALPHA_OPAQUE);
     //SDL_RenderDrawRectF(gRenderer, &ballRect);
 }
 
-void Ball::ChangeAngle(int hitLocation, int paddleSize) {
+void Ball::changeAngle(int hitLocation, int paddleSize) {
     
     // Hit Location should be between paddleSize and -paddleSize
     // Smaller numbers are generated closer to the center
@@ -143,7 +146,7 @@ void Ball::ChangeAngle(int hitLocation, int paddleSize) {
         int paddle_mid = paddleRect.x + (paddleRect.w / 2);
         int hitLocation = paddle_mid - ball_mid;
 
-         ChangeAngle(hitLocation, paddleRect.w);
+         changeAngle(hitLocation, paddleRect.w);
         
         if (abs(normals.x) > 0.0001f) {
             flipX();

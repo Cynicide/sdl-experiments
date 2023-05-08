@@ -14,4 +14,5 @@ TextManager* TextManager::get()
 
 void TextManager::loadFonts() {
     publicPixel12 = TTF_OpenFont("assets\\fonts\\PublicPixel.ttf", 12);
+    publicPixel24 = TTF_OpenFont("assets\\fonts\\PublicPixel.ttf", 24);
 }

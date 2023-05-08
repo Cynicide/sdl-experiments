@@ -1,5 +1,4 @@
-#ifndef STATEMANAGERS_H
-#define STATEMANAGERS_H
+#pragma once
 
 #include <ExitState.h>
 #include <GameState.h>
@@ -9,4 +8,3 @@
 //State managers
 void setNextState( GameState* nextState );
 void changeState();
-#endif

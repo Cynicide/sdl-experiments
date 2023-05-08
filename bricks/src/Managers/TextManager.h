@@ -1,5 +1,4 @@
-#ifndef TEXTMANAGER_H
-#define TEXTMANAGER_H
+#pragma once
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -9,7 +8,8 @@ class TextManager
 public:
     //Static accessor
     static TextManager* get();
-    TTF_Font* publicPixel12 = TTF_OpenFont("assets\\fonts\\PublicPixel.ttf", 12);
+    TTF_Font* publicPixel12;
+    TTF_Font* publicPixel24;
     void loadFonts();
 
 private:
@@ -24,4 +24,3 @@ private:
     ~TextManager(){};
 
 };
-#endif

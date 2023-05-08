@@ -1,5 +1,4 @@
-#ifndef SPRITEMANAGER_H
-#define SPRITEMANAGER_H
+#pragma once
 
 #include <globals.h>
 #include <string>
@@ -20,7 +19,6 @@ public:
     SDL_Texture* background;
     SDL_Texture* paddle;
     SDL_Texture* ball;
-    SDL_Texture* border;
     SDL_Texture* lightning;
     SDL_Texture* brickRed;
     SDL_Texture* brickBlue;
@@ -31,6 +29,10 @@ public:
     SDL_Texture* brickPurple;
     SDL_Texture* brickOrange;
     SDL_Texture* shipExplosion;
+    SDL_Texture* techBorder;
+    SDL_Texture* techCorner;
+    SDL_Texture* techTopBorder;
+
 
     SDL_Surface* loadSurface(std::string path);
     SDL_Texture* loadAlphaTexture(std::string path);
@@ -50,4 +52,3 @@ private:
     ~SpriteManager(){};
 
 };
-#endif

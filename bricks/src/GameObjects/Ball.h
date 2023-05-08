@@ -6,14 +6,16 @@
 class Ball
 {
 public:
+
+    Ball();
+    ~Ball(){};
+
+    // State Methods
     void render();
     void update(double dt, SDL_FRect paddleRect);
     void update(double dt); 
 
-    void reset();
-    void randomizeXDirection();
-
-
+    // Collision
     void hitTopWall(SDL_FRect border);
     void hitRightWall(SDL_FRect border);
     void hitLeftWall(SDL_FRect border);    
@@ -21,24 +23,26 @@ public:
     void hitBrick(Vector2d normals);
     void hitLightning();
 
-    void ChangeAngle(int hitLocation, int paddleSize);
+    // Other
+    void changeAngle(int hitLocation, int paddleSize);
+    void reset();
+    void randomizeXDirection();
 
-    Ball();
-    ~Ball(){};
-
+    // Velocity and Dimensions
     Vector2d vel;
     SDL_FRect ballRect;
 
 private:
+    // Sprite 
     SDL_Texture* ballSprite = NULL;
-    
-    int height = 0;
-    int width = 0;
-    
+    int ballHeight = 0;
+    int ballWidth = 0;
+
+    // Velocity    
     Vector2d startingVel;
     Vector2d currentVel;
+
     void flipY();
     void flipX();
-    
     void move();
 };

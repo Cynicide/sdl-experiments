@@ -1,5 +1,4 @@
-#ifndef PLAYSTATE_H
-#define PLAYSTATE_H
+#pragma once
 
 #include <SDL2/SDL.h>
 #include <GameState.h>
@@ -7,7 +6,9 @@
 #include <TiledBackground.h>
 #include <Paddle.h>
 #include <Ball.h>
-#include <Border.h>
+#include <BorderHorizontal.h>
+#include <BorderVertical.h>
+#include <BorderCorner.h>
 #include <Brick.h>
 #include <Lightning.h>
 #include <BrickManager.h>
@@ -43,7 +44,22 @@ private:
     TiledBackground background;
     Paddle paddle;
     Ball ball;
-    Border border;
+
+    BorderVertical borderL;
+    BorderVertical borderR;
+    BorderHorizontal borderT;
+    BorderCorner borderTR;
+    BorderCorner borderTL;
+    
+    float borderWidthV = 32.f;
+    float borderHeightV = 128.f;
+
+    float borderWidthH = 128.f;
+    float borderHeightH = 32.f;
+
+    float borderWidthC = 32.f;
+    float borderHeightC = 32.f;
+
     Lightning lightning;
     BrickManager brickManager;
 
@@ -62,4 +78,3 @@ private:
     PlayState();
 
 };
-#endif

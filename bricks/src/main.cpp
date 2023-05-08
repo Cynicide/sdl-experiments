@@ -29,7 +29,26 @@ bool initSDL () {
         spdlog::error("SDL Could not be initialized! SDL_Error: ",  SDL_GetError());
         return false;
     } 
+
+    // Get the Display mode on Display 0 and use it to set the resolution and virtual playfield    
+    SDL_DisplayMode mode; 
+    SDL_GetCurrentDisplayMode(0, &mode);
+
+    SCREEN_HEIGHT = mode.h;
+    SCREEN_WIDTH = mode.w;
     
+    // Make sure the virtual playfield is centered on the screen
+    int screenWidthMidpoint = SCREEN_WIDTH / 2;
+    PLAYFIELD_STARTX = screenWidthMidpoint - (PLAYFIELD_WIDTH /2);
+
+    // Initialize SDL Mixer
+    spdlog::info("Creating Audio Mixer.");
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        spdlog::error("SDL Mixer cannot be created! SDL_Error: ", SDL_GetError());
+        return false;
+    }
+
+    // Initialize SDL TTF
     spdlog::info("Initializing SDL TTF.");
     if (TTF_Init() < 0)
     {
@@ -37,21 +56,7 @@ bool initSDL () {
         return false;
     }
 
-    spdlog::info("Creating Window.");
-    gWindow = SDL_CreateWindow(appName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    if (gWindow == NULL) 
-    {
-        spdlog::error("Window could not be created! SDL_Error: ", SDL_GetError());
-        return false;
-    } 
-
-    spdlog::info("Creating Audio Mixer.");
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        spdlog::error("SDL Mixer cannot be created! SDL_Error: ", SDL_GetError());
-        return false;
-    }
-
-    //Initialize PNG loading
+    //Initialize SDL Image to enable loading PNG
     int imgFlags = IMG_INIT_PNG;
     if( !( IMG_Init( imgFlags ) & imgFlags ) )
     {
@@ -60,17 +65,25 @@ bool initSDL () {
     }
     else
     {
-        //Get window surface
         gScreenSurface = SDL_GetWindowSurface( gWindow );
     }
+
+    // Create SDL Window
+    spdlog::info("Creating Window.");
+    gWindow = SDL_CreateWindow(appName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    if (gWindow == NULL) 
+    {
+        spdlog::error("Window could not be created! SDL_Error: ", SDL_GetError());
+        return false;
+    } 
 
     spdlog::info("Creating Renderer.");
     gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 
-    // Capture the Mouse
+    // Capture the Mouse to the Window
     SDL_SetRelativeMouseMode(SDL_TRUE);
-    
+
     return true;
 }
 
@@ -103,9 +116,6 @@ int main (int argc, char* args[])
     auto console = spdlog::stdout_color_mt("console");  
     spdlog::info("Starting Bricks!");
     
-    // Remove old Log Files
-    std::remove("./game.txt");
-
     // Starting SDL    
     spdlog::info("SDL starting...");
     if( !initSDL()) 
@@ -123,7 +133,8 @@ int main (int argc, char* args[])
     // Get Event Structure
     SDL_Event e;
 
-    // TODO: Deltatime implemtation based on https://gafferongames.com/post/fix_your_timestep/ fix.
+    // TODO: Implement Deltatime implentation based on https://gafferongames.com/post/fix_your_timestep/ fix.
+
     spdlog::info("Getting Start State.");
 	gCurrentState = StartState::get();
 	gCurrentState->enter();
@@ -132,30 +143,25 @@ int main (int argc, char* args[])
     spdlog::info("Starting Game Loop.");
     while( gCurrentState != ExitState::get() )
     {
-            //Do state event handling
-            while( SDL_PollEvent( &e ) != 0 )
+        //Do state event handling
+        while( SDL_PollEvent( &e ) != 0 )
+        {
+            //Handle events for the current state
+            gCurrentState->handleEvent( e );
+
+            //Exit on quit
+            if( (e.type == SDL_QUIT) ||  ( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_q ) ))
             {
-                //Handle state events
-                gCurrentState->handleEvent( e );
-
-                //Exit on quit
-                if( e.type == SDL_QUIT )
-                {
-                    setNextState( ExitState::get() );
-                }
-
-                if( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_q ) )
-                {
-                    setNextState( ExitState::get() );
-                }
+                setNextState( ExitState::get() );
             }
+        }
 
-            //Do state logic
-            float dt =1.f;
-            gCurrentState->update(dt);
+        //Do state logic
+        float dt =1.f;
+        gCurrentState->update(dt);
 
-            //Change state if needed
-            changeState();
+        //Change state if needed
+        changeState();
 
         SDL_RenderClear(gRenderer);
 

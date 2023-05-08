@@ -58,7 +58,6 @@ void SpriteManager::loadSprites() {
     background = loadAlphaTexture("assets\\images\\background.png");
     paddle = loadAlphaTexture("assets\\images\\paddle.png");
     ball = loadAlphaTexture("assets\\images\\ball.png");
-    border = loadTexture("assets\\images\\border-sheet.png");
     lightning = loadAlphaTexture("assets\\images\\lightning.png");
     brickRed = loadAlphaTexture("assets\\images\\brick-red-sheet.png");
     brickBlue = loadAlphaTexture("assets\\images\\brick-blue-sheet.png");
@@ -69,4 +68,7 @@ void SpriteManager::loadSprites() {
     brickTough = loadAlphaTexture("assets\\images\\brick-tough-sheet.png");
     brickIndestructable = loadAlphaTexture("assets\\images\\brick-indestructable-sheet.png");
     shipExplosion = loadAlphaTexture("assets\\images\\explosion-sheet.png");
+    techBorder = loadAlphaTexture("assets\\images\\border-sides.png");
+    techCorner = loadAlphaTexture("assets\\images\\border-corner.png");
+    techTopBorder = loadAlphaTexture("assets\\images\\border-top.png");
 }

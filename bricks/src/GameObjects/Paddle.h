@@ -16,6 +16,7 @@ public:
     void update(double dt);
     void destroy();
     void hit();
+    void reset();
 
     SDL_FRect paddleRect;
 
@@ -33,13 +34,15 @@ private:
     int textureWidth = 144;
     int textureHeight = 24;
 
-    static const int numExplosionSprites = 6;
+    static const int numExplosionSprites = 8;
     SDL_Rect explosionSpriteClips[numExplosionSprites];
     int explosionWidth = 208;
     int explosionHeight = 72;
     static const int destructionStartFrame = 1;
-    static const int destructionEndFrame = 6;
+    static const int destructionEndFrame = 8;
     int currentdestructionFrame = destructionStartFrame;
+    int innerExplosionTimer = 0;
+    int innerExplosionTimerMax = 2;
 
     void sliceExplosionSheet();
 };

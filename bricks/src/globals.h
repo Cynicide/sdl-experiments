@@ -1,5 +1,4 @@
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#pragma once
 
 #include <GameState.h>
 
@@ -11,8 +10,10 @@
 extern const char * appName;
 
 // Screen Dimensions
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 960;
+extern int SCREEN_WIDTH;
+extern int SCREEN_HEIGHT;
+extern int PLAYFIELD_STARTX;
+extern const int PLAYFIELD_WIDTH;
 
 // Keyboard Input
 extern int NumKeys;
@@ -26,5 +27,3 @@ extern SDL_Surface* gScreenSurface;
 // State Pointers
 extern GameState* gCurrentState;
 extern GameState* gNextState;
-
-#endif

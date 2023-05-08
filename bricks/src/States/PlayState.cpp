@@ -21,7 +21,12 @@ bool PlayState::enter()
  
     // Set Up Game
     background = TiledBackground(SpriteManager::get()->background); 
-    border = Border();
+
+    borderL = BorderVertical(PLAYFIELD_STARTX, 0, borderWidthV, SCREEN_HEIGHT, false);
+    borderR = BorderVertical(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthV, 0, borderWidthV, SCREEN_HEIGHT, true);
+    borderT = BorderHorizontal(PLAYFIELD_STARTX, 0, PLAYFIELD_WIDTH, borderHeightH, false);
+    borderTL = BorderCorner(PLAYFIELD_STARTX, 0, borderWidthC, borderHeightC, false);
+    borderTR = BorderCorner(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthC, 0, borderWidthC, borderHeightC, true);    
 
     font = TextManager::get()->publicPixel12;
 
@@ -51,9 +56,9 @@ bool PlayState::enter()
 
 bool PlayState::exit()
 {
-    ballCoord.Destroy();
-    bpbCoord.Destroy();
-    ballVel.Destroy();
+    ballCoord.destroy();
+    bpbCoord.destroy();
+    ballVel.destroy();
     spdlog::info("Exited PlayState");
     return true;
 }
@@ -71,6 +76,7 @@ void PlayState::handleEvent( SDL_Event& e )
         case Definitions::SubState::DYING: {
             if( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_SPACE ) )
             {
+                paddle.reset();
                 subState = Definitions::SubState::SERVING;
             }
             break;
@@ -116,19 +122,19 @@ void PlayState::update(double dt)
         bpb = physics.GetSweptBroadphaseBox(ball.ballRect, ball.vel.x, ball.vel.y);    
         
         // DEBUG: Coordinates on Screen        
-        ballCoord.Destroy();
+        ballCoord.destroy();
         ballCoord = Text(font, "BX: " + std::to_string(ball.ballRect.x) +
                             " BY: " + std::to_string(ball.ballRect.y) +
                             " BW: " + std::to_string(ball.ballRect.w) +
                             " BH: " + std::to_string(ball.ballRect.h), 30, 20, gRenderer);
 
-        bpbCoord.Destroy();
+        bpbCoord.destroy();
         bpbCoord = Text(font, "BPX: " + std::to_string(bpb.x) +
                             " BPY: " + std::to_string(bpb.y) +
                             " BPW: " + std::to_string(bpb.w) +
                             " BPH: " + std::to_string(bpb.h), 30, 60, gRenderer);
 
-        ballVel.Destroy();
+        ballVel.destroy();
         ballVel = Text(font, "VX: " + std::to_string(ball.vel.x) +
                             " VY: " + std::to_string(ball.vel.y), 30, 100, gRenderer);
         
@@ -143,24 +149,24 @@ void PlayState::update(double dt)
 
         // Collision - Top Border
         // AABB Check Ball Rect versus Border Rect
-        if (physics.AABBCheck(ball.ballRect, border.tBorder)) 
+        if (physics.AABBCheck(ball.ballRect, borderT.borderRect)) 
         {
             spdlog::debug("########### Horizontal Wall to Paddle Collision ###########");
-            ball.hitTopWall(border.tBorder);
+            ball.hitTopWall(borderT.borderRect);
         }
 
         // Collision - Side Borders
         // AABB Check Ball Rect versus Side Border Rects
-        if (physics.AABBCheck(ball.ballRect, border.rBorder))  
+        if (physics.AABBCheck(ball.ballRect, borderL.borderRect))  
         {
             spdlog::debug("########### Vertical Wall to Paddle Collision ###########");
-            ball.hitRightWall(border.rBorder);
+            ball.hitLeftWall(borderL.borderRect);
         }
-
-        if (physics.AABBCheck(ball.ballRect, border.lBorder))  
+        
+        if (physics.AABBCheck(ball.ballRect, borderR.borderRect))  
         {
             spdlog::debug("########### Vertical Wall to Paddle Collision ###########");
-            ball.hitLeftWall(border.lBorder);
+            ball.hitRightWall(borderR.borderRect);
         }
 
         // Collision - Paddle
@@ -259,13 +265,19 @@ void PlayState::render()
 {
     background.render();
     lightning.render();
-    border.render();
+
+    borderL.render();
+    borderR.render();
+    borderT.render();
+    borderTL.render();
+    borderTR.render();
+
     paddle.render(subState);
     brickManager.render();
 
-    ballCoord.Render();
-    bpbCoord.Render();
-    ballVel.Render();
+    /*ballCoord.render();
+    bpbCoord.render();
+    ballVel.render();*/
 
     ball.render();
     //SDL_SetRenderDrawColor(gRenderer, 0,255,255, SDL_ALPHA_OPAQUE);

@@ -70,7 +70,6 @@ float Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, fl
     // If there was no collision
     if (entryTime > exitTime || (xEntry < 0.0f && yEntry < 0.0f) || xEntry > 1.0f || yEntry > 1.0f)
     {
-        Logger("There Was No Collision");
         normalx = 0.0f;
         normaly = 0.0f;
         return 1.0f;

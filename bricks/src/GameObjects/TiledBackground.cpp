@@ -14,7 +14,7 @@ TiledBackground::TiledBackground(SDL_Texture* sprite) {
 void TiledBackground::render() {
     // Tile the texture over the screen
     for (int c = 0; c < SCREEN_HEIGHT; c = c + textureHeight) {
-        for (int r = 0; r < SCREEN_WIDTH; r = r + textureWidth) {
+        for (int r = PLAYFIELD_STARTX; r < PLAYFIELD_STARTX + PLAYFIELD_WIDTH; r = r + textureWidth) {
             SDL_Rect tile = {r, c, textureWidth, textureHeight};
             SDL_RenderCopy(gRenderer, backgroundSprite, NULL, &tile );
         }

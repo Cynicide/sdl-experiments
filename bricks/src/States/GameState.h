@@ -1,5 +1,4 @@
-#ifndef GAMESTATE_H
-#define GAMESTATE_H
+#pragma once
 #include <SDL2/SDL.h>
 
 //Game state base class
@@ -19,5 +18,3 @@ public:
     virtual ~GameState(){};
 
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef AUDIOMANAGER_H
-#define AUDIOMANAGER_H
+#pragma once
 
 //#include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h> 
@@ -29,4 +28,3 @@ private:
     ~AudioManager(){};
 
 };
-#endif

@@ -1,5 +1,4 @@
-#ifndef DEFINITIONS_H
-#define DEFINITIONS_H
+#pragma once
 namespace Definitions
 
 {
@@ -27,6 +26,11 @@ namespace Definitions
         GAMEOVER
     };
 
+
+    enum BorderOrientation {
+        HORIZONTAL,
+        VERTICAL
+    };
     /*static const std::unordered_map<int, Definitions::BrickType> typeMap {
         {1, Definitions::BrickType::Red},
         {2, Definitions::BrickType::Blue},
@@ -38,4 +42,3 @@ namespace Definitions
         {8, Definitions::BrickType::Purple},
     };*/
 }
-#endif

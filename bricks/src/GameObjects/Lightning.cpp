@@ -27,7 +27,7 @@ void Lightning::render()
 
     SDL_RendererFlip flip = SDL_FLIP_NONE;
 
-    for (int b = 0; b < SCREEN_WIDTH; b = b + textureWidth) 
+    for (int b = PLAYFIELD_STARTX; b < PLAYFIELD_STARTX + PLAYFIELD_WIDTH; b = b + textureWidth) 
     {
         if (direction(gen) == 1) {
             flip = SDL_FLIP_HORIZONTAL;
