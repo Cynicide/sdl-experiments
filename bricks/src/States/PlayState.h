@@ -12,6 +12,7 @@
 #include <Brick.h>
 #include <Lightning.h>
 #include <BrickManager.h>
+#include <TextManager.h>
 #include <Sign.h>
 #include <Text.h>
 
@@ -25,8 +26,9 @@
 class PlayState : public GameState
 {
 public:
-    //Static accessor
-    static PlayState* get();
+    //Private constructor
+    PlayState(SpriteManager* spriteManager, AudioManager* audioManager, TextManager* textManager);
+    ~PlayState(){};
 
     //Transitions
     bool enter();
@@ -38,8 +40,14 @@ public:
     void render();
 
 private:
-    //Static instance
-    static PlayState sPlayState;
+
+    float borderWidthV = 32.f;
+    float borderWidthC = 32.f;
+
+
+    SpriteManager* spriteManager;
+    AudioManager* audioManager;
+    TextManager* textManager;
 
     TiledBackground background;
     Paddle paddle;
@@ -51,15 +59,6 @@ private:
     BorderCorner borderTR;
     BorderCorner borderTL;
     
-    float borderWidthV = 32.f;
-    float borderHeightV = 128.f;
-
-    float borderWidthH = 128.f;
-    float borderHeightH = 32.f;
-
-    float borderWidthC = 32.f;
-    float borderHeightC = 32.f;
-
     Lightning lightning;
     BrickManager brickManager;
 
@@ -73,8 +72,4 @@ private:
     TTF_Font * font;
 
     Definitions::SubState subState = Definitions::SubState::SERVING;
-
-    //Private constructor
-    PlayState();
-
 };

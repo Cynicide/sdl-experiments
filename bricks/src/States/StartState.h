@@ -11,14 +11,16 @@
 
 #include <ScrollingBackground.h>
 #include <BorderVertical.h>
+#include <TextManager.h>
 
 #include <SDL2/SDL.h>
 
 class StartState : public GameState
 {
 public:
-    //Static accessor
-    static StartState* get();
+    //Private constructor
+    StartState(PlayState* playState, SpriteManager* spriteManager, TextManager* textManager);
+    ~StartState(){};
 
     //Transitions
     bool enter();
@@ -30,18 +32,19 @@ public:
     void render();
 
 private:
-    //Static instance
-    static StartState sStartState;
+
+    float borderWidthV = 32.f;
+
+    SDL_Rect logoRect;
+
+    GameState* playState;
+    SpriteManager* spriteManager;
+    TextManager* textManager;
 
     BorderVertical borderL;
     BorderVertical borderR;
-    float borderWidthV = 32.f;
-    float borderHeightV = 128.f;
-    
-    // Resources
+
     SDL_Texture* logoSprite = NULL;
-    int logoX = 1024;
-    int logoY = 1024;
     ScrollingBackground background;
 
     TTF_Font* font;
@@ -49,7 +52,4 @@ private:
     Text qToQuit;
     Text clickToLaunch;
     Text instructions;
-
-    //Private constructor
-    StartState();
 };

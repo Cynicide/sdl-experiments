@@ -87,10 +87,12 @@ bool initSDL () {
     return true;
 }
 
-void closeSDL() 
+void closeSDL(SpriteManager* spriteManager) 
 {
-    spdlog::info("Destroying Renderer");
 
+    spriteManager->~SpriteManager();
+
+    spdlog::info("Destroying Renderer");
     SDL_DestroyRenderer(gRenderer);
     
     spdlog::info("Destroying Window");
@@ -121,27 +123,30 @@ int main (int argc, char* args[])
     if( !initSDL()) 
     {
         spdlog::error("Failed to Initialize!");
-        closeSDL();
+        //closeSDL();
         return 1;
     }
 
     // Loading Resources
-    SpriteManager::get()->loadSprites();
-    AudioManager::get()->loadAudio();
-    TextManager::get()->loadFonts();
+    SpriteManager spriteManager;
+    AudioManager audioManager;
+    TextManager textManager;
 
     // Get Event Structure
     SDL_Event e;
 
-    // TODO: Implement Deltatime implentation based on https://gafferongames.com/post/fix_your_timestep/ fix.
+    // Instantiate Game States
+    PlayState playState(&spriteManager, &audioManager, &textManager);
+    StartState startState(&playState, &spriteManager, &textManager);
+    ExitState exitState;
 
     spdlog::info("Getting Start State.");
-	gCurrentState = StartState::get();
+	gCurrentState = &startState;
 	gCurrentState->enter();
 
     //While the user hasn't quit
     spdlog::info("Starting Game Loop.");
-    while( gCurrentState != ExitState::get() )
+    while( !(dynamic_cast<ExitState*>(gCurrentState)))
     {
         //Do state event handling
         while( SDL_PollEvent( &e ) != 0 )
@@ -152,17 +157,20 @@ int main (int argc, char* args[])
             //Exit on quit
             if( (e.type == SDL_QUIT) ||  ( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_q ) ))
             {
-                setNextState( ExitState::get() );
+                setNextState( &exitState );
             }
         }
 
-        //Do state logic
+        // TODO: Implement Deltatime implentation based on https://gafferongames.com/post/fix_your_timestep/ fix.
         float dt =1.f;
+
+        //Do state logic
         gCurrentState->update(dt);
 
         //Change state if needed
         changeState();
 
+        SDL_SetRenderDrawColor(gRenderer, 0,0,0, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(gRenderer);
 
         //Do state rendering
@@ -172,6 +180,6 @@ int main (int argc, char* args[])
         SDL_RenderPresent( gRenderer );
 		}
     spdlog::info("Quitting SDL");
-    closeSDL();
+    closeSDL(&spriteManager);
     return 0;
 }

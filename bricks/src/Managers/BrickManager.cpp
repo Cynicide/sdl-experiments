@@ -1,15 +1,17 @@
 #include <BrickManager.h>
 #include <Definitions.h>
 
-#include <iostream>
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/fmt/ranges.h"
 
-#include <string>
 #include <sstream>
 #include <fstream>
 
 
-BrickManager::BrickManager() {
-
+BrickManager::BrickManager(SpriteManager* spriteManager, AudioManager* audioManager) {
+    this->spriteManager = spriteManager;
+    this->audioManager = audioManager;
 }
 
 void BrickManager::update(double dt) {
@@ -21,7 +23,6 @@ void BrickManager::render()
         if (i.brickStatus != Definitions::BrickStatus::Destroyed) {
             i.render();
         }
-
     }
 }
 
@@ -108,45 +109,55 @@ void BrickManager::CreateLevel() {
             if (elem != 0) 
             {
                 Definitions::BrickType type = Definitions::BrickType::Red;
+                SDL_Texture* sprite = spriteManager->brickRed;
                 switch (elem) {
                     case 1: {
                         type = Definitions::BrickType::Red;
+                        sprite = spriteManager->brickRed;
                         break;  
                     }
                     case 2: {
                         type = Definitions::BrickType::Blue;
+                        sprite = spriteManager->brickBlue;
                         break;  
                     }
                     case 3: {
                         type = Definitions::BrickType::Yellow;
+                        sprite = spriteManager->brickYellow;
                         break;  
                     }
                     case 4: {
                         type = Definitions::BrickType::Tough;
+                        sprite = spriteManager->brickTough;
                         break;  
                     }
                     case 5: {
                         type = Definitions::BrickType::Indestructable;
+                        sprite = spriteManager->brickIndestructable;
                         break; 
                     }
                     case 6: {
                         type = Definitions::BrickType::Orange;
+                        sprite = spriteManager->brickOrange;
                         break; 
                     }
                     case 7: {
                         type = Definitions::BrickType::Green;
+                        sprite = spriteManager->brickGreen;
                         break; 
                     }
                     case 8: {
                         type = Definitions::BrickType::Purple;
+                        sprite = spriteManager->brickPurple;
                         break; 
                     }
                     default: {
                         type = Definitions::BrickType::Red;
+                        sprite = spriteManager->brickRed;
                         break;  
                     }
                 }
-                Brick tmpBrick(posX, posY, type);
+                Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
                 brickList.push_back(tmpBrick);
             }
             posX = posX + brickSizeX;

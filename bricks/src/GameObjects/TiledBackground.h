@@ -6,7 +6,7 @@ class TiledBackground
 {
 public:
     // Constructor/Destructor
-    TiledBackground(SDL_Texture* sprite);
+    TiledBackground(SDL_Texture* backgroundSprite);
     TiledBackground();
     ~TiledBackground(){};
 

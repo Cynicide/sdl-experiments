@@ -1,9 +1,10 @@
 #include <ExitState.h>
 
 //Hollow exit state
-ExitState* ExitState::get()
+
+ExitState::ExitState()
 {
-	return &sExitState;
+
 }
 
 bool ExitState::enter()
@@ -31,9 +32,3 @@ void ExitState::render()
 
 }
 
-ExitState ExitState::sExitState;
-
-ExitState::ExitState()
-{
-
-}

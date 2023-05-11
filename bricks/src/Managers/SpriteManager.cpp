@@ -6,17 +6,30 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-SpriteManager SpriteManager::sSpriteManager;
-
 SpriteManager::SpriteManager() {
-
-
+    spdlog::info("Creating Sprite Manager");
+    loadSprites();
 }
 
-SpriteManager* SpriteManager::get()
-{
-    //Get static instance
-    return &sSpriteManager;
+SpriteManager::~SpriteManager() {
+    /*SDL_DestroyTexture(stars);
+    SDL_DestroyTexture(logo);
+    SDL_DestroyTexture(background);
+    SDL_DestroyTexture(paddle);
+    SDL_DestroyTexture(ball);
+    SDL_DestroyTexture(lightning);
+    SDL_DestroyTexture(brickRed);
+    SDL_DestroyTexture(brickBlue);
+    SDL_DestroyTexture(brickYellow);
+    SDL_DestroyTexture(brickTough);
+    SDL_DestroyTexture(brickIndestructable);
+    SDL_DestroyTexture(brickGreen);
+    SDL_DestroyTexture(brickPurple);
+    SDL_DestroyTexture(brickOrange);
+    SDL_DestroyTexture(shipExplosion);
+    SDL_DestroyTexture(techBorder);
+    SDL_DestroyTexture(techCorner);
+    SDL_DestroyTexture(techTopBorder);*/
 }
 
 SDL_Surface* SpriteManager::loadSurface( std::string path) {

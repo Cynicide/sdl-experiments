@@ -7,8 +7,8 @@
 
 #include <Sign.h>
 
-Ball::Ball() {
-    ballSprite = SpriteManager::get()->ball;
+Ball::Ball(SDL_Texture* ballSprite) {
+    this->ballSprite = ballSprite;
 
     startingVel = {6, -6};
     currentVel = startingVel;
@@ -16,7 +16,7 @@ Ball::Ball() {
     vel.x = currentVel.x;
     vel.y = currentVel.y;
 
-    bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &ballHeight, &ballWidth);
+    bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &ballWidth, &ballHeight);
     if (bQuery == 1) {
         spdlog::error("Issue querying Ball Texture: ");
         spdlog::error(SDL_GetError());

@@ -1,15 +1,12 @@
 #include <TextManager.h>
 
-TextManager TextManager::sTextManager;
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/fmt/ranges.h"
 
 TextManager::TextManager() {
-
-}
-
-TextManager* TextManager::get()
-{
-    //Get static instance
-    return &sTextManager;
+    spdlog::info("Creating Font Manager");
+    loadFonts();
 }
 
 void TextManager::loadFonts() {

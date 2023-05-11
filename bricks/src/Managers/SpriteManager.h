@@ -10,8 +10,9 @@
 class SpriteManager
 {
 public:
-    //Static accessor
-    static SpriteManager* get();
+
+    SpriteManager();
+    ~SpriteManager();
 
     // Sprites
     SDL_Texture* stars;
@@ -33,22 +34,10 @@ public:
     SDL_Texture* techCorner;
     SDL_Texture* techTopBorder;
 
-
-    SDL_Surface* loadSurface(std::string path);
-    SDL_Texture* loadAlphaTexture(std::string path);
-    SDL_Texture* loadTexture(std::string path);
-
     void loadSprites();
 
 private:
-    //Static instance
-    static SpriteManager sSpriteManager;
-
-
-    //Private constructor
-    SpriteManager();
-
-    // PrivateDestructor
-    ~SpriteManager(){};
-
+    SDL_Surface* loadSurface(std::string path);
+    SDL_Texture* loadAlphaTexture(std::string path);
+    SDL_Texture* loadTexture(std::string path);
 };

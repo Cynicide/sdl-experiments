@@ -7,7 +7,7 @@ class Ball
 {
 public:
 
-    Ball();
+    Ball(SDL_Texture* ballSprite);
     ~Ball(){};
 
     // State Methods

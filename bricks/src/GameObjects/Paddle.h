@@ -13,14 +13,16 @@ class Paddle
 {
 public:
     void render(Definitions::SubState subState);
-    void update(double dt);
+    void update(double dt, Definitions::SubState subState);
     void destroy();
     void hit();
+    void explode();
     void reset();
+    void move();
 
     SDL_FRect paddleRect;
 
-    Paddle();
+    Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound);
 
     ~Paddle(){};
 
@@ -28,7 +30,8 @@ private:
     // Background Sprite
     SDL_Texture* paddleSprite;
     SDL_Texture* explosionSprite;
-    Mix_Chunk *collisionSound;
+    Mix_Chunk* collisionSound;
+    Mix_Chunk* explosionSound;
 
     float paddleSpeed;
     int textureWidth = 144;
@@ -43,6 +46,7 @@ private:
     int currentdestructionFrame = destructionStartFrame;
     int innerExplosionTimer = 0;
     int innerExplosionTimerMax = 2;
+    bool explosionSoundPlayed = false;
 
     void sliceExplosionSheet();
 };

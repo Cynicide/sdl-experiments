@@ -1,16 +1,20 @@
 #include <PlayState.h>
 #include <TextManager.h>
 
-PlayState PlayState::sPlayState;
-
-PlayState::PlayState() {
-
-}
-
-PlayState* PlayState::get()
-{
-    //Get static instance
-    return &sPlayState;
+PlayState::PlayState(SpriteManager* spriteManager, AudioManager* audioManager, TextManager* textManager) : 
+    background(spriteManager->background), 
+    paddle(spriteManager->paddle, spriteManager->shipExplosion, audioManager->pong, audioManager->explosion),
+    ball(spriteManager->ball),
+    borderL(PLAYFIELD_STARTX, false, spriteManager->techBorder),
+    borderR(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthV,  true, spriteManager->techBorder),
+    borderT(PLAYFIELD_STARTX, false, spriteManager->techTopBorder),
+    borderTR(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthC, true, spriteManager->techCorner),
+    borderTL(PLAYFIELD_STARTX, false, spriteManager->techCorner),
+    lightning(spriteManager->lightning),
+    brickManager(spriteManager, audioManager) {
+        this->spriteManager = spriteManager;
+        this->audioManager = audioManager;
+        this->textManager = textManager;
 }
 
 bool PlayState::enter()
@@ -19,23 +23,7 @@ bool PlayState::enter()
     //Loading success flag
     bool success = true;
  
-    // Set Up Game
-    background = TiledBackground(SpriteManager::get()->background); 
-
-    borderL = BorderVertical(PLAYFIELD_STARTX, 0, borderWidthV, SCREEN_HEIGHT, false);
-    borderR = BorderVertical(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthV, 0, borderWidthV, SCREEN_HEIGHT, true);
-    borderT = BorderHorizontal(PLAYFIELD_STARTX, 0, PLAYFIELD_WIDTH, borderHeightH, false);
-    borderTL = BorderCorner(PLAYFIELD_STARTX, 0, borderWidthC, borderHeightC, false);
-    borderTR = BorderCorner(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthC, 0, borderWidthC, borderHeightC, true);    
-
-    font = TextManager::get()->publicPixel12;
-
-    lightning = Lightning();
-
-    paddle = Paddle();
-    ball = Ball();
-
-    brickManager = BrickManager();
+    font = textManager->publicPixel12;
 
     brickManager.LoadLevel();
     brickManager.CreateLevel();
@@ -94,7 +82,7 @@ void PlayState::update(double dt)
     case Definitions::SubState::SERVING: 
     {
         ball.reset();
-        paddle.update(dt);
+        paddle.update(dt, subState);
         ball.update(dt, paddle.paddleRect);
         int mx, my;
         Uint32 mouseState = SDL_GetMouseState(&mx, &my);
@@ -111,7 +99,7 @@ void PlayState::update(double dt)
         // ===================   Update  ===================
         // =================================================
 
-        paddle.update(dt);
+        paddle.update(dt, subState);
         ball.update(dt); 
 
         // =================================================
@@ -121,7 +109,7 @@ void PlayState::update(double dt)
         // Update the Braod Phase Box for the Ball
         bpb = physics.GetSweptBroadphaseBox(ball.ballRect, ball.vel.x, ball.vel.y);    
         
-        // DEBUG: Coordinates on Screen        
+        /*// DEBUG: Coordinates on Screen        
         ballCoord.destroy();
         ballCoord = Text(font, "BX: " + std::to_string(ball.ballRect.x) +
                             " BY: " + std::to_string(ball.ballRect.y) +
@@ -136,7 +124,7 @@ void PlayState::update(double dt)
 
         ballVel.destroy();
         ballVel = Text(font, "VX: " + std::to_string(ball.vel.x) +
-                            " VY: " + std::to_string(ball.vel.y), 30, 100, gRenderer);
+                            " VY: " + std::to_string(ball.vel.y), 30, 100, gRenderer);*/
         
         // Collision - Bottom Border
         // AABB Check Ball Rect versus Lightning Rect
@@ -252,6 +240,7 @@ void PlayState::update(double dt)
 
     case Definitions::SubState::DYING:
     {
+        paddle.update(dt, subState);
         break;
     }
     case Definitions::SubState::GAMEOVER:

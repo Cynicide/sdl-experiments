@@ -2,10 +2,11 @@
 #include <iostream>
 #include <Vector2d.h>
 
-Paddle::Paddle() {
-    paddleSprite = SpriteManager::get()->paddle;
-    explosionSprite = SpriteManager::get()->shipExplosion;
-    collisionSound = AudioManager::get()->pong;
+Paddle::Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound) {
+    this->paddleSprite = paddleSprite;
+    this->explosionSprite = explosionSprite;
+    this->collisionSound = collisionSound;
+    this->explosionSound = explosionSound;
 
     paddleSpeed = 5.f;
 
@@ -26,25 +27,28 @@ Paddle::Paddle() {
 }
 
 
-void Paddle::update(double dt) {
-        int borderHeight = 16;
-        int borderWidth = 32;      
-
-        int x, y;
-        Uint32 mouseState = SDL_GetMouseState(&x, &y);
-
-        paddleRect.x = x;
-
-        if (paddleRect.x < PLAYFIELD_STARTX + borderWidth) {
-            paddleRect.x = PLAYFIELD_STARTX + borderWidth;
-        } 
-
-        if (paddleRect.x > PLAYFIELD_STARTX + PLAYFIELD_WIDTH - textureWidth - borderWidth) {
-            paddleRect.x = PLAYFIELD_STARTX + PLAYFIELD_WIDTH - textureWidth - borderWidth;
+void Paddle::update(double dt, Definitions::SubState subState) {
+    switch (subState) {
+    case Definitions::SubState::SERVING: {
+        move();
+        break;
+    }
+    case Definitions::SubState::PLAYING: {
+        move();
+        break;
+    }
+    case Definitions::SubState::DYING: {
+        if (explosionSoundPlayed == false) {
+            explode();
+            explosionSoundPlayed = true;
         }
-        paddleRect.y = SCREEN_HEIGHT - textureHeight - borderHeight;
-        paddleRect.w = textureWidth;
-        paddleRect.h = textureHeight;
+
+        break;
+    }
+    case Definitions::SubState::GAMEOVER: {
+        break;
+    }
+    }
 }
 
 void Paddle::render(Definitions::SubState subState) 
@@ -98,13 +102,40 @@ void Paddle::destroy() {
 
 }
 
+void Paddle::move() {
+  int borderHeight = 16;
+    int borderWidth = 32;      
+
+    int x, y;
+    Uint32 mouseState = SDL_GetMouseState(&x, &y);
+
+    paddleRect.x = x;
+
+    if (paddleRect.x < PLAYFIELD_STARTX + borderWidth) {
+        paddleRect.x = PLAYFIELD_STARTX + borderWidth;
+    } 
+
+    if (paddleRect.x > PLAYFIELD_STARTX + PLAYFIELD_WIDTH - textureWidth - borderWidth) {
+        paddleRect.x = PLAYFIELD_STARTX + PLAYFIELD_WIDTH - textureWidth - borderWidth;
+    }
+    paddleRect.y = SCREEN_HEIGHT - textureHeight - borderHeight;
+    paddleRect.w = textureWidth;
+    paddleRect.h = textureHeight;
+}
+
 void Paddle::reset() {
     currentdestructionFrame = destructionStartFrame;
     innerExplosionTimer = 0;
+    explosionSoundPlayed = false;
 }
 
 void Paddle::hit() {
     Mix_PlayChannel( -1, collisionSound, 0 );
+}
+
+void Paddle::explode() {
+    spdlog::info("What?");
+    Mix_PlayChannel( -1, explosionSound, 0 );
 }
 
 void Paddle::sliceExplosionSheet() {

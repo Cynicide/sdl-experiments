@@ -6,21 +6,15 @@
 class TextManager
 {
 public:
-    //Static accessor
-    static TextManager* get();
-    TTF_Font* publicPixel12;
-    TTF_Font* publicPixel24;
+    TextManager();
+    ~TextManager(){};
+
     void loadFonts();
 
+    TTF_Font* publicPixel12;
+    TTF_Font* publicPixel24;
+
 private:
-    //Static instance
-    static TextManager sTextManager;
 
-
-    //Private constructor
-    TextManager();
-
-    // PrivateDestructor
-    ~TextManager(){};
 
 };

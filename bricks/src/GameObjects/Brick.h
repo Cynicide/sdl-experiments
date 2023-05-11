@@ -12,12 +12,9 @@ class Brick
 {
 public:
 
-    Brick(float _xpos, float _ypos, Definitions::BrickType type);
+    Brick(float _xpos, float _ypos, Definitions::BrickType type, SDL_Texture* sprite, Mix_Chunk* collisionSound);
     ~Brick(){};
-
-    void render();
-    void update(double dt);
-    
+    void render();    
     void hit();    
 
     SDL_FRect brickRect;
@@ -43,8 +40,8 @@ private:
     float brickWidth = 64.f;
 
     int type = 0;
-    bool destructable = true;
     int health = 0;
+    bool destructable = true;
 
     void SliceSpriteSheet();
 };

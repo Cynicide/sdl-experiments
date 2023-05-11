@@ -8,22 +8,19 @@ class BorderCorner
 {
 public:
     void render();
-    void update(double dt);
-    void destroy();
 
     SDL_FRect borderRect;
 
-    BorderCorner(float startX, float startY, float borderWidth, float borderHeight, bool flipX);
-    BorderCorner();
+    BorderCorner(float startX, bool flipX, SDL_Texture* borderSprite);
     ~BorderCorner(){};
 
 private:
-    // Background Sprite
+    float borderStartX = 0.f;
+    float borderStartY = 0.f;
+    float borderHeight = 0.f;
+    float borderWidth = 0.f;
+
     SDL_Texture* borderSprite;
 
     int angle = 0;
-
-    // Sprites
-    int borderHeight = 32;
-    int borderWidth = 32;
 };

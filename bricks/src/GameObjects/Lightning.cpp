@@ -2,12 +2,11 @@
 #include <iostream>
 
 
-Lightning::Lightning() {
-    lightningSprite = SpriteManager::get()->lightning;
-    bBorder = {(float)borderWidth, (float)(SCREEN_HEIGHT - borderHeight), (float)(SCREEN_WIDTH - borderWidth * 2), (float)borderHeight};
-}
+Lightning::Lightning(SDL_Texture* lightningSprite) {
+    this->lightningSprite = lightningSprite;
 
-void Lightning::update(double dt) {
+
+    bBorder = {borderWidth, (float)(SCREEN_HEIGHT - borderHeight), (float)(SCREEN_WIDTH - borderWidth * 2), borderHeight};
 }
 
 void Lightning::render() 
@@ -40,8 +39,4 @@ void Lightning::render()
     // Draw Collision Boxes
     //SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
     //SDL_RenderDrawRectF(gRenderer, &bBorder);
-}
-
-void Lightning::destroy() {
-
 }

@@ -1,10 +1,8 @@
 #include <TiledBackground.h>
-TiledBackground::TiledBackground() {
 
-}
+TiledBackground::TiledBackground(SDL_Texture* backgroundSprite) {
+    this->backgroundSprite = backgroundSprite;
 
-TiledBackground::TiledBackground(SDL_Texture* sprite) {
-    backgroundSprite = sprite;
     bool bQuery = SDL_QueryTexture(backgroundSprite, NULL, NULL, &textureWidth, &textureHeight);
     if (bQuery == 1) {
         SDL_Log( SDL_GetError());

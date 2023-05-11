@@ -3,7 +3,7 @@
 void setNextState( GameState* newState )
 {
     //If the user doesn't want to exit
-    if( gNextState != ExitState::get() )
+    if( !(dynamic_cast<ExitState*>(gNextState)))
     {
         //Set the next state
         gNextState = newState;
@@ -13,13 +13,13 @@ void setNextState( GameState* newState )
 void changeState()
 {
     //If the state needs to be changed
-    if( gNextState != NULL )
+    if( gNextState != nullptr )
     {
 		gCurrentState->exit();
 		gNextState->enter();
 
         //Change the current state ID
         gCurrentState = gNextState;
-        gNextState = NULL;
+        gNextState = nullptr;
     }
 }

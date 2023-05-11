@@ -6,52 +6,51 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 
-Brick::Brick(float _xpos, float _ypos, Definitions::BrickType type) {
+Brick::Brick(float _xpos, float _ypos, Definitions::BrickType type, SDL_Texture* sprite, Mix_Chunk* collisionSound) {
     
-    collisionSound = AudioManager::get()->ping;
-
+    this->collisionSound = collisionSound;
     brickType = type;
 
     switch (brickType) {
         case Definitions::BrickType::Red:
         {
-            brickSprite = SpriteManager::get()->brickRed;
+            brickSprite = sprite;
             health = 1;
             break;
         }
         case Definitions::BrickType::Blue: {
-            brickSprite = SpriteManager::get()->brickBlue;
+            brickSprite = sprite;
             health = 1;
             break;
         }
         case Definitions::BrickType::Yellow: {
-            brickSprite = SpriteManager::get()->brickYellow;
+            brickSprite = sprite;
             health = 1;
             break;
         }
         case Definitions::BrickType::Orange: {
-            brickSprite = SpriteManager::get()->brickOrange;
+            brickSprite = sprite;
             health = 1;
             break;
         }
         case Definitions::BrickType::Green: {
-            brickSprite = SpriteManager::get()->brickGreen;
+            brickSprite = sprite;
             health = 1;
             break;
         }
         case Definitions::BrickType::Purple: {
-            brickSprite = SpriteManager::get()->brickPurple;
+            brickSprite = sprite;
             health = 1;
             break;
         }  
         case Definitions::BrickType::Tough: {
-            brickSprite = SpriteManager::get()->brickTough;
+            brickSprite = sprite;
             health = 2;
             break;
         }
         case Definitions::BrickType::Indestructable: {
             destructable = false;
-            brickSprite = SpriteManager::get()->brickIndestructable;
+            brickSprite = sprite;
             health = -1;
             break;
         }
@@ -70,9 +69,6 @@ void Brick::SliceSpriteSheet() {
         brickSpriteClips[ i ].w =  brickWidth;
         brickSpriteClips[ i ].h = brickHeight;
         }
-}
-
-void Brick::update(double dt) {
 }
 
 void Brick::render() 

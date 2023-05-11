@@ -6,21 +6,17 @@
 class Lightning
 {
 public:
+
+    Lightning(SDL_Texture* lightningSprite);
+    ~Lightning(){};
+
     void render();
-    void update(double dt);
-    void destroy();
 
     SDL_FRect bBorder;
 
-    Lightning();
-
-    ~Lightning(){};
-
 private:
-    // Background Sprite
     SDL_Texture* lightningSprite;
-    SDL_Rect lightningRect;
 
-    int borderHeight = 16;
-    int borderWidth = 32;
+    float borderHeight = 16;
+    float borderWidth = 32;
 };

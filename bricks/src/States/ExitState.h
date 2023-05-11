@@ -5,8 +5,9 @@
 class ExitState : public GameState
 {
 public:
-	//Static accessor
-	static ExitState* get();
+
+	ExitState();
+	~ExitState(){};
 
 	//Transitions
 	bool enter();
@@ -18,9 +19,5 @@ public:
 	void render();
 
 private:
-	//Static instance
-	static ExitState sExitState;
 
-	//Private constructor
-	ExitState();
 };

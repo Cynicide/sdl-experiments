@@ -2,16 +2,14 @@
 #include <SpriteManager.h>
 #include <TextManager.h>
 
-
-StartState StartState::sStartState;
-
-StartState::StartState() {
-}
-
-StartState* StartState::get()
-{
-    //Get static instance
-    return &sStartState;
+StartState::StartState(PlayState* playState, SpriteManager* spriteManager, TextManager* textManager) 
+: borderL(PLAYFIELD_STARTX, false, spriteManager->techBorder),
+  borderR(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthV, true, spriteManager->techBorder),
+  background(spriteManager->stars)
+ {
+    this->playState = playState;
+    this->spriteManager = spriteManager;
+    this->textManager = textManager;
 }
 
 bool StartState::enter()
@@ -20,13 +18,20 @@ bool StartState::enter()
     bool success = true;
     spdlog::info("Entered StartState.");
 
-    background = ScrollingBackground(SpriteManager::get()->stars); 
-    logoSprite = SpriteManager::get()->logo;
+    logoSprite = spriteManager->logo;
 
-    borderL = BorderVertical(PLAYFIELD_STARTX, 0, borderWidthV, SCREEN_HEIGHT, false);
-    borderR = BorderVertical(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthV, 0, borderWidthV, SCREEN_HEIGHT, true);
+    int logoWidth;
+    int logoHeight;
 
-    font = TextManager::get()->publicPixel24;
+    bool bQuery = SDL_QueryTexture(logoSprite, NULL, NULL, &logoWidth, &logoHeight);
+    if (bQuery == 1) {
+        spdlog::error("Issue querying Logo Texture: ");
+        spdlog::error(SDL_GetError());
+    }
+
+    logoRect = {(SCREEN_WIDTH / 2 - logoWidth / 2), (SCREEN_HEIGHT / 4) - (logoHeight / 2), logoWidth, logoHeight };
+
+    font = textManager->publicPixel24;
 
     spaceToStart = Text(font, "Press Space to play!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, gRenderer);
     spaceToStart.center(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -60,7 +65,7 @@ void StartState::handleEvent( SDL_Event& e )
     //If the user pressed space move onto play state
     if( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_SPACE ) )
     {
-        setNextState( PlayState::get() );
+        setNextState(playState);
     }
 }
 
@@ -74,7 +79,6 @@ void StartState::render()
     background.render();
     borderL.render();
     borderR.render();
-    SDL_Rect logoRect = {(SCREEN_WIDTH / 2 - logoX / 2), (SCREEN_HEIGHT / 4) - (logoY / 2), logoX, logoY };
     SDL_RenderCopy(gRenderer, logoSprite, NULL, &logoRect );
     spaceToStart.render();
     qToQuit.render();

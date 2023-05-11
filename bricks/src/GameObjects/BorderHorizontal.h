@@ -8,28 +8,21 @@ class BorderHorizontal
 {
 public:
     void render();
-    void update(double dt);
-    void destroy();
 
     SDL_FRect borderRect;
 
-    BorderHorizontal(float startX, float startY, float borderWidth, float borderHeight, bool flipX);
-    BorderHorizontal();
+    BorderHorizontal(float startX, bool flipX, SDL_Texture* borderSprite);
     ~BorderHorizontal(){};
 
 private:
-    // Background Sprite
+    // Sprites
+    float borderStartX = 0.f;
+    float borderStartY = 0.f;
+    float borderHeight = 0.f;
+    float borderWidth = 0.f;
+    float borderSpriteWidth = 0.f;
+
     SDL_Texture* borderSprite;
 
     int angle = 0;
-
-    // Sprites
-    int borderHeight = 32;
-    int borderWidth = 128;
-
-//    int techBorderHeightV = 128;
-//    int techBorderWidthV = 32;
-
-//    int techCornerHeight = 32;
-//    int techCornerWidth = 32;
 };

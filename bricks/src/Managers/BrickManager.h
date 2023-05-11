@@ -1,10 +1,8 @@
 #pragma once
 #include <vector>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/fmt/ranges.h"
-
+#include <AudioManager.h>
+#include <SpriteManager.h>
 #include <Brick.h>
 
 class BrickManager
@@ -17,7 +15,7 @@ public:
     void LoadLevel();
     void CreateLevel();
 
-    BrickManager();
+    BrickManager(SpriteManager* spriteManager, AudioManager* audioManager);
 
     ~BrickManager(){};
 
@@ -25,11 +23,13 @@ public:
 
 private:
 
+    SpriteManager* spriteManager;
+    AudioManager* audioManager;
+
     std::vector<std::vector<int>> level;
     
     float startX = PLAYFIELD_STARTX + 32;
     float startY = 116;
     float brickSizeX = 64;
     float brickSizeY = 32;
-
 };
