@@ -44,5 +44,5 @@ private:
 
     void flipY();
     void flipX();
-    void move();
+    void move(double dt);
 };

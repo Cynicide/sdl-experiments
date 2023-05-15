@@ -1,15 +1,11 @@
 #include <StartState.h>
-#include <SpriteManager.h>
-#include <TextManager.h>
 
-StartState::StartState(PlayState* playState, SpriteManager* spriteManager, TextManager* textManager) 
-: borderL(PLAYFIELD_STARTX, false, spriteManager->techBorder),
-  borderR(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthV, true, spriteManager->techBorder),
-  background(spriteManager->stars)
- {
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
+StartState::StartState(GameContext* gameContext, PlayState* playState) {
     this->playState = playState;
-    this->spriteManager = spriteManager;
-    this->textManager = textManager;
+    this->gameContext = gameContext;
 }
 
 bool StartState::enter()
@@ -18,12 +14,10 @@ bool StartState::enter()
     bool success = true;
     spdlog::info("Entered StartState.");
 
-    logoSprite = spriteManager->logo;
-
     int logoWidth;
     int logoHeight;
 
-    bool bQuery = SDL_QueryTexture(logoSprite, NULL, NULL, &logoWidth, &logoHeight);
+    bool bQuery = SDL_QueryTexture(gameContext->logoSprite, NULL, NULL, &logoWidth, &logoHeight);
     if (bQuery == 1) {
         spdlog::error("Issue querying Logo Texture: ");
         spdlog::error(SDL_GetError());
@@ -31,7 +25,7 @@ bool StartState::enter()
 
     logoRect = {(SCREEN_WIDTH / 2 - logoWidth / 2), (SCREEN_HEIGHT / 4) - (logoHeight / 2), logoWidth, logoHeight };
 
-    font = textManager->publicPixel24;
+    font = gameContext->publicPixel24;
 
     spaceToStart = Text(font, "Press Space to play!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, gRenderer);
     spaceToStart.center(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -71,15 +65,15 @@ void StartState::handleEvent( SDL_Event& e )
 
 void StartState::update(double dt)
 {
-    background.update(dt);
+    gameContext->scrollingBackground.update(dt);
 }
 
 void StartState::render()
 {
-    background.render();
-    borderL.render();
-    borderR.render();
-    SDL_RenderCopy(gRenderer, logoSprite, NULL, &logoRect );
+    gameContext->scrollingBackground.render();
+    gameContext->borderL.render();
+    gameContext->borderR.render();
+    SDL_RenderCopy(gRenderer, gameContext->logoSprite, NULL, &logoRect );
     spaceToStart.render();
     qToQuit.render();
     clickToLaunch.render();

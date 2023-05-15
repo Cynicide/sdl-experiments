@@ -7,6 +7,7 @@
 
 #include <sstream>
 #include <fstream>
+#include <filesystem>
 
 
 BrickManager::BrickManager(SpriteManager* spriteManager, AudioManager* audioManager) {
@@ -15,6 +16,11 @@ BrickManager::BrickManager(SpriteManager* spriteManager, AudioManager* audioMana
 }
 
 void BrickManager::update(double dt) {
+    for (auto &i : brickList) {
+        if (i.brickStatus != Definitions::BrickStatus::Destroyed) {
+            i.update(dt);
+        }
+}
 }
 
 void BrickManager::render() 
@@ -26,8 +32,36 @@ void BrickManager::render()
     }
 }
 
+bool BrickManager::lastLevelCheck() {
+    if (levelIterator == std::prev(lastLevel)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void BrickManager::getLevelFiles() {
+    spdlog::info("Getting a list of levels");
+    for (auto &p : std::filesystem::recursive_directory_iterator(path)) {
+        if (p.path().extension() == ext) {
+            levelFiles.push_back(path + p.path().filename().string());
+        }
+    }
+    
+    levelIterator = levelFiles.begin();
+    lastLevel = levelFiles.end();
+    
+    //for (auto &i : levelFiles) {
+    //    spdlog::info(i);
+    //}
+}
+
 void BrickManager::destroy() {
 
+}
+
+void BrickManager::nextLevel() {
+    ++levelIterator;
 }
 
 void BrickManager::LoadLevel() {
@@ -35,8 +69,8 @@ void BrickManager::LoadLevel() {
     std::string line;
     int word;
 
-    std::ifstream inFile("assets\\levels\\01.txt");
-
+    std::ifstream inFile(*levelIterator);
+    level.clear();
     if(inFile)
     {
         while(getline(inFile, line, '\n'))        
@@ -67,40 +101,8 @@ void BrickManager::CreateLevel() {
 
     float posX = startX;
     float posY = startY;
-/*
-    // Static Map of all Brick Types to their representation in Level files.
 
-    // Maybe put this in defitions?
-    static const std::unordered_map<int, Definitions::BrickType> typeMap {
-        {1, Definitions::BrickType::Red},
-        {2, Definitions::BrickType::Blue},
-        {3, Definitions::BrickType::Yellow},
-        {4, Definitions::BrickType::Tough},
-        {5, Definitions::BrickType::Indestructable},
-        {6, Definitions::BrickType::Orange},
-        {7, Definitions::BrickType::Green},
-        {8, Definitions::BrickType::Purple},
-    };
-
-
-    for (auto &newvec: level) {
-        for(const int &elem: newvec) {
-            
-            // Find the Brick Type in the Static Map
-            auto brickType = typeMap.find(elem);
-            Definitions::BrickType type = (brickType != typeMap.end()) ? brickType->second : Definitions::BrickType::Red;
-
-            if (elem != 0) {
-                // Create a Brick Object with the constructor parameters
-                brickList.emplace_back(posX, posY, type, &brickList);
-                //Brick tmpBrick(posX, posY, type, &brickList);
-                //brickList.push_back(tmpBrick);
-            } 
-            posX = posX + brickSizeX;
-        }
-        posX = startX;
-        posY += brickSizeY;
-    }*/
+    brickList.clear();
 
     for(std::vector<int> &newvec: level)
         {
@@ -165,4 +167,32 @@ void BrickManager::CreateLevel() {
         posX = startX;
         posY = posY + brickSizeY;
         }
+
+        // Assign neighbour pointers for all bricks
+        findNeighbours();
 }   
+
+void BrickManager::findNeighbours() {
+    for (auto &brick : brickList) {
+        for (auto &neighbour : brickList) {
+            // Find the Top Neighbour
+            if (neighbour.brickRect.x == brick.brickRect.x && neighbour.brickRect.y == brick.brickRect.y - brick.brickRect.h) {
+                brick.topNeighbour = &neighbour;
+            }
+            // Find Bottom Neighbour
+            if (neighbour.brickRect.x == brick.brickRect.x && neighbour.brickRect.y == brick.brickRect.y + brick.brickRect.h) {
+                brick.bottomNeighbour = &neighbour;
+            }
+
+            // Find Right Neighbour
+            if (neighbour.brickRect.x == brick.brickRect.x + brick.brickRect.w && neighbour.brickRect.y == brick.brickRect.y) {
+                brick.rightNeighbour = &neighbour;
+            }
+
+            // Find Left Neighbour
+            if (neighbour.brickRect.x == brick.brickRect.x - brick.brickRect.w && neighbour.brickRect.y == brick.brickRect.y) {
+                brick.leftNeighbour = &neighbour;
+            }
+        }     
+    }
+}

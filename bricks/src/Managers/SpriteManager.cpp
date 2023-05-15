@@ -1,7 +1,7 @@
 #include <SpriteManager.h>
 
 #include <SDL2/SDL_image.h>
-#include <iostream>
+//#include <iostream>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -12,6 +12,7 @@ SpriteManager::SpriteManager() {
 }
 
 SpriteManager::~SpriteManager() {
+    spdlog::info("Destroying Textures");
     /*SDL_DestroyTexture(stars);
     SDL_DestroyTexture(logo);
     SDL_DestroyTexture(background);

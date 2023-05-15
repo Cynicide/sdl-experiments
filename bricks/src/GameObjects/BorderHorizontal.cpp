@@ -1,5 +1,5 @@
 #include <BorderHorizontal.h>
-#include <iostream>
+//#include <iostream>
 BorderHorizontal::BorderHorizontal(float startX, bool flipX, SDL_Texture* borderSprite) {
 
     this->borderStartX = startX;

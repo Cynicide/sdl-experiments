@@ -9,15 +9,13 @@ public:
     void update(double dt);
     void destroy();
 
-    ScrollingBackground();
     ScrollingBackground(SDL_Texture* sprite);
-
     ~ScrollingBackground(){};
 
 private:
     // Background Sprite
     SDL_Texture* backgroundSprite;
-    int scrollingOffset = 0;
+    float scrollingOffset = 0.f;
     int textureHeight;
     int textureWidth;
 };

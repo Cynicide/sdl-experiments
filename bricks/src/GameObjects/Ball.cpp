@@ -1,5 +1,5 @@
 #include <Ball.h>
-#include <iostream>
+//#include <iostream>
 #include <random>
 
 #include "spdlog/spdlog.h"
@@ -10,7 +10,7 @@
 Ball::Ball(SDL_Texture* ballSprite) {
     this->ballSprite = ballSprite;
 
-    startingVel = {6, -6};
+    startingVel = {600, -600};
     currentVel = startingVel;
 
     vel.x = currentVel.x;
@@ -34,7 +34,7 @@ void Ball::reset() {
 }
 
 void Ball::update(double dt) {
-    move();
+    move(dt);
 }
 
 void Ball::update(double dt, SDL_FRect paddleRect) {
@@ -52,9 +52,9 @@ void Ball::update(double dt, SDL_FRect paddleRect) {
     ballRect.h = ballHeight;
 }
 
-void Ball::move() {
-    ballRect.x += vel.x;
-    ballRect.y += vel.y;
+void Ball::move(double dt) {
+    ballRect.x += vel.x * dt;
+    ballRect.y += vel.y * dt;
 }
 
 void Ball::flipY() {
@@ -78,8 +78,8 @@ void Ball::render() {
     SDL_RenderCopyF(gRenderer, ballSprite, NULL, &ballRect );
 
     // DEBUG: Bounding Boxes
-    //SDL_SetRenderDrawColor(gRenderer, 255,255,0, SDL_ALPHA_OPAQUE);
-    //SDL_RenderDrawRectF(gRenderer, &ballRect);
+    SDL_SetRenderDrawColor(gRenderer, 255,255,0, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRectF(gRenderer, &ballRect);
 }
 
 void Ball::changeAngle(int hitLocation, int paddleSize) {
@@ -127,17 +127,17 @@ void Ball::changeAngle(int hitLocation, int paddleSize) {
 }
 
     void Ball::hitTopWall(SDL_FRect border) {
-        ballRect.y = border.y + border.h ;
+        ballRect.y = border.y + border.h;
         flipY();
     }
 
     void Ball::hitRightWall(SDL_FRect border) {
-        ballRect.x = border.x - ballRect.w ;
+        ballRect.x = border.x - ballRect.w;
         flipX();
     }
 
     void Ball::hitLeftWall(SDL_FRect border) {
-        ballRect.x = border.x + border.w ;
+        ballRect.x = border.x + border.w;
         flipX();
     }
 

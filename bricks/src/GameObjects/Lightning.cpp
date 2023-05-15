@@ -1,5 +1,5 @@
 #include <Lightning.h>
-#include <iostream>
+//#include <iostream>
 
 
 Lightning::Lightning(SDL_Texture* lightningSprite) {

@@ -6,7 +6,7 @@ Text::Text() {
 
 Text::Text(TTF_Font * font, std::string text, float x_loc, float y_loc, SDL_Renderer* gRenderer) {
     SDL_Color color = { 255, 255, 255 };
-    surface = TTF_RenderText_Solid(font, text.c_str(), color);
+    surface = TTF_RenderText_Solid_Wrapped(font, text.c_str(), color, 0);
     texture = SDL_CreateTextureFromSurface(gRenderer, surface);
     
     bool bQuery = SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);

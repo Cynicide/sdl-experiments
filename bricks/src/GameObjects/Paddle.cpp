@@ -1,5 +1,5 @@
 #include <Paddle.h>
-#include <iostream>
+//#include <iostream>
 #include <Vector2d.h>
 
 Paddle::Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound) {
@@ -27,75 +27,52 @@ Paddle::Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chun
 }
 
 
-void Paddle::update(double dt, Definitions::SubState subState) {
-    switch (subState) {
-    case Definitions::SubState::SERVING: {
-        move();
-        break;
-    }
-    case Definitions::SubState::PLAYING: {
-        move();
-        break;
-    }
-    case Definitions::SubState::DYING: {
-        if (explosionSoundPlayed == false) {
-            explode();
-            explosionSoundPlayed = true;
-        }
-
-        break;
-    }
-    case Definitions::SubState::GAMEOVER: {
-        break;
-    }
-    }
+void Paddle::updateServing(double dt) {
+    move();
 }
 
-void Paddle::render(Definitions::SubState subState) 
-{
+void Paddle::updatePlaying(double dt) {
+    move();
+}
 
-    switch (subState) {
-        case Definitions::SubState::SERVING: {
-            SDL_RenderCopyF(gRenderer, paddleSprite, NULL, &paddleRect );
-            //SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
-            //SDL_RenderDrawRectF(gRenderer, &paddleRect);
-            break;
-        }
-        case Definitions::SubState::PLAYING: {
-            SDL_RenderCopyF(gRenderer, paddleSprite, NULL, &paddleRect );
-            //SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
-            //SDL_RenderDrawRectF(gRenderer, &paddleRect);
-            break;
-        }
-        case Definitions::SubState::DYING: {
-            spdlog::debug("Rendering Explosion");
-
-            if (currentdestructionFrame != destructionEndFrame) {
-                SDL_FRect explosionRect;
-                float paddleMidX = paddleRect.x + (paddleRect.w / 2);
-                float paddleMidY = paddleRect.y + (paddleRect.h /2 );
-
-                explosionRect.x = paddleMidX - (explosionWidth / 2);
-                explosionRect.y = paddleMidY - (explosionHeight / 2);
-                explosionRect.w = explosionWidth;
-                explosionRect.h = explosionHeight;
-
-                SDL_Rect solidSprite = {explosionSpriteClips[currentdestructionFrame].x, explosionSpriteClips[currentdestructionFrame].y, explosionSpriteClips[currentdestructionFrame].w, explosionSpriteClips[currentdestructionFrame].h};
-                SDL_RenderCopyF(gRenderer, explosionSprite, &solidSprite, &explosionRect);
-                innerExplosionTimer = innerExplosionTimer + 1;
-                if (innerExplosionTimer == innerExplosionTimerMax) {
-                    currentdestructionFrame = currentdestructionFrame + 1;
-                    innerExplosionTimer = 0;
-                }
-                
-            }
-            break;
-        }
-        case Definitions::SubState::GAMEOVER: {
-            break;
-        }
+void Paddle::updateDying(double dt) {
+    if (explosionSoundPlayed == false) {
+        explode();
+        explosionSoundPlayed = true;
     }
+    currentdestructionFrame = currentdestructionFrame + (60 * dt);
+}
 
+
+void Paddle::renderServing() {
+    SDL_RenderCopyF(gRenderer, paddleSprite, NULL, &paddleRect );
+    //SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
+    //SDL_RenderDrawRectF(gRenderer, &paddleRect);
+}
+
+void Paddle::renderPlaying() {
+    SDL_RenderCopyF(gRenderer, paddleSprite, NULL, &paddleRect );
+    //SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
+    //SDL_RenderDrawRectF(gRenderer, &paddleRect);
+}
+
+void Paddle::renderDying() {
+    spdlog::debug("Rendering Explosion");
+    int frame = (int)currentdestructionFrame;
+
+    if (frame < destructionEndFrame) {
+        SDL_FRect explosionRect;
+        float paddleMidX = paddleRect.x + (paddleRect.w / 2);
+        float paddleMidY = paddleRect.y + (paddleRect.h /2 );
+
+        explosionRect.x = paddleMidX - (explosionWidth / 2);
+        explosionRect.y = paddleMidY - (explosionHeight / 2);
+        explosionRect.w = explosionWidth;
+        explosionRect.h = explosionHeight;
+
+        SDL_Rect solidSprite = {explosionSpriteClips[frame].x, explosionSpriteClips[frame].y, explosionSpriteClips[frame].w, explosionSpriteClips[frame].h};
+        SDL_RenderCopyF(gRenderer, explosionSprite, &solidSprite, &explosionRect);               
+    }
 }
 
 void Paddle::destroy() {
@@ -134,7 +111,6 @@ void Paddle::hit() {
 }
 
 void Paddle::explode() {
-    spdlog::info("What?");
     Mix_PlayChannel( -1, explosionSound, 0 );
 }
 

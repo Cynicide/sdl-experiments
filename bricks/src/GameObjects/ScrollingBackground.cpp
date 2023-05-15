@@ -1,9 +1,5 @@
 #include <ScrollingBackground.h>
 
-ScrollingBackground::ScrollingBackground() {
-
-}
-
 ScrollingBackground::ScrollingBackground(SDL_Texture* sprite) {
     backgroundSprite = sprite;
     bool bQuery = SDL_QueryTexture(backgroundSprite, NULL, NULL, &textureWidth, &textureHeight);
@@ -14,7 +10,7 @@ ScrollingBackground::ScrollingBackground(SDL_Texture* sprite) {
 
 void ScrollingBackground::update(double dt) {
 
-    scrollingOffset = scrollingOffset - 5;
+    scrollingOffset = scrollingOffset - (100 * dt);
 
     if( scrollingOffset < -textureHeight )
     {
@@ -24,9 +20,9 @@ void ScrollingBackground::update(double dt) {
 
 void ScrollingBackground::render() {
 
-    SDL_Rect upperBackground = {PLAYFIELD_STARTX, scrollingOffset, textureWidth, textureHeight};
-    SDL_Rect lowerBackground = {PLAYFIELD_STARTX, scrollingOffset + textureHeight, textureWidth, textureHeight};
-    SDL_Rect bottomBackground = {PLAYFIELD_STARTX, scrollingOffset + (textureHeight * 2), textureWidth, textureHeight};
+    SDL_Rect upperBackground = {PLAYFIELD_STARTX, (int)scrollingOffset, textureWidth, textureHeight};
+    SDL_Rect lowerBackground = {PLAYFIELD_STARTX, (int)scrollingOffset + textureHeight, textureWidth, textureHeight};
+    SDL_Rect bottomBackground = {PLAYFIELD_STARTX, (int)scrollingOffset + (textureHeight * 2), textureWidth, textureHeight};
     SDL_RenderCopy(gRenderer, backgroundSprite, NULL, &upperBackground );
     SDL_RenderCopy(gRenderer, backgroundSprite, NULL, &lowerBackground );
     SDL_RenderCopy(gRenderer, backgroundSprite, NULL, &bottomBackground );

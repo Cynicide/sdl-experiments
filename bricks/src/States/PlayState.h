@@ -3,18 +3,17 @@
 #include <SDL2/SDL.h>
 #include <GameState.h>
 
-#include <TiledBackground.h>
-#include <Paddle.h>
-#include <Ball.h>
-#include <BorderHorizontal.h>
-#include <BorderVertical.h>
-#include <BorderCorner.h>
-#include <Brick.h>
-#include <Lightning.h>
-#include <BrickManager.h>
+#include <GameContext.h>
 #include <TextManager.h>
 #include <Sign.h>
 #include <Text.h>
+
+#include <SubState.h>
+#include <ServingSubState.h>
+#include <LoadLevelSubState.h>
+#include <PlayingSubState.h>
+#include <DyingSubState.h>
+#include <LevelWinSubState.h>
 
 #include <Definitions.h>
 
@@ -27,7 +26,7 @@ class PlayState : public GameState
 {
 public:
     //Private constructor
-    PlayState(SpriteManager* spriteManager, AudioManager* audioManager, TextManager* textManager);
+    PlayState(GameContext* gameContext);
     ~PlayState(){};
 
     //Transitions
@@ -41,35 +40,19 @@ public:
 
 private:
 
-    float borderWidthV = 32.f;
-    float borderWidthC = 32.f;
-
-
-    SpriteManager* spriteManager;
-    AudioManager* audioManager;
-    TextManager* textManager;
-
-    TiledBackground background;
-    Paddle paddle;
-    Ball ball;
-
-    BorderVertical borderL;
-    BorderVertical borderR;
-    BorderHorizontal borderT;
-    BorderCorner borderTR;
-    BorderCorner borderTL;
-    
-    Lightning lightning;
-    BrickManager brickManager;
-
-    SDL_FRect bpb;
-    Physics physics;
-
-    Text ballCoord;
-    Text bpbCoord;
-    Text ballVel;
+    GameContext* gameContext;
 
     TTF_Font * font;
 
-    Definitions::SubState subState = Definitions::SubState::SERVING;
+    // State Pointers
+    SubState* sCurrentState = NULL;
+    SubState* sNextState = NULL;
+
+    ServingSubState servingSubState;
+    LoadLevelSubState loadLevelSubState;
+    DyingSubState dyingSubState;
+    PlayingSubState playingSubState;
+    LevelWinSubState levelWinSubState;
+
+    //Definitions::SubState subState = Definitions::SubState::SERVING;
 };

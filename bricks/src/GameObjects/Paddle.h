@@ -12,8 +12,18 @@
 class Paddle
 {
 public:
-    void render(Definitions::SubState subState);
-    void update(double dt, Definitions::SubState subState);
+
+    Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound);
+    ~Paddle(){};
+
+    void updateServing(double dt);
+    void updatePlaying(double dt);
+    void updateDying(double dt);
+
+    void renderServing();
+    void renderPlaying();
+    void renderDying();
+
     void destroy();
     void hit();
     void explode();
@@ -21,10 +31,6 @@ public:
     void move();
 
     SDL_FRect paddleRect;
-
-    Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound);
-
-    ~Paddle(){};
 
 private:
     // Background Sprite
@@ -43,7 +49,7 @@ private:
     int explosionHeight = 72;
     static const int destructionStartFrame = 1;
     static const int destructionEndFrame = 8;
-    int currentdestructionFrame = destructionStartFrame;
+    float currentdestructionFrame = destructionStartFrame;
     int innerExplosionTimer = 0;
     int innerExplosionTimerMax = 2;
     bool explosionSoundPlayed = false;

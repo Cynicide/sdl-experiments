@@ -14,22 +14,31 @@ public:
 
     Brick(float _xpos, float _ypos, Definitions::BrickType type, SDL_Texture* sprite, Mix_Chunk* collisionSound);
     ~Brick(){};
+
     void render();    
-    void hit();    
+    void hit();
+    void update(double dt);    
 
     SDL_FRect brickRect;
     Definitions::BrickStatus brickStatus = Definitions::BrickStatus::Good;
+    
+    Definitions::BrickType brickType;
+    
+    Brick* topNeighbour = nullptr;
+    Brick* bottomNeighbour = nullptr;
+    Brick* leftNeighbour = nullptr;
+    Brick* rightNeighbour = nullptr;
 
 private:
 
     float xpos; 
     float ypos;
-    Definitions::BrickType brickType;
+    
 
     static const int numSprites = 21;
     static const int destructionStartFrame = 3;
     static const int destructionEndFrame = 10;
-    int currentdestructionFrame = destructionStartFrame;
+    float currentdestructionFrame = destructionStartFrame;
     
     SDL_Texture* brickSprite;
     SDL_Rect brickSpriteClips[numSprites];

@@ -1,12 +1,12 @@
 #include <Physics.h>
-#include <iostream>
+//#include <iostream>
 
 Physics::Physics() {
 
 }
 
 
-float Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, float &normalx, float &normaly) {
+double Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, float &normalx, float &normaly) {
     // https://www.gamedev.net/articles/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/
     // https://www.amanotes.com/post/using-swept-aabb-to-detect-and-process-collision
 
@@ -64,8 +64,8 @@ float Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, fl
     } 
 
     // Find the earliest/latest times of collision
-    float entryTime = std::max(xEntry, yEntry);
-    float exitTime = std::min(xExit, yExit);
+    double entryTime = std::max(xEntry, yEntry);
+    double exitTime = std::min(xExit, yExit);
 
     // If there was no collision
     if (entryTime > exitTime || (xEntry < 0.0f && yEntry < 0.0f) || xEntry > 1.0f || yEntry > 1.0f)

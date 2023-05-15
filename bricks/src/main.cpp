@@ -6,6 +6,8 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+#include <GameContext.h>
+
 #include <globals.h>
 #include <statemanagers.h>
 
@@ -78,19 +80,18 @@ bool initSDL () {
     } 
 
     spdlog::info("Creating Renderer.");
-    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
+    //gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    // Here we go again:
+    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
 
     // Capture the Mouse to the Window
-    SDL_SetRelativeMouseMode(SDL_TRUE);
+    //SDL_SetRelativeMouseMode(SDL_TRUE);
 
     return true;
 }
 
-void closeSDL(SpriteManager* spriteManager) 
+void closeSDL() 
 {
-
-    spriteManager->~SpriteManager();
 
     spdlog::info("Destroying Renderer");
     SDL_DestroyRenderer(gRenderer);
@@ -128,47 +129,66 @@ int main (int argc, char* args[])
     }
 
     // Loading Resources
-    SpriteManager spriteManager;
-    AudioManager audioManager;
-    TextManager textManager;
+    //SpriteManager spriteManager;
+    //AudioManager audioManager;
+    //TextManager textManager;
+
+    GameContext gameContext;
 
     // Get Event Structure
     SDL_Event e;
 
     // Instantiate Game States
-    PlayState playState(&spriteManager, &audioManager, &textManager);
-    StartState startState(&playState, &spriteManager, &textManager);
+    PlayState playState(&gameContext);
+    StartState startState(&gameContext, &playState);
     ExitState exitState;
 
     spdlog::info("Getting Start State.");
 	gCurrentState = &startState;
 	gCurrentState->enter();
 
+    // Getting timestep
+    double t = 0.0;
+    double dt = 1 / 60.0;
+    double currentTime = (double)SDL_GetPerformanceCounter() / (double)SDL_GetPerformanceFrequency();
+
     //While the user hasn't quit
     spdlog::info("Starting Game Loop.");
     while( !(dynamic_cast<ExitState*>(gCurrentState)))
     {
-        //Do state event handling
-        while( SDL_PollEvent( &e ) != 0 )
-        {
-            //Handle events for the current state
-            gCurrentState->handleEvent( e );
+        
+        double newTime = (double)SDL_GetPerformanceCounter() / (double)SDL_GetPerformanceFrequency();
+        spdlog::debug ("Time: " + std::to_string(newTime));
+        double frameTime = newTime - currentTime;
+        spdlog::debug ("FrameTime: " + std::to_string(frameTime));
+        currentTime = newTime;
+        
+        while (frameTime > 0.0) {
 
-            //Exit on quit
-            if( (e.type == SDL_QUIT) ||  ( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_q ) ))
+            float deltaTime = std::min(frameTime, dt);
+
+            //Do state event handling
+            while( SDL_PollEvent( &e ) != 0 )
             {
-                setNextState( &exitState );
+                //Handle events for the current state
+                gCurrentState->handleEvent( e );
+
+                //Exit on quit
+                if( (e.type == SDL_QUIT) ||  ( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_q ) ))
+                {
+                    setNextState( &exitState );
+                }
             }
+
+            //Do state logic
+            gCurrentState->update(deltaTime);
+
+            //Change state if needed
+            changeState();
+
+            frameTime -= deltaTime;
+            t += deltaTime;
         }
-
-        // TODO: Implement Deltatime implentation based on https://gafferongames.com/post/fix_your_timestep/ fix.
-        float dt =1.f;
-
-        //Do state logic
-        gCurrentState->update(dt);
-
-        //Change state if needed
-        changeState();
 
         SDL_SetRenderDrawColor(gRenderer, 0,0,0, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(gRenderer);
@@ -180,6 +200,6 @@ int main (int argc, char* args[])
         SDL_RenderPresent( gRenderer );
 		}
     spdlog::info("Quitting SDL");
-    closeSDL(&spriteManager);
+    closeSDL();
     return 0;
 }

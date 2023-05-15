@@ -20,12 +20,12 @@ namespace Definitions
     };
 
     enum SubState {
+        BRICKDEBUG,
         SERVING,
         PLAYING,
         DYING,
         GAMEOVER
     };
-
 
     enum BorderOrientation {
         HORIZONTAL,

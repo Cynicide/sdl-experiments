@@ -1,5 +1,5 @@
 #include <BorderCorner.h>
-#include <iostream>
+//#include <iostream>
 BorderCorner::BorderCorner(float startX, bool flipX, SDL_Texture* borderSprite) {
     this->borderStartX = startX;
     this->borderSprite = borderSprite;
