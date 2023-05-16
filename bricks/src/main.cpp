@@ -129,10 +129,6 @@ int main (int argc, char* args[])
     }
 
     // Loading Resources
-    //SpriteManager spriteManager;
-    //AudioManager audioManager;
-    //TextManager textManager;
-
     GameContext gameContext;
 
     // Get Event Structure

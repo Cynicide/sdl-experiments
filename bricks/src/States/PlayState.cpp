@@ -74,7 +74,7 @@ void PlayState::render()
 
     // Move the rest of these into the substates themselves
     //gameContext->paddle.render(subState);
-    //gameContext->brickManager.render();
+    //gameContext->levelManager.render();
     //gameContext->ball.render();
     sCurrentState->render();
 

@@ -37,14 +37,14 @@ void PlayingSubState::update(double dt) {
 
     gameContext->paddle.updatePlaying(dt);
     gameContext->ball.update(dt);
-    gameContext->brickManager.update(dt);
+    gameContext->levelManager.update(dt);
 
     // Is the Level Over?
     bool nextLevel = true;
-    for (auto &i : gameContext->brickManager.brickList) {
+    for (auto &i : gameContext->levelManager.brickList) {
         if (i.brickStatus != Definitions::BrickStatus::Destroyed && i.brickType != Definitions::BrickType::Indestructable) {
             nextLevel = false;
-            continue;
+            break;
         }
     }
 
@@ -139,7 +139,7 @@ void PlayingSubState::update(double dt) {
     Brick *firstHitBrick = nullptr;
     
     // Check each brick for collision
-    for (auto &i : gameContext->brickManager.brickList) 
+    for (auto &i : gameContext->levelManager.brickList) 
     {
         // First Make sure the brick is not destroyed
         if (i.brickStatus == Definitions::BrickStatus::Good) {
@@ -191,8 +191,17 @@ void PlayingSubState::update(double dt) {
     }
 
     if (firstHitBrick != nullptr) {
-        firstHitBrick->hit();
+        
+        // Temp Variable to hold the status 
+        Definitions::BrickStatus brickStatus = Definitions::BrickStatus::Good;
+
+        brickStatus = firstHitBrick->hit();
         gameContext->ball.hitBrick(firstCollision);
+
+        if (brickStatus == Definitions::BrickStatus::Exploding) {
+            // try and spawn a powerup
+            gameContext->levelManager.CreatePowerUp(firstHitBrick->brickRect.x, firstHitBrick->brickRect.y);
+        }
     }
 
     if (collisionList.size() > 1) {
@@ -209,9 +218,6 @@ void PlayingSubState::render() {
         gameContext->borderTL.render();
         gameContext->borderTR.render();
         gameContext->paddle.renderPlaying();
-        gameContext->brickManager.render();
+        gameContext->levelManager.render();
         gameContext->ball.render();
-
-        //SDL_SetRenderDrawColor(gRenderer, 0,255,255, SDL_ALPHA_OPAQUE);
-        //SDL_RenderDrawRectF(gRenderer, &bpb);
 }

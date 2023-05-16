@@ -24,10 +24,10 @@ void LevelWinSubState::handleEvent( SDL_Event& e ) {
 }
 void LevelWinSubState::update(double dt) {
 
-    if ( gameContext->brickManager.lastLevelCheck()) {
+    if ( gameContext->levelManager.lastLevelCheck()) {
         // We need to handle ending the game
     } else {
-        gameContext->brickManager.nextLevel();
+        gameContext->levelManager.nextLevel();
         sNextState = loadLevelSubState;
     }
 

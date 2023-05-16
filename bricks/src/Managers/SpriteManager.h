@@ -33,6 +33,7 @@ public:
     SDL_Texture* techBorder;
     SDL_Texture* techCorner;
     SDL_Texture* techTopBorder;
+    SDL_Texture* capsuleLaser;
 
     void loadSprites();
 

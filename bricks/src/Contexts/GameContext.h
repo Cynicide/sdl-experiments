@@ -8,12 +8,15 @@
 #include <BorderCorner.h>
 #include <Brick.h>
 #include <Lightning.h>
-#include <BrickManager.h>
+#include <Level.h>
 #include <ScrollingBackground.h>
+#include <Powerup.h>
 
 #include <TextManager.h>
 #include <AudioManager.h>
 #include <SpriteManager.h>
+
+#include <vector>
 
 #include <Text.h>
 
@@ -31,7 +34,7 @@ class GameContext {
         // Play Elements
         Ball ball;
         Paddle paddle;
-        BrickManager brickManager;
+        Level levelManager;
         Lightning lightning;
 
         // BackGrounds

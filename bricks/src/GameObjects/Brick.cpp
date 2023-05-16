@@ -97,7 +97,7 @@ void Brick::render()
     //SDL_RenderDrawRectF(gRenderer, &brickRect);
 }
 
-void Brick::hit() {
+Definitions::BrickStatus Brick::hit() {
     
     Mix_PlayChannel( -1, collisionSound, 0 );
     
@@ -109,6 +109,7 @@ void Brick::hit() {
             brickStatus = Definitions::BrickStatus::Exploding;      
         }
     }
+    return brickStatus;
 }
 
 void Brick::update(double dt) {

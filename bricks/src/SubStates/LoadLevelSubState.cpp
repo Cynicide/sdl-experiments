@@ -11,8 +11,8 @@ void LoadLevelSubState::setServingSubState( SubState* servingSubState) {
 }
 
 bool LoadLevelSubState::enter() {
-    gameContext->brickManager.LoadLevel();
-    gameContext->brickManager.CreateLevel();
+    gameContext->levelManager.LoadLevel();
+    gameContext->levelManager.CreateLevel();
     sNextState = servingSubState;
     return true;
 }

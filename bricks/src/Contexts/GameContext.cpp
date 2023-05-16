@@ -7,7 +7,7 @@ GameContext::GameContext() :
     textManager(),
     ball(spriteManager.ball),
     paddle(spriteManager.paddle, spriteManager.shipExplosion, audioManager.pong, audioManager.explosion),
-    brickManager(&spriteManager, &audioManager),
+    levelManager(&spriteManager, &audioManager),
     lightning(spriteManager.lightning),
     tiledBackground(spriteManager.background),
     scrollingBackground(spriteManager.stars),
@@ -20,5 +20,5 @@ GameContext::GameContext() :
     this->logoSprite = spriteManager.logo;
     this->publicPixel12 = textManager.publicPixel12;
     this->publicPixel24 = textManager.publicPixel24;
-    brickManager.getLevelFiles();
+    levelManager.getLevelFiles();
 }

@@ -78,8 +78,8 @@ void Ball::render() {
     SDL_RenderCopyF(gRenderer, ballSprite, NULL, &ballRect );
 
     // DEBUG: Bounding Boxes
-    SDL_SetRenderDrawColor(gRenderer, 255,255,0, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRectF(gRenderer, &ballRect);
+    //SDL_SetRenderDrawColor(gRenderer, 255,255,0, SDL_ALPHA_OPAQUE);
+    //SDL_RenderDrawRectF(gRenderer, &ballRect);
 }
 
 void Ball::changeAngle(int hitLocation, int paddleSize) {

@@ -16,7 +16,7 @@ public:
     ~Brick(){};
 
     void render();    
-    void hit();
+    Definitions::BrickStatus hit();
     void update(double dt);    
 
     SDL_FRect brickRect;

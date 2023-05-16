@@ -85,4 +85,5 @@ void SpriteManager::loadSprites() {
     techBorder = loadAlphaTexture("assets\\images\\border-sides.png");
     techCorner = loadAlphaTexture("assets\\images\\border-corner.png");
     techTopBorder = loadAlphaTexture("assets\\images\\border-top.png");
+    capsuleLaser = loadAlphaTexture("assets\\images\\capsule-laser-sheet.png");
 }

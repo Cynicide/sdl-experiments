@@ -13,6 +13,7 @@ void ServingSubState::setPlayingSubState(SubState* playingSubState) {
 
 bool ServingSubState::enter() {
     gameContext->paddle.reset();
+    gameContext->levelManager.RemoveAllPowerups();
     return true;
 }
 bool ServingSubState::exit() {
@@ -49,6 +50,6 @@ void ServingSubState::render() {
     gameContext->borderTL.render();
     gameContext->borderTR.render();
     gameContext->paddle.renderServing();
-    gameContext->brickManager.render();
+    gameContext->levelManager.render();
     gameContext->ball.render();
 }

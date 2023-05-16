@@ -1,32 +1,54 @@
 #pragma once
-
 #include <vector>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/fmt/ranges.h"
-
+#include <AudioManager.h>
+#include <SpriteManager.h>
 #include <Brick.h>
+#include <Powerup.h>
 
-class Level {
-    public:
-
+class Level
+{
+public:
     void render();
+    void update(double dt);
     void destroy();
+    void getLevelFiles();
+    void nextLevel();
+    bool lastLevelCheck();
+
 
     void LoadLevel();
     void CreateLevel();
+    void CreatePowerUp(float xPos, float yPos);
+    void RemoveAllPowerups();
 
-    Level();
+
+    Level(SpriteManager* spriteManager, AudioManager* audioManager);
 
     ~Level(){};
 
-    private: 
-        
-        std::vector<std::vector<int>> level;
+    std::vector<Brick> brickList;
+
+private:
+
+    SpriteManager* spriteManager;
+    AudioManager* audioManager;
+
+    std::string path = "assets\\levels\\";
+    std::string ext = ".level";
+    std::vector<std::string> levelFiles;
+    std::vector<std::string>::iterator levelIterator;
+    std::vector<std::string>::iterator lastLevel;
+
+    std::vector<std::vector<int>> level;
     
-        float startX = PLAYFIELD_STARTX + 32;
-        float startY = 116;
-        float brickSizeX = 64;
-        float brickSizeY = 32;
+    std::vector<Powerup> powerupList; 
+
+    float startX = PLAYFIELD_STARTX + 32;
+    float startY = 116;
+    float brickSizeX = 64;
+    float brickSizeY = 32;
+
+    void findNeighbours();
+
 };

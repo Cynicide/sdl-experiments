@@ -40,6 +40,6 @@ void DyingSubState::render() {
         gameContext->borderTL.render();
         gameContext->borderTR.render();
         gameContext->paddle.renderDying();
-        gameContext->brickManager.render();
+        gameContext->levelManager.render();
         gameContext->ball.render();
 }
