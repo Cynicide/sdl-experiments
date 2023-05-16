@@ -19,7 +19,7 @@ public:
 
     void LoadLevel();
     void CreateLevel();
-    void CreatePowerUp(float xPos, float yPos);
+    void CreatePowerUp(float xPos, float yPos, int parentWidth);
     void RemoveAllPowerups();
 
 

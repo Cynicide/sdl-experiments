@@ -72,8 +72,8 @@ bool Level::lastLevelCheck() {
     }
 }
 
-void Level::CreatePowerUp(float xPos, float yPos) {
-    Powerup tempPowerup = Powerup(spriteManager->capsuleLaser, xPos, yPos);
+void Level::CreatePowerUp(float xPos, float yPos, int parentWidth) {
+    Powerup tempPowerup = Powerup(spriteManager->capsuleLaser, xPos, yPos, parentWidth);
     powerupList.push_back(tempPowerup);
 }
 

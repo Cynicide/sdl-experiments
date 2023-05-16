@@ -5,7 +5,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-Powerup::Powerup(SDL_Texture* powerupSprite, float xPos, float yPos) {
+Powerup::Powerup(SDL_Texture*powerupSprite, float parentXPos, float parentYPos, int parentWidth) {
     this->powerupSprite = powerupSprite;
 
     bool bQuery = SDL_QueryTexture(powerupSprite, NULL, NULL, &powerupWidth, &powerupHeight);
@@ -14,7 +14,12 @@ Powerup::Powerup(SDL_Texture* powerupSprite, float xPos, float yPos) {
         spdlog::error(SDL_GetError());
     }
 
-    powerupRect= {xPos, yPos,((float)powerupWidth / (float)numSprites), (float)powerupHeight};
+    float parentMid = parentXPos + (parentWidth / 2);
+    float powerupMid = (((float)powerupWidth / (float)numSprites) / 2);
+    float powerupXpos = parentMid - powerupMid;
+
+
+    powerupRect= {powerupXpos, parentYPos,((float)powerupWidth / (float)numSprites), (float)powerupHeight};
     SliceSpriteSheet();
 }
 

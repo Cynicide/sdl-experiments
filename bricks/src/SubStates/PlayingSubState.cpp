@@ -200,7 +200,7 @@ void PlayingSubState::update(double dt) {
 
         if (brickStatus == Definitions::BrickStatus::Exploding) {
             // try and spawn a powerup
-            gameContext->levelManager.CreatePowerUp(firstHitBrick->brickRect.x, firstHitBrick->brickRect.y);
+            gameContext->levelManager.CreatePowerUp(firstHitBrick->brickRect.x, firstHitBrick->brickRect.y, firstHitBrick->brickRect.w);
         }
     }
 

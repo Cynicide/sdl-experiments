@@ -4,7 +4,7 @@
 class Powerup {
 
 public:
-    Powerup(SDL_Texture* powerupSprite, float xPos, float yPos);
+    Powerup(SDL_Texture* powerupSprite, float parentXPos, float parentYPos, int parentWidth);
     ~Powerup(){};
     void update(double dt);
     void render();
@@ -23,5 +23,5 @@ private:
     int powerupHeight = 0;
     int powerupWidth = 0;
 
-    float yVel = 100.0f;
+    float yVel = 250.0f;
 };
