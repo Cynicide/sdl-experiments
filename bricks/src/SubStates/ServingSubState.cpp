@@ -13,7 +13,7 @@ void ServingSubState::setPlayingSubState(SubState* playingSubState) {
 
 bool ServingSubState::enter() {
     gameContext->paddle.reset();
-    gameContext->levelManager.RemoveAllPowerups();
+    gameContext->ClearPowerups();
     return true;
 }
 bool ServingSubState::exit() {
@@ -27,16 +27,26 @@ void ServingSubState::handleEvent( SDL_Event& e ) {
 void ServingSubState::update(double dt) {
 
 
-    gameContext->ball.reset();
+    for (int b = 0; b < 3; ++b) {
+        if (gameContext->ballList[b] != nullptr) {
+            gameContext->ballList[b]->reset();
+        }
+    }
+
     gameContext->paddle.updateServing(dt);
-    gameContext->ball.update(dt, gameContext->paddle.paddleRect);
+
+
+    for (int b = 0; b < 3; ++b) {
+        if (gameContext->ballList[b] != nullptr) {
+            gameContext->ballList[b]->update(dt, gameContext->paddle.paddleRect);
+        }
+    }
+
     int mx, my;
     Uint32 mouseState = SDL_GetMouseState(&mx, &my);
     if (mouseState == SDL_BUTTON(1)) 
     {
-        gameContext->ball.randomizeXDirection();
         sNextState = playingSubState;
-        //subState = Definitions::SubState::PLAYING;
     }
 
 }
@@ -51,5 +61,9 @@ void ServingSubState::render() {
     gameContext->borderTR.render();
     gameContext->paddle.renderServing();
     gameContext->levelManager.render();
-    gameContext->ball.render();
+    for (int b = 0; b < 3; ++b) {
+        if (gameContext->ballList[b] != nullptr) {
+            gameContext->ballList[b]->render();
+        }
+    }
 }

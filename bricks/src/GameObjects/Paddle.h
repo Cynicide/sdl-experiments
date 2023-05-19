@@ -40,16 +40,24 @@ private:
     Mix_Chunk* explosionSound;
 
     float paddleSpeed;
-    int textureWidth = 144;
-    int textureHeight = 24;
+    //int textureWidth = 144;
+    //int textureHeight = 24;
+
+    int textureWidth = 0;
+    int textureHeight = 0;
 
     static const int numExplosionSprites = 8;
-    SDL_Rect explosionSpriteClips[numExplosionSprites];
-    int explosionWidth = 208;
-    int explosionHeight = 72;
-    static const int destructionStartFrame = 1;
-    static const int destructionEndFrame = 8;
+    static const int destructionStartFrame = 0;
+    static const int destructionEndFrame = 7;
     float currentdestructionFrame = destructionStartFrame;
+
+    int explosionWidth = 0;
+    int explosionHeight = 0;
+
+    SDL_Rect explosionSpriteClips[numExplosionSprites];
+    //int explosionWidth = 208;
+    //int explosionHeight = 72;
+
     int innerExplosionTimer = 0;
     int innerExplosionTimerMax = 2;
     bool explosionSoundPlayed = false;

@@ -2,15 +2,20 @@
 //#include <iostream>
 #include <Vector2d.h>
 
-Paddle::Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound) {
+/*Paddle::Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound) {
     this->paddleSprite = paddleSprite;
     this->explosionSprite = explosionSprite;
     this->collisionSound = collisionSound;
-    this->explosionSound = explosionSound;
+    this->explosionSound = explosionSound;*/
+Paddle::Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound) : 
+    paddleSprite(paddleSprite),
+    explosionSprite(explosionSprite),
+    collisionSound(collisionSound),
+    explosionSound(explosionSound) {
 
     paddleSpeed = 5.f;
 
-    /*bool bQuery = SDL_QueryTexture(paddleSprite, NULL, NULL, &textureWidth, &textureHeight);
+    bool bQuery = SDL_QueryTexture(paddleSprite, NULL, NULL, &textureWidth, &textureHeight);
     if (bQuery == 1) {
         spdlog::error("Error querying paddle sprite.");
         spdlog::error( SDL_GetError());
@@ -20,10 +25,9 @@ Paddle::Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chun
     if (bQuery == 1) {
         spdlog::error("Error querying paddle explosion sprite.");
         spdlog::error(SDL_GetError());
-    }*/ 
+    }
 
     sliceExplosionSheet();
-
 }
 
 
@@ -65,9 +69,9 @@ void Paddle::renderDying() {
         float paddleMidX = paddleRect.x + (paddleRect.w / 2);
         float paddleMidY = paddleRect.y + (paddleRect.h /2 );
 
-        explosionRect.x = paddleMidX - (explosionWidth / 2);
+        explosionRect.x = paddleMidX - ((explosionWidth / numExplosionSprites) / 2);
         explosionRect.y = paddleMidY - (explosionHeight / 2);
-        explosionRect.w = explosionWidth;
+        explosionRect.w = explosionWidth / numExplosionSprites;
         explosionRect.h = explosionHeight;
 
         SDL_Rect solidSprite = {explosionSpriteClips[frame].x, explosionSpriteClips[frame].y, explosionSpriteClips[frame].w, explosionSpriteClips[frame].h};
@@ -118,9 +122,9 @@ void Paddle::sliceExplosionSheet() {
 
         for( int i = 0; i <= numExplosionSprites - 1; i++ ) 
         {
-        explosionSpriteClips[ i ].x =   i * explosionWidth;
+        explosionSpriteClips[ i ].x =   i * (explosionWidth / numExplosionSprites);
         explosionSpriteClips[ i ].y =   0;
-        explosionSpriteClips[ i ].w =  explosionWidth;
+        explosionSpriteClips[ i ].w =  (explosionWidth / numExplosionSprites);
         explosionSpriteClips[ i ].h = explosionHeight;
         }
         spdlog::info("Slicing paddle Sprite Sheet");

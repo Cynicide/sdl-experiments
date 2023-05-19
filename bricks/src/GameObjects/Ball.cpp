@@ -10,7 +10,7 @@
 Ball::Ball(SDL_Texture* ballSprite) {
     this->ballSprite = ballSprite;
 
-    startingVel = {600, -600};
+    startingVel = {400, -400};
     currentVel = startingVel;
 
     vel.x = currentVel.x;
@@ -21,6 +21,24 @@ Ball::Ball(SDL_Texture* ballSprite) {
         spdlog::error("Issue querying Ball Texture: ");
         spdlog::error(SDL_GetError());
     }
+}
+
+Ball::Ball(SDL_Texture* ballSprite, float x, float y) {
+    this->ballSprite = ballSprite;
+
+    startingVel = {400, -400};
+    currentVel = startingVel;
+
+    vel.x = currentVel.x;
+    vel.y = currentVel.y;
+
+    bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &ballWidth, &ballHeight);
+    if (bQuery == 1) {
+        spdlog::error("Issue querying Ball Texture: ");
+        spdlog::error(SDL_GetError());
+    }
+
+    ballRect = {x, y, (float)ballWidth, (float)ballHeight};
 }
 
 void Ball::reset() {

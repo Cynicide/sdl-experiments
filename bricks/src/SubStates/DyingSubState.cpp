@@ -22,7 +22,7 @@ bool DyingSubState::exit() {
 void DyingSubState::handleEvent( SDL_Event& e ) {
             if( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_SPACE ) )
             {
-                //gameContext->paddle.reset();
+                gameContext->AddBall();
                 sNextState = servingSubState;
             }
 }
@@ -41,5 +41,9 @@ void DyingSubState::render() {
         gameContext->borderTR.render();
         gameContext->paddle.renderDying();
         gameContext->levelManager.render();
-        gameContext->ball.render();
+        for (int b = 0; b < 3; ++b) {
+            if (gameContext->ballList[b] != nullptr) {
+                gameContext->ballList[b]->render();
+            }
+        }
 }

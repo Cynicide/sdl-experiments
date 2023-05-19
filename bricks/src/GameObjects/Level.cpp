@@ -20,46 +20,15 @@ void Level::update(double dt) {
             i.update(dt);
         }
     }
-
-    // List of powerups that have fallen off the edge of the screen    
-    std::vector<int> removeList;
-
-    // Update the position of all powerups and mark some for deletion
-    if (!powerupList.empty()) {
-        for (std::size_t i = 0; i < powerupList.size(); ++i) {
-            powerupList[i].update(dt);
-            if (powerupList[i].powerupRect.y > SCREEN_HEIGHT) {
-                removeList.push_back(i);
-            }
-        }
-    }
-
-    // Iterate the list of powerups below the bottom of the screen and remove them
-    if (!removeList.empty()) {
-        for (std::size_t i = 0; i < removeList.size(); ++i) {
-            powerupList.erase(powerupList.begin() + i);
-        }
-    }
-
-    removeList.clear();
-    spdlog::debug("PowerUps: " + std::to_string(powerupList.size()));
 }
 
-void Level::RemoveAllPowerups() {
-    powerupList.clear();
-}
+
 
 void Level::render() 
 {
     for (auto &i : brickList) {
         if (i.brickStatus != Definitions::BrickStatus::Destroyed) {
             i.render();
-        }
-    }
-
-    if (!powerupList.empty()) {
-        for (auto &p : powerupList) {
-            p.render();
         }
     }
 }
@@ -70,11 +39,6 @@ bool Level::lastLevelCheck() {
     } else {
         return false;
     }
-}
-
-void Level::CreatePowerUp(float xPos, float yPos, int parentWidth) {
-    Powerup tempPowerup = Powerup(spriteManager->capsuleLaser, xPos, yPos, parentWidth);
-    powerupList.push_back(tempPowerup);
 }
 
 void Level::getLevelFiles() {

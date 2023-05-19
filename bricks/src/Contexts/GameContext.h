@@ -32,7 +32,6 @@ class GameContext {
         TextManager textManager;
 
         // Play Elements
-        Ball ball;
         Paddle paddle;
         Level levelManager;
         Lightning lightning;
@@ -54,6 +53,20 @@ class GameContext {
         //Fonts
         TTF_Font* publicPixel12;
         TTF_Font* publicPixel24;
+
+        //Lists
+        Ball* ballList[3] = {};
+        Powerup* powerupList[5] = {};
+
+        //Game Concepts
+        int lives = 3;
+
+        void AddBall();
+        void AddBallAtLocation(float x, float y);        
+        void ClearBalls();
+
+        void AddPowerUp(float xPos, float yPos, int parentWidth);
+        void ClearPowerups();
 
     private:
         constexpr static float borderWidthV = 32.f;

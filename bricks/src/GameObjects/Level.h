@@ -19,9 +19,6 @@ public:
 
     void LoadLevel();
     void CreateLevel();
-    void CreatePowerUp(float xPos, float yPos, int parentWidth);
-    void RemoveAllPowerups();
-
 
     Level(SpriteManager* spriteManager, AudioManager* audioManager);
 
@@ -42,7 +39,7 @@ private:
 
     std::vector<std::vector<int>> level;
     
-    std::vector<Powerup> powerupList; 
+  
 
     float startX = PLAYFIELD_STARTX + 32;
     float startY = 116;

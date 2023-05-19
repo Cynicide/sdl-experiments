@@ -26,8 +26,12 @@ void LevelWinSubState::update(double dt) {
 
     if ( gameContext->levelManager.lastLevelCheck()) {
         // We need to handle ending the game
+        gameContext->ClearBalls();
+        gameContext->ClearPowerups();
     } else {
         gameContext->levelManager.nextLevel();
+        gameContext->ClearBalls();
+        gameContext->ClearPowerups();
         sNextState = loadLevelSubState;
     }
 
