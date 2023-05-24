@@ -5,18 +5,19 @@ GameContext::GameContext() :
     spriteManager(),
     audioManager(),
     textManager(),
-    paddle(spriteManager.paddle, spriteManager.shipExplosion, audioManager.pong, audioManager.explosion),
+    paddle(&spriteManager, audioManager.pong, audioManager.explosion),
     levelManager(&spriteManager, &audioManager),
-    lightning(spriteManager.lightning),
-    tiledBackground(spriteManager.background),
-    scrollingBackground(spriteManager.stars),
-    borderL(PLAYFIELD_STARTX, false, spriteManager.techBorder),
-    borderR(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthV,  true, spriteManager.techBorder),
-    borderT(PLAYFIELD_STARTX, false, spriteManager.techTopBorder),
-    borderTR(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthC, true, spriteManager.techCorner),
-    borderTL(PLAYFIELD_STARTX, false, spriteManager.techCorner)
+    lightning(&spriteManager),
+    tiledBackground(&spriteManager),
+    scrollingBackground(&spriteManager),
+    borderL(PLAYFIELD_STARTX, false, &spriteManager),
+    borderR(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthV,  true, &spriteManager),
+    borderT(PLAYFIELD_STARTX, false, &spriteManager),
+    borderTR(PLAYFIELD_STARTX + PLAYFIELD_WIDTH - borderWidthC, true, &spriteManager),
+    borderTL(PLAYFIELD_STARTX, false, &spriteManager),
+    lifeCounter(PLAYFIELD_STARTX + borderWidthC, &spriteManager),
+    logoSprite(&spriteManager)
 {
-    this->logoSprite = spriteManager.logo;
     this->publicPixel12 = textManager.publicPixel12;
     this->publicPixel24 = textManager.publicPixel24;
 
@@ -26,7 +27,7 @@ GameContext::GameContext() :
 void GameContext::AddBall() {
     for (int b = 0; b < 3; ++b) {
         if (ballList[b] == nullptr) {
-            ballList[b] = new Ball(spriteManager.ball);
+            ballList[b] = new Ball(&spriteManager);
             break;
         }
     }
@@ -35,7 +36,7 @@ void GameContext::AddBall() {
 void GameContext::AddBallAtLocation(float x, float y) {
     for (int b = 0; b < 3; ++b) {
         if (ballList[b] == nullptr) {
-            ballList[b] = new Ball(spriteManager.ball, x, y);
+            ballList[b] = new Ball(&spriteManager, x, y);
             break;
         }
     }
@@ -53,7 +54,7 @@ void GameContext::ClearBalls() {
 void GameContext::AddPowerUp(float x, float y, int parentWidth) {
     for (int p = 0; p < 5; ++p) {
         if (powerupList[p] == nullptr) {
-            powerupList[p] = new Powerup(spriteManager.capsuleLaser, x, y, parentWidth);
+            powerupList[p] = new Powerup(&spriteManager, x, y, parentWidth);
             break;
         }
     }

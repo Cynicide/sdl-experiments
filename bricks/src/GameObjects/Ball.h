@@ -7,8 +7,8 @@ class Ball
 {
 public:
 
-    Ball(SDL_Texture* ballSprite);
-    Ball(SDL_Texture* ballSprite, float x, float y);
+    Ball(SpriteManager *spriteManager);
+    Ball(SpriteManager *spriteManager, float x, float y);
     ~Ball(){};
 
     // State Methods
@@ -27,7 +27,6 @@ public:
     // Other
     void changeAngle(int hitLocation, int paddleSize);
     void reset();
-    void randomizeXDirection();
 
     // Velocity and Dimensions
     Vector2d vel;

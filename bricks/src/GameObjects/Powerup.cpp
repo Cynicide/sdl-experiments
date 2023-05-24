@@ -1,18 +1,11 @@
 #include <globals.h>
-
 #include <Powerup.h>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 
-Powerup::Powerup(SDL_Texture*powerupSprite, float parentXPos, float parentYPos, int parentWidth) {
-    this->powerupSprite = powerupSprite;
+Powerup::Powerup(SpriteManager *spriteManager, float parentXPos, float parentYPos, int parentWidth) {
+    this->powerupSprite = spriteManager->capsuleLaser;
 
-    bool bQuery = SDL_QueryTexture(powerupSprite, NULL, NULL, &powerupWidth, &powerupHeight);
-    if (bQuery == 1) {
-        spdlog::error("Issue querying Powerup Texture: ");
-        spdlog::error(SDL_GetError());
-    }
+    spriteManager->getTextureDimensions(powerupSprite, powerupWidth, powerupHeight);
 
     float parentMid = parentXPos + (parentWidth / 2);
     float powerupMid = (((float)powerupWidth / (float)numSprites) / 2);

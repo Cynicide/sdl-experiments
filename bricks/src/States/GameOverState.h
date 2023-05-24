@@ -1,20 +1,18 @@
 #pragma once
 #include <GameState.h>
-#include <PlayState.h>
 #include <ExitState.h>
 
 #include <statemanagers.h>
 #include <GameContext.h>
-#include <Logo.h>
 
 #include <SDL2/SDL.h>
 
-class StartState : public GameState
+class GameOverState : public GameState
 {
 public:
     //Private constructor
-    StartState(GameContext* gameContext, PlayState* playState);
-    ~StartState(){};
+    GameOverState(GameContext* gameContext);
+    ~GameOverState(){};
 
     //Transitions
     bool enter();
@@ -27,11 +25,5 @@ public:
 
 private:
     GameContext* gameContext;
-    GameState* playState;
-
     TTF_Font* font;
-    Text spaceToStart;
-    Text qToQuit;
-    Text clickToLaunch;
-    Text instructions;
 };

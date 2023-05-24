@@ -36,9 +36,30 @@ bool initSDL () {
     SDL_DisplayMode mode; 
     SDL_GetCurrentDisplayMode(0, &mode);
 
-    SCREEN_HEIGHT = mode.h;
-    SCREEN_WIDTH = mode.w;
+    LOGICAL_SCREEN_HEIGHT = mode.h;
+    LOGICAL_SCREEN_WIDTH = mode.w;
     
+    SCREEN_HEIGHT = 1080;
+    SCREEN_WIDTH = 1920;
+    
+    // Create SDL Window
+    spdlog::info("Creating Window.");
+    gWindow = SDL_CreateWindow(appName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    if (gWindow == NULL) 
+    {
+        spdlog::error("Window could not be created! SDL_Error: ", SDL_GetError());
+        return false;
+    } 
+
+    spdlog::info("Creating Renderer.");
+    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+
+    // Capture the Mouse to the Window
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+
+    SDL_RenderSetLogicalSize(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+
     // Make sure the virtual playfield is centered on the screen
     int screenWidthMidpoint = SCREEN_WIDTH / 2;
     PLAYFIELD_STARTX = screenWidthMidpoint - (PLAYFIELD_WIDTH /2);
@@ -69,23 +90,6 @@ bool initSDL () {
     {
         gScreenSurface = SDL_GetWindowSurface( gWindow );
     }
-
-    // Create SDL Window
-    spdlog::info("Creating Window.");
-    gWindow = SDL_CreateWindow(appName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    if (gWindow == NULL) 
-    {
-        spdlog::error("Window could not be created! SDL_Error: ", SDL_GetError());
-        return false;
-    } 
-
-    spdlog::info("Creating Renderer.");
-    //gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    // Here we go again:
-    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
-
-    // Capture the Mouse to the Window
-    //SDL_SetRelativeMouseMode(SDL_TRUE);
 
     return true;
 }

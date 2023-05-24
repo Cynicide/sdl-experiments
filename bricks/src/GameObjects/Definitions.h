@@ -19,18 +19,15 @@ namespace Definitions
         Destroyed,
     };
 
-    enum SubState {
-        BRICKDEBUG,
-        SERVING,
-        PLAYING,
-        DYING,
-        GAMEOVER
+    enum PowerUpType {
+        StickyBalls, 
+        OneUp,
+        TripleBalls,
+        Lasers, 
+        SlowBalls,
+        LevelSkip
     };
-
-    enum BorderOrientation {
-        HORIZONTAL,
-        VERTICAL
-    };
+    
     /*static const std::unordered_map<int, Definitions::BrickType> typeMap {
         {1, Definitions::BrickType::Red},
         {2, Definitions::BrickType::Blue},

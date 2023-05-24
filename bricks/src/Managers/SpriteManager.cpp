@@ -11,6 +11,16 @@ SpriteManager::SpriteManager() {
     loadSprites();
 }
 
+bool SpriteManager::getTextureDimensions(SDL_Texture * texture, int &width, int &height) {
+        bool bQuery = SDL_QueryTexture(texture, NULL, NULL, &width, &height);
+        if (bQuery == 1) {
+            spdlog::error("Error querying sprite.");
+            spdlog::error( SDL_GetError());
+            return false;
+    } 
+    return true;
+}
+
 SpriteManager::~SpriteManager() {
     spdlog::info("Destroying Textures");
     /*SDL_DestroyTexture(stars);
@@ -63,7 +73,6 @@ SDL_Texture* SpriteManager::loadTexture(std::string path) {
     SDL_Texture* texture = SDL_CreateTextureFromSurface(gRenderer, surface);
     SDL_FreeSurface(surface);
     return texture;
-
 }
 
 void SpriteManager::loadSprites() {
@@ -86,4 +95,6 @@ void SpriteManager::loadSprites() {
     techCorner = loadAlphaTexture("assets\\images\\border-corner.png");
     techTopBorder = loadAlphaTexture("assets\\images\\border-top.png");
     capsuleLaser = loadAlphaTexture("assets\\images\\capsule-laser-sheet.png");
+    lifeCounter = loadAlphaTexture("assets\\images\\life-counter.png");
+    lifeIcon = loadAlphaTexture("assets\\images\\life-icon.png");
 }

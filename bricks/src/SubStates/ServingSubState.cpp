@@ -59,6 +59,7 @@ void ServingSubState::render() {
     gameContext->borderT.render();
     gameContext->borderTL.render();
     gameContext->borderTR.render();
+    gameContext->lifeCounter.render(gameContext->lives);
     gameContext->paddle.renderServing();
     gameContext->levelManager.render();
     for (int b = 0; b < 3; ++b) {

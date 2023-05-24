@@ -14,6 +14,8 @@ public:
     SpriteManager();
     ~SpriteManager();
 
+    bool getTextureDimensions(SDL_Texture *texture, int &width, int& height);
+
     // Sprites
     SDL_Texture* stars;
     SDL_Texture* logo;
@@ -33,9 +35,12 @@ public:
     SDL_Texture* techBorder;
     SDL_Texture* techCorner;
     SDL_Texture* techTopBorder;
+    SDL_Texture* lifeCounter;
+    SDL_Texture* lifeIcon;
     SDL_Texture* capsuleLaser;
 
     void loadSprites();
+
 
 private:
     SDL_Surface* loadSurface(std::string path);

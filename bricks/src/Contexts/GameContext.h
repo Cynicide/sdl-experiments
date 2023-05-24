@@ -11,6 +11,8 @@
 #include <Level.h>
 #include <ScrollingBackground.h>
 #include <Powerup.h>
+#include <LifeCounter.h>
+#include <Logo.h>
 
 #include <TextManager.h>
 #include <AudioManager.h>
@@ -47,8 +49,11 @@ class GameContext {
         BorderCorner borderTR;
         BorderCorner borderTL;
 
+        //UI Elements
+        LifeCounter lifeCounter;
+
         // Logos
-        SDL_Texture* logoSprite;
+        Logo logoSprite;
 
         //Fonts
         TTF_Font* publicPixel12;
@@ -59,7 +64,10 @@ class GameContext {
         Powerup* powerupList[5] = {};
 
         //Game Concepts
-        int lives = 3;
+        const static int startingLives = 3;
+        const static int maxLives = 5;
+        int lives = startingLives;
+
 
         void AddBall();
         void AddBallAtLocation(float x, float y);        

@@ -2,30 +2,16 @@
 //#include <iostream>
 #include <Vector2d.h>
 
-/*Paddle::Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound) {
-    this->paddleSprite = paddleSprite;
-    this->explosionSprite = explosionSprite;
-    this->collisionSound = collisionSound;
-    this->explosionSound = explosionSound;*/
-Paddle::Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound) : 
-    paddleSprite(paddleSprite),
-    explosionSprite(explosionSprite),
+Paddle::Paddle(SpriteManager *spriteManager, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound) : 
+    paddleSprite(spriteManager->paddle),
+    explosionSprite(spriteManager->shipExplosion),
     collisionSound(collisionSound),
     explosionSound(explosionSound) {
 
     paddleSpeed = 5.f;
 
-    bool bQuery = SDL_QueryTexture(paddleSprite, NULL, NULL, &textureWidth, &textureHeight);
-    if (bQuery == 1) {
-        spdlog::error("Error querying paddle sprite.");
-        spdlog::error( SDL_GetError());
-    }  
-
-    bQuery = SDL_QueryTexture(explosionSprite, NULL, NULL, &explosionWidth, &explosionHeight);
-    if (bQuery == 1) {
-        spdlog::error("Error querying paddle explosion sprite.");
-        spdlog::error(SDL_GetError());
-    }
+    spriteManager->getTextureDimensions(paddleSprite, textureWidth, textureHeight);
+    spriteManager->getTextureDimensions(explosionSprite, explosionWidth, explosionHeight);
 
     sliceExplosionSheet();
 }
@@ -88,9 +74,13 @@ void Paddle::move() {
     int borderWidth = 32;      
 
     int x, y;
-    Uint32 mouseState = SDL_GetMouseState(&x, &y);
+    SDL_GetMouseState(&x, &y);
 
-    paddleRect.x = x;
+    float scaleX = static_cast<float>(LOGICAL_SCREEN_WIDTH) / SCREEN_WIDTH;
+
+    int paddleX = static_cast<int>(x / scaleX);
+
+    paddleRect.x = paddleX - (paddleRect.w / 2);
 
     if (paddleRect.x < PLAYFIELD_STARTX + borderWidth) {
         paddleRect.x = PLAYFIELD_STARTX + borderWidth;

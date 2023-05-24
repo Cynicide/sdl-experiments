@@ -1,32 +1,24 @@
 #include <BorderHorizontal.h>
 //#include <iostream>
-BorderHorizontal::BorderHorizontal(float startX, bool flipX, SDL_Texture* borderSprite) {
+BorderHorizontal::BorderHorizontal(float startX, bool flipX, SpriteManager *spriteManager) {
 
     this->borderStartX = startX;
-    this->borderSprite = borderSprite;
+    this->borderSprite = spriteManager->techTopBorder;
 
-    int w, h;
-    bool bQuery = SDL_QueryTexture(borderSprite, NULL, NULL, &w, &h);
-    if (bQuery == 1) {
-        spdlog::error("Issue querying Horizontal Wall Texture: ");
-        spdlog::error(SDL_GetError());
-    }
-
-    borderSpriteWidth = (float)w;
-    borderHeight = (float)h;
+    spriteManager->getTextureDimensions(borderSprite, borderSpriteWidth, borderHeight);
     borderWidth = PLAYFIELD_WIDTH;
 
     if (flipX == true) {
         angle = -180;
     }
 
-    borderRect = {borderStartX, borderStartY, borderWidth, borderHeight};
+    borderRect = {borderStartX, borderStartY, borderWidth, (float)borderHeight};
 }
 
 void BorderHorizontal::render() 
 {
-    for (float s = borderRect.x; s < borderRect.x + borderRect.w; s = s + borderSpriteWidth) {
-        SDL_FRect tempRect = {s, borderRect.y, borderSpriteWidth, borderHeight};
+    for (float s = borderRect.x; s < borderRect.x + borderRect.w; s = s + (float)borderSpriteWidth) {
+        SDL_FRect tempRect = {s, borderRect.y, (float)borderSpriteWidth, (float)borderHeight};
         SDL_RenderCopyExF(gRenderer, borderSprite, NULL, &tempRect, 0, NULL, SDL_FLIP_NONE);
     }
 

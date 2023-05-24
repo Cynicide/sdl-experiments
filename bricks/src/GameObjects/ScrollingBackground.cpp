@@ -1,11 +1,8 @@
 #include <ScrollingBackground.h>
 
-ScrollingBackground::ScrollingBackground(SDL_Texture* sprite) {
-    backgroundSprite = sprite;
-    bool bQuery = SDL_QueryTexture(backgroundSprite, NULL, NULL, &textureWidth, &textureHeight);
-    if (bQuery == 1) {
-        SDL_Log( SDL_GetError());
-    }
+ScrollingBackground::ScrollingBackground(SpriteManager *spriteManager) {
+    backgroundSprite = spriteManager->stars;
+    spriteManager->getTextureDimensions(backgroundSprite, textureWidth, textureHeight);
 }
 
 void ScrollingBackground::update(double dt) {

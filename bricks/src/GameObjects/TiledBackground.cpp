@@ -1,12 +1,8 @@
 #include <TiledBackground.h>
 
-TiledBackground::TiledBackground(SDL_Texture* backgroundSprite) {
-    this->backgroundSprite = backgroundSprite;
-
-    bool bQuery = SDL_QueryTexture(backgroundSprite, NULL, NULL, &textureWidth, &textureHeight);
-    if (bQuery == 1) {
-        SDL_Log( SDL_GetError());
-    }
+TiledBackground::TiledBackground(SpriteManager *spriteManager) {
+    this->backgroundSprite = spriteManager->background;
+    spriteManager->getTextureDimensions(backgroundSprite, textureWidth, textureHeight);
 }
 
 void TiledBackground::render() {

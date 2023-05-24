@@ -3,9 +3,12 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-StartState::StartState(GameContext* gameContext, PlayState* playState) {
-    this->playState = playState;
-    this->gameContext = gameContext;
+StartState::StartState(GameContext* gameContext, PlayState* playState) :
+    gameContext(gameContext),
+    playState(playState)
+ {
+//    this->playState = playState;
+//    this->gameContext = gameContext;
 }
 
 bool StartState::enter()
@@ -13,17 +16,6 @@ bool StartState::enter()
     //Loading success flag
     bool success = true;
     spdlog::info("Entered StartState.");
-
-    int logoWidth;
-    int logoHeight;
-
-    bool bQuery = SDL_QueryTexture(gameContext->logoSprite, NULL, NULL, &logoWidth, &logoHeight);
-    if (bQuery == 1) {
-        spdlog::error("Issue querying Logo Texture: ");
-        spdlog::error(SDL_GetError());
-    }
-
-    logoRect = {(SCREEN_WIDTH / 2 - logoWidth / 2), (SCREEN_HEIGHT / 4) - (logoHeight / 2), logoWidth, logoHeight };
 
     font = gameContext->publicPixel24;
 
@@ -66,6 +58,7 @@ void StartState::handleEvent( SDL_Event& e )
 void StartState::update(double dt)
 {
     gameContext->scrollingBackground.update(dt);
+    gameContext->logoSprite.update(dt);
 }
 
 void StartState::render()
@@ -73,9 +66,10 @@ void StartState::render()
     gameContext->scrollingBackground.render();
     gameContext->borderL.render();
     gameContext->borderR.render();
-    SDL_RenderCopy(gRenderer, gameContext->logoSprite, NULL, &logoRect );
+    //SDL_RenderCopy(gRenderer, gameContext->logoSprite, NULL, &logoRect );
     spaceToStart.render();
     qToQuit.render();
     clickToLaunch.render();
     instructions.render();
+    gameContext->logoSprite.render();
 }

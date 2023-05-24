@@ -12,6 +12,8 @@ extern const char * appName;
 // Screen Dimensions
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
+extern int LOGICAL_SCREEN_WIDTH;
+extern int LOGICAL_SCREEN_HEIGHT;
 extern int PLAYFIELD_STARTX;
 extern const int PLAYFIELD_WIDTH;
 

@@ -1,14 +1,12 @@
 #include <Ball.h>
-//#include <iostream>
-#include <random>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 #include <Sign.h>
 
-Ball::Ball(SDL_Texture* ballSprite) {
-    this->ballSprite = ballSprite;
+Ball::Ball(SpriteManager *spriteManager) {
+    this->ballSprite = spriteManager->ball;
 
     startingVel = {400, -400};
     currentVel = startingVel;
@@ -16,27 +14,17 @@ Ball::Ball(SDL_Texture* ballSprite) {
     vel.x = currentVel.x;
     vel.y = currentVel.y;
 
-    bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &ballWidth, &ballHeight);
-    if (bQuery == 1) {
-        spdlog::error("Issue querying Ball Texture: ");
-        spdlog::error(SDL_GetError());
-    }
+    spriteManager->getTextureDimensions(ballSprite, ballWidth, ballHeight);
 }
 
-Ball::Ball(SDL_Texture* ballSprite, float x, float y) {
-    this->ballSprite = ballSprite;
-
+Ball::Ball(SpriteManager *spriteManager, float x, float y) {
+    this->ballSprite = spriteManager->ball;
+    spriteManager->getTextureDimensions(ballSprite, ballWidth, ballHeight);
     startingVel = {400, -400};
     currentVel = startingVel;
 
     vel.x = currentVel.x;
     vel.y = currentVel.y;
-
-    bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &ballWidth, &ballHeight);
-    if (bQuery == 1) {
-        spdlog::error("Issue querying Ball Texture: ");
-        spdlog::error(SDL_GetError());
-    }
 
     ballRect = {x, y, (float)ballWidth, (float)ballHeight};
 }
@@ -56,14 +44,6 @@ void Ball::update(double dt) {
 }
 
 void Ball::update(double dt, SDL_FRect paddleRect) {
-    ballHeight = 0;
-    ballWidth = 0;
-
-    bool bQuery = SDL_QueryTexture(ballSprite, NULL, NULL, &ballHeight, &ballWidth);
-    if (bQuery == 1) {
-        SDL_Log( SDL_GetError());
-    }
-
     ballRect.x = (paddleRect.x + (paddleRect.w / 2)) - (ballWidth / 2);
     ballRect.y = paddleRect.y - paddleRect.h;
     ballRect.w = ballWidth;
@@ -81,15 +61,6 @@ void Ball::flipY() {
 
 void Ball::flipX() {
     vel.x = vel.x * -1;
-}
-
-void Ball::randomizeXDirection() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> direction(0, 1);
-    if (direction(gen) == 1) {
-        vel.x = vel.x * -1;
-    }
 }
 
 void Ball::render() {

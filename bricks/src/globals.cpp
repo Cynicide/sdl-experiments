@@ -3,13 +3,15 @@
     // Default Screen dimensions to be overidden
     int SCREEN_WIDTH = 1280;
     int SCREEN_HEIGHT = 960;
+    int LOGICAL_SCREEN_WIDTH = 0;
+    int LOGICAL_SCREEN_HEIGHT = 0;
     
     // Width of the Virtual Playfield, starting point will change based on screen width.
     int PLAYFIELD_STARTX = 0;
     const int PLAYFIELD_WIDTH = 1280;
 
     // App Details
-    const char * appName = "Bricks Dreams";
+    const char * appName = "Brick Dreams";
 
     // Keyboard Events
     int NumKeys;

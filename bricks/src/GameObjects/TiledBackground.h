@@ -6,7 +6,7 @@ class TiledBackground
 {
 public:
     // Constructor/Destructor
-    TiledBackground(SDL_Texture* backgroundSprite);
+    TiledBackground(SpriteManager *spriteManager);
     ~TiledBackground(){};
 
     //Game loop functions

@@ -12,6 +12,9 @@ void DyingSubState::setServingSubState( SubState* servingSubState) {
 }
 
 bool DyingSubState::enter() {
+    if (gameContext->lives != 0) {
+        gameContext->lives = gameContext->lives - 1;
+    }
     return true;
 }
 bool DyingSubState::exit() {
@@ -39,6 +42,7 @@ void DyingSubState::render() {
         gameContext->borderT.render();
         gameContext->borderTL.render();
         gameContext->borderTR.render();
+        gameContext->lifeCounter.render(gameContext->lives);
         gameContext->paddle.renderDying();
         gameContext->levelManager.render();
         for (int b = 0; b < 3; ++b) {

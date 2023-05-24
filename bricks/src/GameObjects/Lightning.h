@@ -7,7 +7,7 @@ class Lightning
 {
 public:
 
-    Lightning(SDL_Texture* lightningSprite);
+    Lightning(SpriteManager *spriteManager);
     ~Lightning(){};
 
     void render();
@@ -17,6 +17,6 @@ public:
 private:
     SDL_Texture* lightningSprite;
 
-    float borderHeight = 16;
-    float borderWidth = 32;
+    int borderHeight = 0;
+    int borderWidth = 0;
 };

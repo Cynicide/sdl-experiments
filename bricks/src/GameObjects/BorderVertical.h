@@ -11,7 +11,7 @@ public:
 
     SDL_FRect borderRect;
 
-    BorderVertical(float startX, bool flipX, SDL_Texture* borderSprite);
+    BorderVertical(float startX, bool flipX, SpriteManager *spriteManager);
     ~BorderVertical(){};
 
 private:
@@ -19,8 +19,8 @@ private:
     float borderStartX = 0.f;
     float borderStartY = 0.f;
     float borderHeight = 0.f;
-    float borderWidth = 0.f;
-    float borderSpriteHeight = 0.f;
+    int borderWidth = 0;
+    int borderSpriteHeight = 0;
 
     SDL_Texture* borderSprite;
 

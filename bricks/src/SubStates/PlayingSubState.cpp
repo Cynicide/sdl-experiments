@@ -17,8 +17,8 @@ void PlayingSubState::setLevelWinSubState(SubState* levelWinSubState) {
 }
 
 bool PlayingSubState::enter() {
-    return true;
 
+    return true;
 }
 bool PlayingSubState::exit() {
 
@@ -177,10 +177,10 @@ void PlayingSubState::update(double dt) {
                 if (physics.AABBCheck(bpb, gameContext->paddle.paddleRect)) 	
                     {                             
                     Vector2d collision;
-                    double collisiontime; 
+                    //double collisiontime; 
 
                     // If the broad phase check is true then make a swept aabb check and adjust the movement of the ball
-                    collisiontime = physics.SweptAABB(gameContext->ballList[b]->ballRect, gameContext->paddle.paddleRect, gameContext->ballList[b]->vel, collision.x, collision.y);
+                    physics.SweptAABB(gameContext->ballList[b]->ballRect, gameContext->paddle.paddleRect, gameContext->ballList[b]->vel, collision.x, collision.y);
 
                     if (abs(collision.x) > 0.0001f || abs(collision.y) > 0.0001f) {
                         gameContext->paddle.hit();
@@ -280,6 +280,7 @@ void PlayingSubState::render() {
         gameContext->borderT.render();
         gameContext->borderTL.render();
         gameContext->borderTR.render();
+        gameContext->lifeCounter.render(gameContext->lives);
         gameContext->paddle.renderPlaying();
         gameContext->levelManager.render();
         for (int b = 0; b < 3; ++b) {

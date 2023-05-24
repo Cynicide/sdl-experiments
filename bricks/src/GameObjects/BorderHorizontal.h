@@ -11,16 +11,16 @@ public:
 
     SDL_FRect borderRect;
 
-    BorderHorizontal(float startX, bool flipX, SDL_Texture* borderSprite);
+    BorderHorizontal(float startX, bool flipX, SpriteManager *spriteManager);
     ~BorderHorizontal(){};
 
 private:
     // Sprites
     float borderStartX = 0.f;
     float borderStartY = 0.f;
-    float borderHeight = 0.f;
+    int borderHeight = 0;
     float borderWidth = 0.f;
-    float borderSpriteWidth = 0.f;
+    int borderSpriteWidth = 0;
 
     SDL_Texture* borderSprite;
 

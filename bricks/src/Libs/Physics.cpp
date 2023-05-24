@@ -119,7 +119,7 @@ Vector2d Physics::ProcessCollision(SDL_FRect &rectA, SDL_FRect rectB, Vector2d &
     spdlog::debug("RectB: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y) + " : " + std::to_string(rectB.w) + " : " + std::to_string(rectB.h));    
 
     float normalx, normaly;
-    float collisiontime = SweptAABB(rectA, rectB, rectAVel, normalx, normaly);
+    SweptAABB(rectA, rectB, rectAVel, normalx, normaly);
 
     // Do not need if we are not going to accelerate out of bounce
     //rectA.x += (rectAVel.x * dt) * collisiontime;

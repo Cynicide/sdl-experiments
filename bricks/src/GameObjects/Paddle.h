@@ -13,7 +13,7 @@ class Paddle
 {
 public:
 
-    Paddle(SDL_Texture* paddleSprite, SDL_Texture* explosionSprite, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound);
+    Paddle(SpriteManager *spriteManager, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound);
     ~Paddle(){};
 
     void updateServing(double dt);
@@ -40,8 +40,6 @@ private:
     Mix_Chunk* explosionSound;
 
     float paddleSpeed;
-    //int textureWidth = 144;
-    //int textureHeight = 24;
 
     int textureWidth = 0;
     int textureHeight = 0;
@@ -55,8 +53,6 @@ private:
     int explosionHeight = 0;
 
     SDL_Rect explosionSpriteClips[numExplosionSprites];
-    //int explosionWidth = 208;
-    //int explosionHeight = 72;
 
     int innerExplosionTimer = 0;
     int innerExplosionTimerMax = 2;

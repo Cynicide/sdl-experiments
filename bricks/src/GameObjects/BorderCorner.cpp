@@ -1,24 +1,16 @@
 #include <BorderCorner.h>
 //#include <iostream>
-BorderCorner::BorderCorner(float startX, bool flipX, SDL_Texture* borderSprite) {
+BorderCorner::BorderCorner(float startX, bool flipX, SpriteManager *spriteManager) {
     this->borderStartX = startX;
-    this->borderSprite = borderSprite;
+    this->borderSprite = spriteManager->techCorner;
 
+    spriteManager->getTextureDimensions(borderSprite, textureWidth, textureHeight);
+    
     if (flipX == true) {
         angle = 90;
     }
 
-    int w, h;
-    bool bQuery = SDL_QueryTexture(borderSprite, NULL, NULL, &w, &h);
-    if (bQuery == 1) {
-        spdlog::error("Issue querying Vertical Wall Texture: ");
-        spdlog::error(SDL_GetError());
-    }
-
-    borderWidth = (float)w;
-    borderHeight = (float)h;
-
-    borderRect = {borderStartX, borderStartY, borderWidth, borderHeight};
+    borderRect = {borderStartX, borderStartY, (float)textureWidth, (float)textureHeight};
 }
 
 void BorderCorner::render() 
