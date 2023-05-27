@@ -1,6 +1,6 @@
 #include <LifeCounter.h>
 //#include <iostream>
-LifeCounter::LifeCounter(float startX, SpriteManager *spriteManager) {
+LifeCounter::LifeCounter(float startX, SpriteManager* spriteManager) {
     this->lifeCounterSprite = spriteManager->lifeCounter;
     this->lifeIconSprite = spriteManager->lifeIcon;
 

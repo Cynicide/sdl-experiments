@@ -7,7 +7,7 @@ class Lightning
 {
 public:
 
-    Lightning(SpriteManager *spriteManager);
+    Lightning(SpriteManager* spriteManager);
     ~Lightning(){};
 
     void render();

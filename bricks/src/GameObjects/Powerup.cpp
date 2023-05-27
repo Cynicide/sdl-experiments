@@ -2,7 +2,7 @@
 #include <Powerup.h>
 
 
-Powerup::Powerup(SpriteManager *spriteManager, float parentXPos, float parentYPos, int parentWidth) {
+Powerup::Powerup(SpriteManager* spriteManager, float parentXPos, float parentYPos, int parentWidth) {
     this->powerupSprite = spriteManager->capsuleLaser;
 
     spriteManager->getTextureDimensions(powerupSprite, powerupWidth, powerupHeight);

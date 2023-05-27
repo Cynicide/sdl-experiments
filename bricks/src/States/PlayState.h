@@ -53,6 +53,4 @@ private:
     DyingSubState dyingSubState;
     PlayingSubState playingSubState;
     LevelWinSubState levelWinSubState;
-
-    //Definitions::SubState subState = Definitions::SubState::SERVING;
 };

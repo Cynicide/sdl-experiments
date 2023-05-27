@@ -1,6 +1,6 @@
 #include <Logo.h>
 
-Logo::Logo(SpriteManager *spriteManager) {
+Logo::Logo(SpriteManager* spriteManager) {
     this->logoTexture = spriteManager->logo;
 
     spriteManager->getTextureDimensions(logoTexture, logoWidth, logoHeight);

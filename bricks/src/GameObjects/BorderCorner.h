@@ -11,7 +11,7 @@ public:
 
     SDL_FRect borderRect;
 
-    BorderCorner(float startX, bool flipX, SpriteManager *spriteManager);
+    BorderCorner(float startX, bool flipX, SpriteManager* spriteManager);
     ~BorderCorner(){};
 
 private:

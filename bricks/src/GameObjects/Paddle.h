@@ -13,7 +13,7 @@ class Paddle
 {
 public:
 
-    Paddle(SpriteManager *spriteManager, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound);
+    Paddle(SpriteManager* spriteManager, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound);
     ~Paddle(){};
 
     void updateServing(double dt);
@@ -30,28 +30,38 @@ public:
     void reset();
     void move();
 
+    void setNormalPaddle();
+    void setLongPaddle();
+
     SDL_FRect paddleRect;
 
 private:
     // Background Sprite
     SDL_Texture* paddleSprite;
     SDL_Texture* explosionSprite;
+    SDL_Texture* longPaddle;
+
     Mix_Chunk* collisionSound;
     Mix_Chunk* explosionSound;
 
-    float paddleSpeed;
+    int paddleWidth = 0;
+    int paddleHeight = 0;
 
-    int textureWidth = 0;
-    int textureHeight = 0;
-
-    static const int numExplosionSprites = 8;
-    static const int destructionStartFrame = 0;
-    static const int destructionEndFrame = 7;
-    float currentdestructionFrame = destructionStartFrame;
+    int longPaddleWidth = 0;
+    int longPaddleHeight = 0;
 
     int explosionWidth = 0;
     int explosionHeight = 0;
 
+    int* currentTextureWidth = nullptr;
+    int* currentTextureHeight = nullptr;
+    SDL_Texture* currentTexture = nullptr;
+
+    static const int numExplosionSprites = 8;
+    static const int destructionStartFrame = 0;
+    static const int destructionEndFrame = 7;
+
+    float currentdestructionFrame = destructionStartFrame;
     SDL_Rect explosionSpriteClips[numExplosionSprites];
 
     int innerExplosionTimer = 0;

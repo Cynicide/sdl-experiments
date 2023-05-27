@@ -43,7 +43,7 @@ private:
     SDL_Texture* brickSprite;
     SDL_Rect brickSpriteClips[numSprites];
 
-    Mix_Chunk *collisionSound;
+    Mix_Chunk* collisionSound;
 
     float brickHeight = 32.f;
     float brickWidth = 64.f;

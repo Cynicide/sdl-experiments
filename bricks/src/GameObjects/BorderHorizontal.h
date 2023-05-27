@@ -11,7 +11,7 @@ public:
 
     SDL_FRect borderRect;
 
-    BorderHorizontal(float startX, bool flipX, SpriteManager *spriteManager);
+    BorderHorizontal(float startX, bool flipX, SpriteManager* spriteManager);
     ~BorderHorizontal(){};
 
 private:

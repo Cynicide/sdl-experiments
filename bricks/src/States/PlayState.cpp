@@ -9,7 +9,6 @@ PlayState::PlayState(GameContext* gameContext) :
     dyingSubState(gameContext, sNextState),
     playingSubState(gameContext, sNextState),
     levelWinSubState(gameContext, sNextState) {
-
     }
 
 bool PlayState::enter()
@@ -27,6 +26,7 @@ bool PlayState::enter()
     loadLevelSubState.setServingSubState(&servingSubState);
     levelWinSubState.setLoadLevelSubState(&loadLevelSubState);
 
+    // This seems like a bit of a hack. You're not supposed to call these methods.
     loadLevelSubState.enter();
     sCurrentState = &loadLevelSubState;
     

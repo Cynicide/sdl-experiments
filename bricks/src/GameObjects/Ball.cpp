@@ -5,7 +5,7 @@
 
 #include <Sign.h>
 
-Ball::Ball(SpriteManager *spriteManager) {
+Ball::Ball(SpriteManager* spriteManager) {
     this->ballSprite = spriteManager->ball;
 
     startingVel = {400, -400};
@@ -17,7 +17,7 @@ Ball::Ball(SpriteManager *spriteManager) {
     spriteManager->getTextureDimensions(ballSprite, ballWidth, ballHeight);
 }
 
-Ball::Ball(SpriteManager *spriteManager, float x, float y) {
+Ball::Ball(SpriteManager* spriteManager, float x, float y) {
     this->ballSprite = spriteManager->ball;
     spriteManager->getTextureDimensions(ballSprite, ballWidth, ballHeight);
     startingVel = {400, -400};

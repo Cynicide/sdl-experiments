@@ -33,7 +33,13 @@ void GameContext::AddBall() {
     }
 }
 
-void GameContext::AddBallAtLocation(float x, float y) {
+void GameContext::AddLife() {
+    if (lives < maxLives) {
+        lives = lives + 1;
+    }
+}
+
+void GameContext::AddBallsAtLocation(float x, float y) {
     for (int b = 0; b < 3; ++b) {
         if (ballList[b] == nullptr) {
             ballList[b] = new Ball(&spriteManager, x, y);

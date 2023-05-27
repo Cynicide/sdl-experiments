@@ -97,4 +97,5 @@ void SpriteManager::loadSprites() {
     capsuleLaser = loadAlphaTexture("assets\\images\\capsule-laser-sheet.png");
     lifeCounter = loadAlphaTexture("assets\\images\\life-counter.png");
     lifeIcon = loadAlphaTexture("assets\\images\\life-icon.png");
+    longPaddle = loadAlphaTexture("assets\\images\\paddle-long.png");
 }

@@ -7,7 +7,7 @@
 class LifeCounter
 {
 public:
-    LifeCounter(float startX, SpriteManager *spriteManager);
+    LifeCounter(float startX, SpriteManager* spriteManager);
     ~LifeCounter(){};
 
     void render(int lives);

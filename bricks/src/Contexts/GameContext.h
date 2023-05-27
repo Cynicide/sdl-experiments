@@ -70,8 +70,10 @@ class GameContext {
 
 
         void AddBall();
-        void AddBallAtLocation(float x, float y);        
+        void AddBallsAtLocation(float x, float y);        
         void ClearBalls();
+
+        void AddLife();
 
         void AddPowerUp(float xPos, float yPos, int parentWidth);
         void ClearPowerups();

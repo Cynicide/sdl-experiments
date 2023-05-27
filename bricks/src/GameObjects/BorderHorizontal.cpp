@@ -1,6 +1,6 @@
 #include <BorderHorizontal.h>
 //#include <iostream>
-BorderHorizontal::BorderHorizontal(float startX, bool flipX, SpriteManager *spriteManager) {
+BorderHorizontal::BorderHorizontal(float startX, bool flipX, SpriteManager* spriteManager) {
 
     this->borderStartX = startX;
     this->borderSprite = spriteManager->techTopBorder;

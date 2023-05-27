@@ -1,6 +1,6 @@
 #include <TiledBackground.h>
 
-TiledBackground::TiledBackground(SpriteManager *spriteManager) {
+TiledBackground::TiledBackground(SpriteManager* spriteManager) {
     this->backgroundSprite = spriteManager->background;
     spriteManager->getTextureDimensions(backgroundSprite, textureWidth, textureHeight);
 }

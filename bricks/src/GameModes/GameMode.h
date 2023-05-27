@@ -1,13 +1,11 @@
 #pragma once
-
-#pragma once
 #include <SDL2/SDL.h>
 
-//Sub state base class
+//Game Mode base class
 class GameMode
 {
 public:
-    //State transitions
+    //Game Mode transitions
     virtual bool enter() = 0;
     virtual bool exit() = 0;
 
@@ -18,5 +16,7 @@ public:
 
     //Make sure to call child destructors
     virtual ~GameMode(){};
+
+protected:
 
 };

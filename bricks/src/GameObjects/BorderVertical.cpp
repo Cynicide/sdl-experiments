@@ -1,6 +1,6 @@
 #include <BorderVertical.h>
 //#include <iostream>
-BorderVertical::BorderVertical(float startX, bool flipX, SpriteManager *spriteManager) {
+BorderVertical::BorderVertical(float startX, bool flipX, SpriteManager* spriteManager) {
 
     this->borderStartX = startX;
     this->borderSprite = spriteManager->techBorder;

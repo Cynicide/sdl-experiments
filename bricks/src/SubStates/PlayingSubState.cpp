@@ -5,8 +5,14 @@
 
 PlayingSubState::PlayingSubState(GameContext* gameContext, SubState*& sNextState) :
     gameContext(gameContext),
-    sNextState(sNextState) {
-}
+    sNextState(sNextState),
+    normalGameMode(gameContext),
+    longGameMode(gameContext, sNextMode),
+    tripleGameMode(gameContext, sNextMode),
+    addLifeGameMode(gameContext, sNextMode)
+    {
+
+    }
 
 void PlayingSubState::setDyingSubState(SubState* dyingSubState) {
     this->dyingSubState = dyingSubState;
@@ -17,7 +23,12 @@ void PlayingSubState::setLevelWinSubState(SubState* levelWinSubState) {
 }
 
 bool PlayingSubState::enter() {
+    longGameMode.setNormalMode(&normalGameMode);
+    tripleGameMode.setNormalMode(&normalGameMode);
+    addLifeGameMode.setNormalMode(&normalGameMode);
 
+    sCurrentMode = &normalGameMode;
+    normalGameMode.enter();
     return true;
 }
 bool PlayingSubState::exit() {
@@ -66,6 +77,9 @@ void PlayingSubState::update(double dt) {
         }
     }
 
+    // Run the game mode update logic
+    sCurrentMode->update(dt);
+
     if (nextLevel == true) {
         sNextState = levelWinSubState;
     }
@@ -81,16 +95,12 @@ void PlayingSubState::update(double dt) {
     for (int p = 0; p < 5; ++p) {
         if (gameContext->powerupList[p] != nullptr) {
             if (physics.AABBCheck(gameContext->paddle.paddleRect, gameContext->powerupList[p]->powerupRect)) {
-                // If we collide spawn 3 balls (Temp)
-                for (int b = 0; b < 3; ++b) {
-                    if (gameContext->ballList[b] != nullptr) {
-                        gameContext->AddBallAtLocation(gameContext->ballList[b]->ballRect.x, gameContext->ballList[b]->ballRect.y);
-                        break;
-                    }
-                }
                 // Delete the powerup and cleanup.
                 delete(gameContext->powerupList[p]);
                 gameContext->powerupList[p] = nullptr;
+
+                // Testing Powerups
+                sNextMode = &addLifeGameMode;
             }
         }
     }
@@ -194,7 +204,7 @@ void PlayingSubState::update(double dt) {
             float firstCollisionTime = std::numeric_limits<float>::max();
             std::vector<Brick> collisionList = {};
             Vector2d firstCollision;
-            Brick *firstHitBrick = nullptr;
+            Brick* firstHitBrick = nullptr;
             
             // Check each brick for collision
             for (auto &i : gameContext->levelManager.brickList) 
@@ -267,6 +277,18 @@ void PlayingSubState::update(double dt) {
                 spdlog::info("@@@@@@@@@@@@@@@@@@@@@@ COLLISION POSSIBLE FOR MORE THAN ONE BLOCK (" + std::to_string(collisionList.size()) + ")");
             }
         }
+    }
+
+    // Change Game Mode if required
+
+    if( sNextMode != nullptr )
+    {
+		sCurrentMode->exit();
+		sNextMode->enter();
+
+        //Change the current state ID
+        sCurrentMode = sNextMode;
+        sNextMode = nullptr;
     }
 }
 

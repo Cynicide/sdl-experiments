@@ -1,6 +1,6 @@
 #include <ScrollingBackground.h>
 
-ScrollingBackground::ScrollingBackground(SpriteManager *spriteManager) {
+ScrollingBackground::ScrollingBackground(SpriteManager* spriteManager) {
     backgroundSprite = spriteManager->stars;
     spriteManager->getTextureDimensions(backgroundSprite, textureWidth, textureHeight);
 }

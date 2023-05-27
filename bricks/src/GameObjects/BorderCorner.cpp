@@ -1,6 +1,6 @@
 #include <BorderCorner.h>
 //#include <iostream>
-BorderCorner::BorderCorner(float startX, bool flipX, SpriteManager *spriteManager) {
+BorderCorner::BorderCorner(float startX, bool flipX, SpriteManager* spriteManager) {
     this->borderStartX = startX;
     this->borderSprite = spriteManager->techCorner;
 

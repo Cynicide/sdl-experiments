@@ -7,8 +7,8 @@ class Ball
 {
 public:
 
-    Ball(SpriteManager *spriteManager);
-    Ball(SpriteManager *spriteManager, float x, float y);
+    Ball(SpriteManager* spriteManager);
+    Ball(SpriteManager* spriteManager, float x, float y);
     ~Ball(){};
 
     // State Methods

@@ -5,7 +5,7 @@
 class Logo {
 
 public:
-    Logo(SpriteManager *spriteManager);
+    Logo(SpriteManager* spriteManager);
     ~Logo(){};
     void render();
     void update(double dt);
@@ -13,7 +13,7 @@ public:
 private:
 
     SDL_FRect logoRect;
-    SDL_Texture *logoTexture;
+    SDL_Texture* logoTexture;
     float logoXPos = 0.f;
     float logoYPos = 0.f;
     int logoWidth = 0;

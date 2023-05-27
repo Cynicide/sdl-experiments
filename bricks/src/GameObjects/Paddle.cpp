@@ -2,16 +2,20 @@
 //#include <iostream>
 #include <Vector2d.h>
 
-Paddle::Paddle(SpriteManager *spriteManager, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound) : 
+Paddle::Paddle(SpriteManager* spriteManager, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound) : 
     paddleSprite(spriteManager->paddle),
     explosionSprite(spriteManager->shipExplosion),
+    longPaddle(spriteManager->longPaddle),
     collisionSound(collisionSound),
     explosionSound(explosionSound) {
 
-    paddleSpeed = 5.f;
-
-    spriteManager->getTextureDimensions(paddleSprite, textureWidth, textureHeight);
+    spriteManager->getTextureDimensions(paddleSprite, paddleWidth, paddleHeight);
     spriteManager->getTextureDimensions(explosionSprite, explosionWidth, explosionHeight);
+    spriteManager->getTextureDimensions(longPaddle, longPaddleWidth, longPaddleHeight);
+
+    currentTextureWidth = &paddleWidth;
+    currentTextureHeight = &paddleHeight;
+    currentTexture = paddleSprite;
 
     sliceExplosionSheet();
 }
@@ -35,13 +39,13 @@ void Paddle::updateDying(double dt) {
 
 
 void Paddle::renderServing() {
-    SDL_RenderCopyF(gRenderer, paddleSprite, NULL, &paddleRect );
+    SDL_RenderCopyF(gRenderer, currentTexture, NULL, &paddleRect );
     //SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
     //SDL_RenderDrawRectF(gRenderer, &paddleRect);
 }
 
 void Paddle::renderPlaying() {
-    SDL_RenderCopyF(gRenderer, paddleSprite, NULL, &paddleRect );
+    SDL_RenderCopyF(gRenderer, currentTexture, NULL, &paddleRect );
     //SDL_SetRenderDrawColor(gRenderer, 255,0,0, SDL_ALPHA_OPAQUE);
     //SDL_RenderDrawRectF(gRenderer, &paddleRect);
 }
@@ -69,8 +73,21 @@ void Paddle::destroy() {
 
 }
 
+void Paddle::setNormalPaddle() {
+    currentTextureWidth = &paddleWidth;
+    currentTextureHeight = &paddleHeight;
+    currentTexture = paddleSprite;
+}
+
+void Paddle::setLongPaddle() {
+    currentTextureWidth = &longPaddleWidth;
+    currentTextureHeight = &longPaddleHeight;
+    currentTexture = longPaddle;
+}
+
 void Paddle::move() {
-  int borderHeight = 16;
+    // Hmmm... This looks bad. How do we replace this?
+    int borderHeight = 16;
     int borderWidth = 32;      
 
     int x, y;
@@ -80,18 +97,20 @@ void Paddle::move() {
 
     int paddleX = static_cast<int>(x / scaleX);
 
+    paddleRect.w = static_cast<float>(*currentTextureWidth);
+    paddleRect.h = static_cast<float>(*currentTextureHeight);
+
     paddleRect.x = paddleX - (paddleRect.w / 2);
 
     if (paddleRect.x < PLAYFIELD_STARTX + borderWidth) {
         paddleRect.x = PLAYFIELD_STARTX + borderWidth;
     } 
 
-    if (paddleRect.x > PLAYFIELD_STARTX + PLAYFIELD_WIDTH - textureWidth - borderWidth) {
-        paddleRect.x = PLAYFIELD_STARTX + PLAYFIELD_WIDTH - textureWidth - borderWidth;
+    if (paddleRect.x > PLAYFIELD_STARTX + PLAYFIELD_WIDTH - paddleRect.w - borderWidth) {
+        paddleRect.x = PLAYFIELD_STARTX + PLAYFIELD_WIDTH - paddleRect.w - borderWidth;
     }
-    paddleRect.y = SCREEN_HEIGHT - textureHeight - borderHeight;
-    paddleRect.w = textureWidth;
-    paddleRect.h = textureHeight;
+    paddleRect.y = SCREEN_HEIGHT - paddleRect.h - borderHeight;
+
 }
 
 void Paddle::reset() {

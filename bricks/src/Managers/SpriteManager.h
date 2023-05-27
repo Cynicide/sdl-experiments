@@ -14,7 +14,7 @@ public:
     SpriteManager();
     ~SpriteManager();
 
-    bool getTextureDimensions(SDL_Texture *texture, int &width, int& height);
+    bool getTextureDimensions(SDL_Texture* texture, int& width, int& height);
 
     // Sprites
     SDL_Texture* stars;
@@ -38,6 +38,7 @@ public:
     SDL_Texture* lifeCounter;
     SDL_Texture* lifeIcon;
     SDL_Texture* capsuleLaser;
+    SDL_Texture* longPaddle;
 
     void loadSprites();
 

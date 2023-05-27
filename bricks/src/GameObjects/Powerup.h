@@ -5,7 +5,7 @@
 class Powerup {
 
 public:
-    Powerup(SpriteManager *spriteManager, float parentXPos, float parentYPos, int parentWidth);
+    Powerup(SpriteManager* spriteManager, float parentXPos, float parentYPos, int parentWidth);
     ~Powerup(){};
     void update(double dt);
     void render();
