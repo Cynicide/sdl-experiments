@@ -1,9 +1,39 @@
 #include <globals.h>
 #include <Powerup.h>
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
 
+Powerup::Powerup(SpriteManager* spriteManager, float parentXPos, float parentYPos, int parentWidth, Definitions::PowerUpType powerupType) {
+    
+    this->powerupType = powerupType;
 
-Powerup::Powerup(SpriteManager* spriteManager, float parentXPos, float parentYPos, int parentWidth) {
-    this->powerupSprite = spriteManager->capsuleLaser;
+    switch (this->powerupType) {
+        case Definitions::PowerUpType::Laser: {
+            spdlog::info("Setting sprite for Laser");
+            this->powerupSprite = spriteManager->capsuleLaser;
+            break;
+        }
+        case Definitions::PowerUpType::ExtraLife: {
+            spdlog::info("Setting sprite for Extra Life");
+            this->powerupSprite = spriteManager->capsuleExtraLife;
+            break;
+        }
+        case Definitions::PowerUpType::SlowBall: {
+            spdlog::info("Setting sprite for Slow");
+            this->powerupSprite = spriteManager->capsuleSlow;
+            break;
+        }
+        case Definitions::PowerUpType::TripleBall: {
+            spdlog::info("Setting sprite for Triple");
+            this->powerupSprite = spriteManager->capsuleTriple;
+            break;
+        }
+        case Definitions::PowerUpType::Wide: {
+            spdlog::info("Setting sprite for Wide");
+            this->powerupSprite = spriteManager->capsuleWide;
+            break;
+        }
+    };
 
     spriteManager->getTextureDimensions(powerupSprite, powerupWidth, powerupHeight);
 

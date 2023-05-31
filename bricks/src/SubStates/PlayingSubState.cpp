@@ -8,8 +8,8 @@ PlayingSubState::PlayingSubState(GameContext* gameContext, SubState*& sNextState
     sNextState(sNextState),
     normalGameMode(gameContext),
     longGameMode(gameContext, sNextMode),
-    tripleGameMode(gameContext, sNextMode),
-    addLifeGameMode(gameContext, sNextMode)
+    slowGameMode(gameContext, sNextMode),
+    laserMode(gameContext, sNextMode)
     {
 
     }
@@ -24,8 +24,8 @@ void PlayingSubState::setLevelWinSubState(SubState* levelWinSubState) {
 
 bool PlayingSubState::enter() {
     longGameMode.setNormalMode(&normalGameMode);
-    tripleGameMode.setNormalMode(&normalGameMode);
-    addLifeGameMode.setNormalMode(&normalGameMode);
+    slowGameMode.setNormalMode(&normalGameMode);
+    laserMode.setNormalMode(&normalGameMode);
 
     sCurrentMode = &normalGameMode;
     normalGameMode.enter();
@@ -66,6 +66,13 @@ void PlayingSubState::update(double dt) {
             }
         }
 
+        // Update each bullet position if they are not null
+        for (int p = 0; p < 2; ++p) {
+            if (gameContext->bulletList[p] != nullptr) {
+                gameContext->bulletList[p]->update(dt);
+            }
+        }
+
     gameContext->levelManager.update(dt);
 
     // Is the Level Over?
@@ -95,21 +102,71 @@ void PlayingSubState::update(double dt) {
     for (int p = 0; p < 5; ++p) {
         if (gameContext->powerupList[p] != nullptr) {
             if (physics.AABBCheck(gameContext->paddle.paddleRect, gameContext->powerupList[p]->powerupRect)) {
+                // Fire Powerup Effect
+                switch(gameContext->powerupList[p]->powerupType) {
+                    case Definitions::PowerUpType::ExtraLife: {
+                        gameContext->AddLife();
+                        break;
+                    }
+                    case Definitions::PowerUpType::SlowBall: {
+                        sNextMode = &slowGameMode;
+                        break;
+                    }
+                    case Definitions::PowerUpType::TripleBall: {
+                        for (int b = 0; b < 3; ++b) {
+                            if (gameContext->ballList[b] != nullptr) {
+                                gameContext->AddBallsAtLocation(gameContext->ballList[b]->ballRect.x, gameContext->ballList[b]->ballRect.y, gameContext->ballList[b]->getCurrentVel());
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case Definitions::PowerUpType::Wide: {
+                        sNextMode = &longGameMode;
+                        break;
+                    }
+                    case Definitions::PowerUpType::Laser: {
+                        sNextMode = &laserMode;
+                        break;
+                    }
+                };
+
                 // Delete the powerup and cleanup.
                 delete(gameContext->powerupList[p]);
                 gameContext->powerupList[p] = nullptr;
-
-                // Testing Powerups
-                sNextMode = &addLifeGameMode;
             }
         }
     }
 
+    // Collision for Lasers
+    // Top Border
+    for (int r = 0; r < 2; ++r) {
+        if (gameContext->bulletList[r] != nullptr) {
+            if (physics.AABBCheck(gameContext->bulletList[r]->bulletRect, gameContext->borderT.borderRect)) {
+                delete(gameContext->bulletList[r]);
+                gameContext->bulletList[r] = nullptr;
+                //if we've hit the wall we don't need to check any bricks
+                continue;
+            }
+            
+            for (auto &i : gameContext->levelManager.brickList) {
+                if (i.brickStatus == Definitions::BrickStatus::Good) {
+                    if (physics.AABBCheck(gameContext->bulletList[r]->bulletRect, i.brickRect)) {
+                        delete(gameContext->bulletList[r]);
+                        gameContext->bulletList[r] = nullptr;
+                        i.hit();
+                        // Move onto the next bullet as we don't need to check any more bricks
+                        break;
+                    }
+                }    
+            }            
+        }
+    }
+
+
     // Collision for the Ball(s)
 
     // Collision - Bottom Border
-    // AABB Check Ball Rect versus Lightning Rect
-
     for (int b = 0; b < 3; ++b) {
         if (gameContext->ballList[b] != nullptr) {
             if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->lightning.bBorder)) {
@@ -133,62 +190,39 @@ void PlayingSubState::update(double dt) {
 
     for (int b = 0; b < 3; ++b) {
         if (gameContext->ballList[b] != nullptr) {
-            // Update the Broad Phase Box for the Ball
+
             bpb = physics.GetSweptBroadphaseBox(gameContext->ballList[b]->ballRect, gameContext->ballList[b]->vel.x * dt, gameContext->ballList[b]->vel.y * dt);    
 
             // Collision - Top Border
-            // AABB Check Ball Rect versus Border Rect
             if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->borderT.borderRect)) 
             {
-                spdlog::debug("########### Horizontal Wall to Paddle Collision ###########");
                 gameContext->ballList[b]->hitTopWall(gameContext->borderT.borderRect);
             }
 
             // Collision - Side Borders
-            // AABB Check Ball Rect versus Side Border Rects
             if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->borderL.borderRect))  
             {
-                spdlog::debug("########### Vertical Wall to Paddle Collision ###########");
                 gameContext->ballList[b]->hitLeftWall(gameContext->borderL.borderRect);
             }
             
             if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->borderR.borderRect))  
             {
-                spdlog::debug("########### Vertical Wall to Paddle Collision ###########");
                 gameContext->ballList[b]->hitRightWall(gameContext->borderR.borderRect);
             }
 
             // Collision - Paddle
-            
-            // If the ball is on the bottom half of the screen check for collision
+            // Only check for collision if the ball is on the lower half of the screen
             if (gameContext->ballList[b]->ballRect.y > SCREEN_HEIGHT / 2) 
             {
-                // If we are already inside the paddle then the paddle may have moved into the ball as the player can move
-                // it as fast as they can move the mouse
-                if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->paddle.paddleRect)) {
-                    bool colliding = true;
-                    
-                    // This is a disgusting hack that moves the ball above the paddle and sets the Y velocity
-                    // I have discovered I do not like programming physics or collision detection.
+                // If we are already inside the paddle then the paddle may have moved into the ball as the player can move as fast as they can move the mouse
+                if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->paddle.paddleRect)) {             
+                    // This is a disgusting hack that moves the ball above the paddle 
                     gameContext->ballList[b]->ballRect.y = gameContext->paddle.paddleRect.y - gameContext->ballList[b]->ballRect.h ;
-                    if (sgn(gameContext->ballList[b]->vel.y) == 1) {
-                        gameContext->ballList[b]->vel.y = gameContext->ballList[b]->vel.y * -1;
-                    }
-
-                    while (colliding) {
-                        // If we find ourselves still colliding with the paddle we're going to update the balls location until we're not
-                        gameContext->ballList[b]->update(dt);
-                        if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->paddle.paddleRect) == false) {
-                            colliding = false;
-                        }
-                    }
                 } 
                 // If we are not inside the paddle then perform a broad phase collision check
                 if (physics.AABBCheck(bpb, gameContext->paddle.paddleRect)) 	
                     {                             
                     Vector2d collision;
-                    //double collisiontime; 
-
                     // If the broad phase check is true then make a swept aabb check and adjust the movement of the ball
                     physics.SweptAABB(gameContext->ballList[b]->ballRect, gameContext->paddle.paddleRect, gameContext->ballList[b]->vel, collision.x, collision.y);
 
@@ -238,8 +272,6 @@ void PlayingSubState::update(double dt) {
                         brAddr = ssBrAddr.str();
                         spdlog::info("Brick: " + brAddr + " -- CollisionTime: " + std::to_string(collisiontime));
                     }
-
-
                     // If the collision time is shorter than the last collision time we reported point to it
                     
                     if (collisiontime < firstCollisionTime && (abs(collision.x) > 0.0001f || abs(collision.y) > 0.0001f)) {
@@ -247,16 +279,9 @@ void PlayingSubState::update(double dt) {
                         firstCollision = collision;
                         firstHitBrick = &i;
                     }
-                    }
-                    // Lastly if we find ourselves inside a brick. Stop everything.
-                    //if (physics.AABBCheck(ball.ballRect, i.brickRect)) {
-                    //    subState = Definitions::SubState::BRICKDEBUG;
-                    //    spdlog::info("------------- Ball Inside Brick -------------");
-                    //    spdlog::info("Ball:  X1: " + std::to_string(ball.ballRect.x) + ", Y1: " + std::to_string(ball.ballRect.y) + ", X2: " + std::to_string(ball.ballRect.x + ball.ballRect.w) + " Y2: " + std::to_string(ball.ballRect.y + ball.ballRect.h));
-                    //    spdlog::info("Brick: X1: " + std::to_string(i.brickRect.x) + ", Y1: " + std::to_string(i.brickRect.y) + ", X2: " + std::to_string(i.brickRect.x + i.brickRect.w) + " Y2: " + std::to_string(i.brickRect.y + i.brickRect.h));
-                    //}
                 }
             }
+        }
 
 
             if (firstHitBrick != nullptr) {
@@ -314,6 +339,12 @@ void PlayingSubState::render() {
         for (int p = 0; p < 5; ++p) {
             if (gameContext->powerupList[p] != nullptr) {
                 gameContext->powerupList[p]->render();
+            }
+        }
+
+        for (int r = 0; r < 2; ++r) {
+            if (gameContext->bulletList[r] != nullptr) {
+                gameContext->bulletList[r]->render();
             }
         }
 }

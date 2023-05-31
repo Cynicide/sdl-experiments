@@ -16,16 +16,22 @@ namespace Definitions
     enum BrickStatus {
         Good,
         Exploding,
-        Destroyed,
+        Destroyed
     };
 
     enum PowerUpType {
-        StickyBalls, 
-        OneUp,
-        TripleBalls,
-        Lasers, 
-        SlowBalls,
-        LevelSkip
+        Glue, 
+        ExtraLife,
+        TripleBall,
+        Laser, 
+        SlowBall,
+        LevelSkip,
+        Wide
+    };
+
+    enum BulletStatus {
+        BulletGood,
+        BulletExploding
     };
     
     /*static const std::unordered_map<int, Definitions::BrickType> typeMap {

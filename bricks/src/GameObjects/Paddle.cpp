@@ -6,12 +6,14 @@ Paddle::Paddle(SpriteManager* spriteManager, Mix_Chunk* collisionSound, Mix_Chun
     paddleSprite(spriteManager->paddle),
     explosionSprite(spriteManager->shipExplosion),
     longPaddle(spriteManager->longPaddle),
+    laserPaddle(spriteManager->laserPaddle),
     collisionSound(collisionSound),
     explosionSound(explosionSound) {
 
     spriteManager->getTextureDimensions(paddleSprite, paddleWidth, paddleHeight);
     spriteManager->getTextureDimensions(explosionSprite, explosionWidth, explosionHeight);
     spriteManager->getTextureDimensions(longPaddle, longPaddleWidth, longPaddleHeight);
+    spriteManager->getTextureDimensions(laserPaddle, laserPaddleWidth, laserPaddleHeight);
 
     currentTextureWidth = &paddleWidth;
     currentTextureHeight = &paddleHeight;
@@ -85,6 +87,12 @@ void Paddle::setLongPaddle() {
     currentTexture = longPaddle;
 }
 
+void Paddle::setLaserPaddle() {
+    currentTextureWidth = &laserPaddleWidth;
+    currentTextureHeight = &laserPaddleHeight;
+    currentTexture = laserPaddle;
+}
+
 void Paddle::move() {
     // Hmmm... This looks bad. How do we replace this?
     int borderHeight = 16;
@@ -120,11 +128,21 @@ void Paddle::reset() {
 }
 
 void Paddle::hit() {
-    Mix_PlayChannel( -1, collisionSound, 0 );
+    if (Mix_Playing(1)) {
+        Mix_HaltChannel(1);
+        Mix_PlayChannel(1, collisionSound, 0);
+    } else {
+        Mix_PlayChannel(1, collisionSound, 0);
+    }     
 }
 
 void Paddle::explode() {
-    Mix_PlayChannel( -1, explosionSound, 0 );
+    if (Mix_Playing(2)) {
+        Mix_HaltChannel(2);
+        Mix_PlayChannel(2, explosionSound, 0);
+    } else {
+        Mix_PlayChannel(2, explosionSound, 0);
+    }
 }
 
 void Paddle::sliceExplosionSheet() {

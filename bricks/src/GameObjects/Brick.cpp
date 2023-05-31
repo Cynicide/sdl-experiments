@@ -99,7 +99,14 @@ void Brick::render()
 
 Definitions::BrickStatus Brick::hit() {
     
-    Mix_PlayChannel( -1, collisionSound, 0 );
+    if (Mix_Playing(3)) {
+        Mix_HaltChannel(3);
+        Mix_PlayChannel(3, collisionSound, 0);
+    } else {
+        Mix_PlayChannel(3, collisionSound, 0);
+    } 
+    
+    //Mix_PlayChannel( 3, collisionSound, 0 );
     
     if (destructable == true) {
         health = health - 1;

@@ -23,7 +23,8 @@ Mix_Music* AudioManager::loadMusic(const char * filename) {
 void AudioManager::loadAudio() {
     ping = loadSound("assets\\audio\\ping.wav");
     pong = loadSound("assets\\audio\\pong.wav"); 
-    explosion = loadSound("assets\\audio\\explosion.wav"); 
+    explosion = loadSound("assets\\audio\\explosion.wav");
+    laser = loadSound("assets\\audio\\laser.wav"); 
 
 
 }

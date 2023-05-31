@@ -8,7 +8,7 @@ class Ball
 public:
 
     Ball(SpriteManager* spriteManager);
-    Ball(SpriteManager* spriteManager, float x, float y);
+    Ball(SpriteManager* spriteManager, float x, float y, float currentVel);
     ~Ball(){};
 
     // State Methods
@@ -23,6 +23,9 @@ public:
     void hitPaddle(Vector2d normals, SDL_FRect paddleRect);
     void hitBrick(Vector2d normals);
     void hitLightning();
+    void speedUp();
+    float getCurrentVel();
+    void setSpeed(int ballSpeed);
 
     // Other
     void changeAngle(int hitLocation, int paddleSize);
@@ -39,8 +42,10 @@ private:
     int ballWidth = 0;
 
     // Velocity    
-    Vector2d startingVel;
-    Vector2d currentVel;
+    int maxVel = 600;
+    int startingVel = 400;
+    int speedUpAmount = 20;
+    float currentVel = 0;
 
     void flipY();
     void flipX();

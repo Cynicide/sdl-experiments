@@ -9,8 +9,8 @@
 #include <GameMode.h>
 #include <NormalMode.h>
 #include <LongMode.h>
-#include <TripleMode.h>
-#include <AddLifeMode.h>
+#include <SlowMode.h>
+#include <LaserMode.h>
 
 #include <Text.h>
 #include <Physics.h>
@@ -49,7 +49,7 @@ private:
 
     NormalMode normalGameMode;
     LongMode longGameMode;
-    TripleMode tripleGameMode;
-    AddLifeMode addLifeGameMode;
+    SlowMode slowGameMode;
+    LaserMode laserMode;
 
 };

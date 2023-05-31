@@ -1,16 +1,18 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SpriteManager.h>
+#include <Definitions.h>
 
 class Powerup {
 
 public:
-    Powerup(SpriteManager* spriteManager, float parentXPos, float parentYPos, int parentWidth);
+    Powerup(SpriteManager* spriteManager, float parentXPos, float parentYPos, int parentWidth, Definitions::PowerUpType powerupType);
     ~Powerup(){};
     void update(double dt);
     void render();
 
     SDL_FRect powerupRect;
+    Definitions::PowerUpType powerupType;
 
 private:
     void SliceSpriteSheet();
@@ -23,6 +25,5 @@ private:
     float currentFrame = 0.f;
     int powerupHeight = 0;
     int powerupWidth = 0;
-
     float yVel = 250.0f;
 };

@@ -3,6 +3,7 @@
 #include <TiledBackground.h>
 #include <Paddle.h>
 #include <Ball.h>
+#include <Bullet.h>
 #include <BorderHorizontal.h>
 #include <BorderVertical.h>
 #include <BorderCorner.h>
@@ -13,6 +14,7 @@
 #include <Powerup.h>
 #include <LifeCounter.h>
 #include <Logo.h>
+#include <Definitions.h>
 
 #include <TextManager.h>
 #include <AudioManager.h>
@@ -62,6 +64,7 @@ class GameContext {
         //Lists
         Ball* ballList[3] = {};
         Powerup* powerupList[5] = {};
+        Bullet* bulletList[2] = {};
 
         //Game Concepts
         const static int startingLives = 3;
@@ -70,15 +73,25 @@ class GameContext {
 
 
         void AddBall();
-        void AddBallsAtLocation(float x, float y);        
+        void AddBallsAtLocation(float x, float y, float currentVal);        
         void ClearBalls();
 
         void AddLife();
 
         void AddPowerUp(float xPos, float yPos, int parentWidth);
+        Definitions::PowerUpType randomizePowerUp();
         void ClearPowerups();
+
+        void AddBullets(SDL_FRect paddleRect);
+        void ClearBullets();
 
     private:
         constexpr static float borderWidthV = 32.f;
         constexpr static float borderWidthC = 32.f;
+
+        int extraLifeChance = 5;
+        int slowBallChance = 28;
+        int wideChance = 52;
+        int tripleBallChance = 77;
+        int laserChance = 100;
 };

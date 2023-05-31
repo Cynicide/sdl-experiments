@@ -20,9 +20,15 @@ public:
     SDL_Texture* stars;
     SDL_Texture* logo;
     SDL_Texture* background;
+
     SDL_Texture* paddle;
+    SDL_Texture* longPaddle;
+    SDL_Texture* laserPaddle;
+    SDL_Texture* shipExplosion;
+
     SDL_Texture* ball;
-    SDL_Texture* lightning;
+    SDL_Texture* bullet;
+    
     SDL_Texture* brickRed;
     SDL_Texture* brickBlue;
     SDL_Texture* brickYellow;
@@ -31,14 +37,20 @@ public:
     SDL_Texture* brickGreen;
     SDL_Texture* brickPurple;
     SDL_Texture* brickOrange;
-    SDL_Texture* shipExplosion;
+
     SDL_Texture* techBorder;
     SDL_Texture* techCorner;
     SDL_Texture* techTopBorder;
+    SDL_Texture* lightning;
+    
     SDL_Texture* lifeCounter;
     SDL_Texture* lifeIcon;
+
     SDL_Texture* capsuleLaser;
-    SDL_Texture* longPaddle;
+    SDL_Texture* capsuleExtraLife;
+    SDL_Texture* capsuleSlow;    
+    SDL_Texture* capsuleTriple;
+    SDL_Texture* capsuleWide;
 
     void loadSprites();
 

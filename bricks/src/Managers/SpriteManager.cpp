@@ -76,12 +76,23 @@ SDL_Texture* SpriteManager::loadTexture(std::string path) {
 }
 
 void SpriteManager::loadSprites() {
+    
+    // Misc
     stars = loadAlphaTexture("assets\\images\\stars.png");
     logo = loadAlphaTexture("assets\\images\\logo.png");
     background = loadAlphaTexture("assets\\images\\background.png");
+    
+    // Ship
     paddle = loadAlphaTexture("assets\\images\\paddle.png");
+    shipExplosion = loadAlphaTexture("assets\\images\\explosion-sheet.png");
+    laserPaddle = loadAlphaTexture("assets\\images\\paddle-lasermode.png");
+    longPaddle = loadAlphaTexture("assets\\images\\paddle-long.png");
+
+    // Ball
     ball = loadAlphaTexture("assets\\images\\ball.png");
-    lightning = loadAlphaTexture("assets\\images\\lightning.png");
+    bullet = loadAlphaTexture("assets\\images\\laser-shot-sheet.png");
+
+
     brickRed = loadAlphaTexture("assets\\images\\brick-red-sheet.png");
     brickBlue = loadAlphaTexture("assets\\images\\brick-blue-sheet.png");
     brickYellow = loadAlphaTexture("assets\\images\\brick-yellow-sheet.png");
@@ -90,12 +101,21 @@ void SpriteManager::loadSprites() {
     brickOrange = loadAlphaTexture("assets\\images\\brick-orange-sheet.png");
     brickTough = loadAlphaTexture("assets\\images\\brick-tough-sheet.png");
     brickIndestructable = loadAlphaTexture("assets\\images\\brick-indestructable-sheet.png");
-    shipExplosion = loadAlphaTexture("assets\\images\\explosion-sheet.png");
+
+    //Borders
     techBorder = loadAlphaTexture("assets\\images\\border-sides.png");
     techCorner = loadAlphaTexture("assets\\images\\border-corner.png");
     techTopBorder = loadAlphaTexture("assets\\images\\border-top.png");
-    capsuleLaser = loadAlphaTexture("assets\\images\\capsule-laser-sheet.png");
+    lightning = loadAlphaTexture("assets\\images\\lightning.png");
+
+    // Life Counter
     lifeCounter = loadAlphaTexture("assets\\images\\life-counter.png");
     lifeIcon = loadAlphaTexture("assets\\images\\life-icon.png");
-    longPaddle = loadAlphaTexture("assets\\images\\paddle-long.png");
+    
+    // Powerups
+    capsuleLaser = loadAlphaTexture("assets\\images\\capsule-laser-sheet.png");
+    capsuleExtraLife = loadAlphaTexture("assets\\images\\capsule-1up-sheet.png");
+    capsuleSlow = loadAlphaTexture("assets\\images\\capsule-slow-sheet.png");
+    capsuleTriple = loadAlphaTexture("assets\\images\\capsule-triple-sheet.png");
+    capsuleWide = loadAlphaTexture("assets\\images\\capsule-wide-sheet.png");
 }

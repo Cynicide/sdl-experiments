@@ -32,6 +32,7 @@ public:
 
     void setNormalPaddle();
     void setLongPaddle();
+    void setLaserPaddle();
 
     SDL_FRect paddleRect;
 
@@ -40,6 +41,7 @@ private:
     SDL_Texture* paddleSprite;
     SDL_Texture* explosionSprite;
     SDL_Texture* longPaddle;
+    SDL_Texture* laserPaddle;
 
     Mix_Chunk* collisionSound;
     Mix_Chunk* explosionSound;
@@ -49,6 +51,9 @@ private:
 
     int longPaddleWidth = 0;
     int longPaddleHeight = 0;
+
+    int laserPaddleWidth = 0;
+    int laserPaddleHeight = 0;
 
     int explosionWidth = 0;
     int explosionHeight = 0;
