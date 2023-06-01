@@ -33,6 +33,16 @@ Powerup::Powerup(SpriteManager* spriteManager, float parentXPos, float parentYPo
             this->powerupSprite = spriteManager->capsuleWide;
             break;
         }
+        case Definitions::PowerUpType::LevelSkip: {
+            spdlog::info("Setting sprite for Level Skip");
+            this->powerupSprite = spriteManager->capsuleJump;
+            break;
+        }
+        case Definitions::PowerUpType::Magnetic: {
+            spdlog::info("Setting sprite for Magnetic");
+            this->powerupSprite = spriteManager->capsuleMagnetic;
+            break;
+        }
     };
 
     spriteManager->getTextureDimensions(powerupSprite, powerupWidth, powerupHeight);

@@ -20,7 +20,7 @@ namespace Definitions
     };
 
     enum PowerUpType {
-        Glue, 
+        Magnetic, 
         ExtraLife,
         TripleBall,
         Laser, 
@@ -31,7 +31,8 @@ namespace Definitions
 
     enum BulletStatus {
         BulletGood,
-        BulletExploding
+        BulletExploding,
+        BulletDead
     };
     
     /*static const std::unordered_map<int, Definitions::BrickType> typeMap {

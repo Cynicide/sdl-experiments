@@ -89,9 +89,24 @@ class GameContext {
         constexpr static float borderWidthV = 32.f;
         constexpr static float borderWidthC = 32.f;
 
+        /*
+        
+        Extra Life  0 - 5    5%
+        Slow        6 - 28   22%
+        Wide        29 - 52  23%
+        Triple      53 - 69  16%
+        Laser       70 - 79  10% 
+        LevelSkip:  80 - 85  5%    
+        Magnetic:   86 - 100 15%
+
+
+        */
+
         int extraLifeChance = 5;
         int slowBallChance = 28;
         int wideChance = 52;
-        int tripleBallChance = 77;
-        int laserChance = 100;
+        int tripleBallChance = 69;
+        int laserChance = 79;
+        int levelSkipChance = 85;
+        int magneticChance = 100;
 };

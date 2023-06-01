@@ -9,7 +9,8 @@ PlayingSubState::PlayingSubState(GameContext* gameContext, SubState*& sNextState
     normalGameMode(gameContext),
     longGameMode(gameContext, sNextMode),
     slowGameMode(gameContext, sNextMode),
-    laserMode(gameContext, sNextMode)
+    laserMode(gameContext, sNextMode),
+    magneticMode(gameContext, sNextMode)
     {
 
     }
@@ -26,12 +27,21 @@ bool PlayingSubState::enter() {
     longGameMode.setNormalMode(&normalGameMode);
     slowGameMode.setNormalMode(&normalGameMode);
     laserMode.setNormalMode(&normalGameMode);
+    magneticMode.setNormalMode(&normalGameMode);
 
     sCurrentMode = &normalGameMode;
     normalGameMode.enter();
     return true;
 }
 bool PlayingSubState::exit() {
+    if (levelWarp != nullptr) {
+        delete levelWarp;
+        levelWarp = nullptr;
+    }
+
+    gameContext->ClearBalls();
+    gameContext->ClearBullets();
+    gameContext->ClearBullets();
 
     return true;
 
@@ -66,14 +76,23 @@ void PlayingSubState::update(double dt) {
             }
         }
 
-        // Update each bullet position if they are not null
+        // Update each Bullet, if they are "Dead" delete them.
         for (int p = 0; p < 2; ++p) {
             if (gameContext->bulletList[p] != nullptr) {
-                gameContext->bulletList[p]->update(dt);
+                if (gameContext->bulletList[p]->bulletStatus == Definitions::BulletStatus::BulletDead) {
+                    delete(gameContext->bulletList[p]);
+                    gameContext->bulletList[p] = nullptr;
+                } else {
+                    gameContext->bulletList[p]->update(dt);
+                }
             }
         }
 
     gameContext->levelManager.update(dt);
+    
+    if (levelWarp != nullptr) {
+        levelWarp->update(dt);
+    }
 
     // Is the Level Over?
     bool nextLevel = true;
@@ -95,6 +114,14 @@ void PlayingSubState::update(double dt) {
     // =================================================
     // =================== Collision ===================
     // =================================================
+
+    // Collision Warp
+
+    if (levelWarp != nullptr) {
+        if (physics.AABBCheck(gameContext->paddle.paddleRect, levelWarp->warpRect)) {
+            sNextState = levelWinSubState;
+        }
+    }
 
     // Collision Powerup
 
@@ -129,6 +156,14 @@ void PlayingSubState::update(double dt) {
                         sNextMode = &laserMode;
                         break;
                     }
+                    case Definitions::PowerUpType::LevelSkip: {
+                        levelWarp = new LevelWarp(&gameContext->spriteManager);
+                        break;
+                    }
+                    case Definitions::PowerUpType::Magnetic: {
+                        sNextMode = &magneticMode;
+                    break;
+                    }
                 };
 
                 // Delete the powerup and cleanup.
@@ -143,8 +178,9 @@ void PlayingSubState::update(double dt) {
     for (int r = 0; r < 2; ++r) {
         if (gameContext->bulletList[r] != nullptr) {
             if (physics.AABBCheck(gameContext->bulletList[r]->bulletRect, gameContext->borderT.borderRect)) {
-                delete(gameContext->bulletList[r]);
-                gameContext->bulletList[r] = nullptr;
+                //delete(gameContext->bulletList[r]);
+                //gameContext->bulletList[r] = nullptr;
+                gameContext->bulletList[r]->hit();
                 //if we've hit the wall we don't need to check any bricks
                 continue;
             }
@@ -152,8 +188,9 @@ void PlayingSubState::update(double dt) {
             for (auto &i : gameContext->levelManager.brickList) {
                 if (i.brickStatus == Definitions::BrickStatus::Good) {
                     if (physics.AABBCheck(gameContext->bulletList[r]->bulletRect, i.brickRect)) {
-                        delete(gameContext->bulletList[r]);
-                        gameContext->bulletList[r] = nullptr;
+                        //delete(gameContext->bulletList[r]);
+                        //gameContext->bulletList[r] = nullptr;
+                        gameContext->bulletList[r]->hit();
                         i.hit();
                         // Move onto the next bullet as we don't need to check any more bricks
                         break;
@@ -347,4 +384,9 @@ void PlayingSubState::render() {
                 gameContext->bulletList[r]->render();
             }
         }
+
+        if (levelWarp != nullptr) {
+            levelWarp->render();
+        }
+
 }

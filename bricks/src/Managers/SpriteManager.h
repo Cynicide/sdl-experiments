@@ -51,6 +51,10 @@ public:
     SDL_Texture* capsuleSlow;    
     SDL_Texture* capsuleTriple;
     SDL_Texture* capsuleWide;
+    SDL_Texture* capsuleJump;
+    SDL_Texture* capsuleMagnetic;
+
+    SDL_Texture* levelWarp;
 
     void loadSprites();
 

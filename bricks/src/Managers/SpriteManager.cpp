@@ -118,4 +118,9 @@ void SpriteManager::loadSprites() {
     capsuleSlow = loadAlphaTexture("assets\\images\\capsule-slow-sheet.png");
     capsuleTriple = loadAlphaTexture("assets\\images\\capsule-triple-sheet.png");
     capsuleWide = loadAlphaTexture("assets\\images\\capsule-wide-sheet.png");
+    capsuleJump = loadAlphaTexture("assets\\images\\capsule-jump-sheet.png");
+    capsuleMagnetic = loadAlphaTexture("assets\\images\\capsule-magnetic-sheet.png");
+
+    // Level Warp
+    levelWarp = loadAlphaTexture("assets\\images\\level-skip-sheet.png");
 }

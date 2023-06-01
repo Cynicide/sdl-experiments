@@ -11,6 +11,8 @@
 #include <LongMode.h>
 #include <SlowMode.h>
 #include <LaserMode.h>
+#include <LevelWarp.h>
+#include <MagneticMode.h>
 
 #include <Text.h>
 #include <Physics.h>
@@ -51,5 +53,8 @@ private:
     LongMode longGameMode;
     SlowMode slowGameMode;
     LaserMode laserMode;
+    MagneticMode magneticMode;
+
+    LevelWarp* levelWarp = nullptr;
 
 };

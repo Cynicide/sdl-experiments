@@ -11,6 +11,9 @@ void LoadLevelSubState::setServingSubState( SubState* servingSubState) {
 }
 
 bool LoadLevelSubState::enter() {
+    gameContext->ClearBalls();
+    gameContext->ClearBullets();
+    gameContext->ClearPowerups();
     gameContext->levelManager.LoadLevel();
     gameContext->levelManager.CreateLevel();
     gameContext->AddBall();

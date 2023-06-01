@@ -93,9 +93,15 @@ Definitions::PowerUpType GameContext::randomizePowerUp() {
     } else if (randomNumber <= laserChance) {
         spdlog::info("Generating Laser Powerup");
         return Definitions::PowerUpType::Laser;
+    } else if (randomNumber <= levelSkipChance) {
+        spdlog::info("Generating Level Skip Powerup");
+        return Definitions::PowerUpType::LevelSkip;
+    } else if (randomNumber <= magneticChance){
+        spdlog::info("Generating Magnetic Powerup");
+        return Definitions::PowerUpType::Magnetic; 
     } else {
         spdlog::info("Generating Laser Powerup");
-        return Definitions::PowerUpType::Laser;
+        return Definitions::PowerUpType::Laser;         
     }
 }
 

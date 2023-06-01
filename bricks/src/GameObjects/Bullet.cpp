@@ -18,7 +18,10 @@ void Bullet::update(double dt) {
     }
 
     if (bulletStatus == Definitions::BulletStatus::BulletExploding) {
-
+        currentFrame = currentFrame + (30 * dt);
+        if ((int)currentFrame > (float)lastFrame) {
+            bulletStatus = Definitions::BulletStatus::BulletDead;
+        }
     }
 }
 
@@ -34,15 +37,17 @@ void Bullet::render() {
     }
 
     if (bulletStatus == Definitions::BulletStatus::BulletExploding) {
-
+        int frame = (int)currentFrame;
+        SDL_Rect solidSprite = {bulletSpriteClips[frame].x, bulletSpriteClips[frame].y, bulletSpriteClips[frame].w, bulletSpriteClips[frame].h};
+        SDL_RenderCopyF(gRenderer, bulletSprite, &solidSprite, &bulletRect );
     }
-
 }
 
 
 
 void Bullet::hit() {
     bulletStatus = Definitions::BulletStatus::BulletExploding;
+    currentFrame = 1.0f;
 }
 
 void Bullet::sliceSpriteSheet() {
