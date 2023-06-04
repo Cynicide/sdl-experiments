@@ -15,6 +15,12 @@ bool MagneticMode::enter() {
 }
 
 bool MagneticMode::exit() {
+    for (int b = 0; b < 3; ++b) {
+        if (gameContext->ballList[b] != nullptr) {
+                gameContext->ballList[b]->freeFromPaddle();
+                gameContext->ballList[b]->resetStuckOffset();
+        }
+    }
     return true;
 }
 
@@ -27,6 +33,19 @@ void MagneticMode::handleEvent( SDL_Event& e ) {
 }
 
 void MagneticMode::update(double dt) {
+
+    int mx, my;
+    Uint32 mouseState = SDL_GetMouseState(&mx, &my);
+    if (mouseState == SDL_BUTTON(1)) 
+    {
+        for (int b = 0; b < 3; ++b) {
+            if (gameContext->ballList[b] != nullptr) {
+                gameContext->ballList[b]->freeFromPaddle();
+                gameContext->ballList[b]->resetStuckOffset();
+            }
+        }
+    }
+
     currentDuration = currentDuration + (60 * dt);
     spdlog::debug("MagneticTime: " + std::to_string(currentDuration));
     if (currentDuration >= (double)powerupDuration) {

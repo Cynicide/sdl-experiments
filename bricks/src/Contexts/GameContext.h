@@ -89,6 +89,10 @@ class GameContext {
         constexpr static float borderWidthV = 32.f;
         constexpr static float borderWidthC = 32.f;
 
+        const int MAXBALLS = 3;
+        const int MAXPOWERUPS = 5;
+        const int MAXBULLETS = 2;
+
         /*
         
         Extra Life  0 - 5    5%
@@ -101,6 +105,14 @@ class GameContext {
 
 
         */
+        
+        /*int extraLifeChance = 1;
+        int slowBallChance = 2;
+        int wideChance = 3;
+        int tripleBallChance = 4;
+        int laserChance = 54;
+        int levelSkipChance = 55;
+        int magneticChance = 100;*/
 
         int extraLifeChance = 5;
         int slowBallChance = 28;
@@ -109,4 +121,5 @@ class GameContext {
         int laserChance = 79;
         int levelSkipChance = 85;
         int magneticChance = 100;
+
 };

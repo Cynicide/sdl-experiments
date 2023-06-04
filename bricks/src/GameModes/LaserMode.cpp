@@ -14,6 +14,8 @@ bool LaserMode::enter() {
 }
 
 bool LaserMode::exit() {
+    gameContext->paddle.setNormalPaddle();
+    currentDuration = 0;
     return true;
 }
 

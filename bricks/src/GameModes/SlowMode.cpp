@@ -10,7 +10,6 @@ SlowMode::SlowMode(GameContext *gameContext, GameMode*& sNextMode) :
     }
 
 bool SlowMode::enter() {
-
     return true;
 }
 

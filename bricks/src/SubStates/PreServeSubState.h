@@ -5,14 +5,16 @@
 #include <ServingSubState.h>
 #include <Paddle.h>
 
-class LoadLevelSubState : public SubState
+#include <LetsGoUIElement.h>
+
+class PreServeSubState : public SubState
 {
 public:
 
-    LoadLevelSubState(GameContext* gameContext, SubState*& sNextState);
-    ~LoadLevelSubState(){};
+    PreServeSubState(GameContext* gameContext, SubState*& sNextState);
+    ~PreServeSubState(){};
 
-    void setPreServeSubState(SubState* letsGoSubState);
+    void setServingSubState(SubState* servingSubState);
 
     //State transitions
     bool enter();
@@ -27,5 +29,6 @@ private:
     GameContext* gameContext;
     SubState*& sNextState;
     SubState* servingSubState;
-    SubState* letsGoSubState;
+
+    LetsGoUIElement letsGoElement;
 };

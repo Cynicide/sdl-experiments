@@ -25,6 +25,6 @@ void AudioManager::loadAudio() {
     pong = loadSound("assets\\audio\\pong.wav"); 
     explosion = loadSound("assets\\audio\\explosion.wav");
     laser = loadSound("assets\\audio\\laser.wav"); 
-
+    letsGo = loadMusic("assets\\audio\\letsgo.mp3");
 
 }

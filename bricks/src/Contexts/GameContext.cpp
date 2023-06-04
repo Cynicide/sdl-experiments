@@ -45,7 +45,6 @@ void GameContext::AddBallsAtLocation(float x, float y, float currentVel) {
     for (int b = 0; b < 3; ++b) {
         if (ballList[b] == nullptr) {
             ballList[b] = new Ball(&spriteManager, x, y, currentVel);
-            //break;
         }
     }
 }

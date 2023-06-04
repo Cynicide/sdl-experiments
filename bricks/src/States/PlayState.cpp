@@ -8,7 +8,8 @@ PlayState::PlayState(GameContext* gameContext) :
     loadLevelSubState(gameContext, sNextState),
     dyingSubState(gameContext, sNextState),
     playingSubState(gameContext, sNextState),
-    levelWinSubState(gameContext, sNextState) {
+    levelWinSubState(gameContext, sNextState),
+    preServeSubState(gameContext, sNextState) {
     }
 
 bool PlayState::enter()
@@ -23,8 +24,9 @@ bool PlayState::enter()
     playingSubState.setLevelWinSubState(&levelWinSubState);
     dyingSubState.setServingSubState(&servingSubState);
     servingSubState.setPlayingSubState(&playingSubState);
-    loadLevelSubState.setServingSubState(&servingSubState);
+    loadLevelSubState.setPreServeSubState(&preServeSubState);
     levelWinSubState.setLoadLevelSubState(&loadLevelSubState);
+    preServeSubState.setServingSubState(&servingSubState);
 
     // This seems like a bit of a hack. You're not supposed to call these methods.
     loadLevelSubState.enter();
@@ -63,21 +65,5 @@ void PlayState::update(double dt)
 
 void PlayState::render()
 {
-    //gameContext->tiledBackground.render();
-    //gameContext->lightning.render();
-
-   //gameContext->borderL.render();
-    //gameContext->borderR.render();
-    //gameContext->borderT.render();
-    //gameContext->borderTL.render();
-    //gameContext->borderTR.render();
-
-    // Move the rest of these into the substates themselves
-    //gameContext->paddle.render(subState);
-    //gameContext->levelManager.render();
-    //gameContext->ball.render();
     sCurrentState->render();
-
-
-
 }

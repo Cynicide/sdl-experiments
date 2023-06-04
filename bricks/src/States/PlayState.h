@@ -14,6 +14,7 @@
 #include <PlayingSubState.h>
 #include <DyingSubState.h>
 #include <LevelWinSubState.h>
+#include <PreServeSubState.h>
 
 #include <Definitions.h>
 
@@ -53,4 +54,5 @@ private:
     DyingSubState dyingSubState;
     PlayingSubState playingSubState;
     LevelWinSubState levelWinSubState;
+    PreServeSubState preServeSubState;
 };

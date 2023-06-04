@@ -16,6 +16,8 @@ bool LongMode::enter() {
 }
 
 bool LongMode::exit() {
+    gameContext->paddle.setNormalPaddle();
+    currentDuration = 0;
     return true;
 }
 

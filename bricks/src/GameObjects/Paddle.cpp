@@ -125,6 +125,7 @@ void Paddle::reset() {
     currentdestructionFrame = destructionStartFrame;
     innerExplosionTimer = 0;
     explosionSoundPlayed = false;
+    currentTexture = paddleSprite;
 }
 
 void Paddle::hit() {

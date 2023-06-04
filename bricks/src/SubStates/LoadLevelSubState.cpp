@@ -6,10 +6,9 @@ LoadLevelSubState::LoadLevelSubState(GameContext* gameContext, SubState*& sNextS
     sNextState(sNextState) {
 }
 
-void LoadLevelSubState::setServingSubState( SubState* servingSubState) {
-    this->servingSubState = servingSubState;
+void LoadLevelSubState::setPreServeSubState(SubState* letsGoSubState) {
+    this->letsGoSubState = letsGoSubState;
 }
-
 bool LoadLevelSubState::enter() {
     gameContext->ClearBalls();
     gameContext->ClearBullets();
@@ -18,7 +17,7 @@ bool LoadLevelSubState::enter() {
     gameContext->levelManager.CreateLevel();
     gameContext->AddBall();
     
-    sNextState = servingSubState;
+    sNextState = letsGoSubState;
     return true;
 }
 bool LoadLevelSubState::exit() {

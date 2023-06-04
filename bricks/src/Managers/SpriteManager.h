@@ -10,16 +10,16 @@
 class SpriteManager
 {
 public:
-
     SpriteManager();
     ~SpriteManager();
-
+    void loadSprites();
     bool getTextureDimensions(SDL_Texture* texture, int& width, int& height);
 
     // Sprites
     SDL_Texture* stars;
     SDL_Texture* logo;
     SDL_Texture* background;
+    SDL_Texture* letsGo;
 
     SDL_Texture* paddle;
     SDL_Texture* longPaddle;
@@ -55,10 +55,7 @@ public:
     SDL_Texture* capsuleMagnetic;
 
     SDL_Texture* levelWarp;
-
-    void loadSprites();
-
-
+    
 private:
     SDL_Surface* loadSurface(std::string path);
     SDL_Texture* loadAlphaTexture(std::string path);

@@ -16,6 +16,18 @@ Ball::Ball(SpriteManager* spriteManager) {
     spriteManager->getTextureDimensions(ballSprite, ballWidth, ballHeight);
 }
 
+Ball::Ball(SpriteManager* spriteManager, float x, float y, float currentVel) {
+    this->currentVel = currentVel;
+    this->ballSprite = spriteManager->ball;
+    spriteManager->getTextureDimensions(ballSprite, ballWidth, ballHeight);
+
+    vel.x = currentVel;
+    vel.y = -currentVel;
+
+    ballRect = {x, y, (float)ballWidth, (float)ballHeight};
+}
+
+
 float Ball::getCurrentVel() {
     return currentVel;
 }
@@ -42,17 +54,6 @@ void Ball::setSpeed(int ballSpeed) {
 
 }
 
-Ball::Ball(SpriteManager* spriteManager, float x, float y, float currentVel) {
-    this->currentVel = currentVel;
-    this->ballSprite = spriteManager->ball;
-    spriteManager->getTextureDimensions(ballSprite, ballWidth, ballHeight);
-
-    vel.x = currentVel;
-    vel.y = currentVel;
-
-    ballRect = {x, y, (float)ballWidth, (float)ballHeight};
-}
-
 void Ball::speedUp() {
     // Need to make sure this is being called every time the speed is changed. ie flipx. I think it's not always being used when we just update ball.vel we don't reference currentvel
     // when we bounce we should always reference currentvel
@@ -75,7 +76,7 @@ void Ball::reset() {
 }
 
 void Ball::update(double dt) {
-    move(dt);
+        move(dt);
 }
 
 void Ball::update(double dt, SDL_FRect paddleRect) {
@@ -84,6 +85,12 @@ void Ball::update(double dt, SDL_FRect paddleRect) {
     ballRect.w = ballWidth;
     ballRect.h = ballHeight;
 }
+
+void Ball::updateStuck(double dt, SDL_FRect paddleRect) {
+    ballRect.x = paddleRect.x + stuckOffset;
+    ballRect.y = paddleRect.y - paddleRect.h;
+}
+
 
 void Ball::move(double dt) {
     ballRect.x += vel.x * dt;
@@ -96,6 +103,22 @@ void Ball::flipY() {
 
 void Ball::flipX() {
     vel.x = vel.x * -1;
+}
+
+void Ball::setStuckOffset(int offset) {
+    this->stuckOffset = offset;
+}
+
+void Ball::resetStuckOffset(){
+    stuckOffset = 0;
+}
+
+void Ball::stickToPaddle() {
+    stuckToPaddle = true;
+}
+
+void Ball::freeFromPaddle(){
+    stuckToPaddle = false;
 }
 
 void Ball::render() {
@@ -149,10 +172,13 @@ void Ball::changeAngle(int hitLocation, int paddleSize) {
     }
     
     // Set the new X Axis Speed
-    if (sgn(vel.x) == 1) {
-        vel.x = newXSpeed;
-    } else {
+    // Negative Hit Locations - to the right the paddle generate a positive velocity
+    // Positive Hit Locations - to the left the paddle generate a negative velocity 
+
+    if (sgn(hitLocation) == 1) {
         vel.x = -newXSpeed;
+    } else {
+        vel.x = newXSpeed;
     }
 
     // Set the new Y Axis Speed as speedup has occured due to paddle collision.

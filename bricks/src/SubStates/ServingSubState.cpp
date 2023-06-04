@@ -13,7 +13,6 @@ void ServingSubState::setPlayingSubState(SubState* playingSubState) {
 
 bool ServingSubState::enter() {
     gameContext->paddle.reset();
-    gameContext->ClearPowerups();
     return true;
 }
 bool ServingSubState::exit() {

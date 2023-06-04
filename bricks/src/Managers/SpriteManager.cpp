@@ -81,6 +81,7 @@ void SpriteManager::loadSprites() {
     stars = loadAlphaTexture("assets\\images\\stars.png");
     logo = loadAlphaTexture("assets\\images\\logo.png");
     background = loadAlphaTexture("assets\\images\\background.png");
+    letsGo = loadAlphaTexture("assets\\images\\lets-go-sheet.png");
     
     // Ship
     paddle = loadAlphaTexture("assets\\images\\paddle.png");
@@ -92,7 +93,7 @@ void SpriteManager::loadSprites() {
     ball = loadAlphaTexture("assets\\images\\ball.png");
     bullet = loadAlphaTexture("assets\\images\\laser-shot-sheet.png");
 
-
+    //Bricks
     brickRed = loadAlphaTexture("assets\\images\\brick-red-sheet.png");
     brickBlue = loadAlphaTexture("assets\\images\\brick-blue-sheet.png");
     brickYellow = loadAlphaTexture("assets\\images\\brick-yellow-sheet.png");
