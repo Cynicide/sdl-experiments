@@ -4,13 +4,18 @@
 #include <AudioManager.h>
 #include <SpriteManager.h>
 #include <Brick.h>
+#include <Turret.h>
 #include <Powerup.h>
 
 class Level
 {
 public:
     void render();
-    void update(double dt);
+    void update(double dt, SDL_FRect paddleRect);
+
+    void renderShine();
+    void updateShine(double dt, SDL_FRect paddleRect);
+
     void destroy();
     void getLevelFiles();
     void nextLevel();
@@ -25,6 +30,7 @@ public:
     ~Level(){};
 
     std::vector<Brick> brickList;
+    std::vector<Turret> turretList;
 
 private:
 
@@ -39,12 +45,14 @@ private:
 
     std::vector<std::vector<int>> level;
     
-  
-
     float startX = PLAYFIELD_STARTX + 32;
     float startY = 116;
+
     float brickSizeX = 64;
     float brickSizeY = 32;
+
+    float turretSizeX = 64;
+    float turretizeY = 64;
 
     void findNeighbours();
 

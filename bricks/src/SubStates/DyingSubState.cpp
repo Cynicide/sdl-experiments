@@ -31,7 +31,7 @@ void DyingSubState::handleEvent( SDL_Event& e ) {
 }
 void DyingSubState::update(double dt) {
     gameContext->paddle.updateDying(dt);
-    gameContext->levelManager.update(dt);
+    gameContext->levelManager.update(dt, gameContext->paddle.paddleRect);
 
 }
 void DyingSubState::render() {

@@ -14,14 +14,27 @@ Level::Level(SpriteManager* spriteManager, AudioManager* audioManager) {
     this->audioManager = audioManager;
 }
 
-void Level::update(double dt) {
+void Level::update(double dt, SDL_FRect paddleRect) {
     for (auto &i : brickList) {
         if (i.brickStatus != Definitions::BrickStatus::Destroyed) {
             i.update(dt);
         }
     }
+
+    for (auto &t : turretList) {
+            t.update(dt, paddleRect);
+    }
 }
 
+void Level::updateShine(double dt, SDL_FRect paddleRect) {
+    for (auto &i : brickList) {
+            i.updateShine(dt);
+    }
+
+    for (auto &t : turretList) {
+            t.update(dt);
+    }
+}
 
 
 void Level::render() 
@@ -30,6 +43,28 @@ void Level::render()
         if (i.brickStatus != Definitions::BrickStatus::Destroyed) {
             i.render();
         }
+    }
+
+    for (auto &t : turretList) {
+            t.renderBase();
+    }
+
+    // Turret Sprites should rendered seperately from their bases stop the turret rendering under the base next to it/
+    for (auto &t : turretList) {
+            t.renderTurret();
+    }
+}
+
+void Level::renderShine() {
+    for (auto &i : brickList) {
+            i.renderShine();
+    }
+    for (auto &t : turretList) {
+            t.renderBase();
+    }
+    // Turret Sprites should rendered seperately from their bases stop the turret rendering under the base next to it/
+    for (auto &t : turretList) {
+            t.renderTurret();
     }
 }
 
@@ -114,42 +149,63 @@ void Level::CreateLevel() {
                     case 1: {
                         type = Definitions::BrickType::Red;
                         sprite = spriteManager->brickRed;
+                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        brickList.push_back(tmpBrick);
                         break;  
                     }
                     case 2: {
                         type = Definitions::BrickType::Blue;
                         sprite = spriteManager->brickBlue;
+                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        brickList.push_back(tmpBrick);
                         break;  
                     }
                     case 3: {
                         type = Definitions::BrickType::Yellow;
                         sprite = spriteManager->brickYellow;
+                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        brickList.push_back(tmpBrick);
                         break;  
                     }
                     case 4: {
                         type = Definitions::BrickType::Tough;
                         sprite = spriteManager->brickTough;
+                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        brickList.push_back(tmpBrick);
                         break;  
                     }
                     case 5: {
                         type = Definitions::BrickType::Indestructable;
                         sprite = spriteManager->brickIndestructable;
+                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        brickList.push_back(tmpBrick);
                         break; 
                     }
                     case 6: {
                         type = Definitions::BrickType::Orange;
                         sprite = spriteManager->brickOrange;
+                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        brickList.push_back(tmpBrick);
                         break; 
                     }
                     case 7: {
                         type = Definitions::BrickType::Green;
                         sprite = spriteManager->brickGreen;
+                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        brickList.push_back(tmpBrick);
                         break; 
                     }
                     case 8: {
                         type = Definitions::BrickType::Purple;
                         sprite = spriteManager->brickPurple;
-                        break; 
+                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        brickList.push_back(tmpBrick);
+                        break;
+                    }
+                    case 9: {
+                        Turret tmpTurret(posX, posY, spriteManager);
+                        turretList.push_back(tmpTurret);
+                        break;
                     }
                     default: {
                         type = Definitions::BrickType::Red;
@@ -157,8 +213,8 @@ void Level::CreateLevel() {
                         break;  
                     }
                 }
-                Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
-                brickList.push_back(tmpBrick);
+                //Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                //brickList.push_back(tmpBrick);
             }
             posX = posX + brickSizeX;
         }

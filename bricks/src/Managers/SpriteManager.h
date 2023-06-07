@@ -25,6 +25,9 @@ public:
     SDL_Texture* longPaddle;
     SDL_Texture* laserPaddle;
     SDL_Texture* shipExplosion;
+    SDL_Texture* turret;
+    SDL_Texture* turretBase;
+    SDL_Texture* turretBullet;
 
     SDL_Texture* ball;
     SDL_Texture* bullet;

@@ -92,9 +92,18 @@ void Brick::render()
         }
 
     }
-    
     //SDL_SetRenderDrawColor(gRenderer, 255,255,255, SDL_ALPHA_OPAQUE);
     //SDL_RenderDrawRectF(gRenderer, &brickRect);
+}
+
+void Brick::renderShine() {
+    if (shineAnimDone == false) {
+        int frame = (int)currentShineFrame;
+        SDL_Rect solidSprite = {brickSpriteClips[frame].x, brickSpriteClips[frame].y, brickSpriteClips[frame].w, brickSpriteClips[frame].h};
+        SDL_RenderCopyF(gRenderer, brickSprite, &solidSprite, &brickRect );
+    } else {
+        render();
+    }
 }
 
 Definitions::BrickStatus Brick::hit() {
@@ -125,5 +134,13 @@ void Brick::update(double dt) {
         if ((int)currentdestructionFrame == destructionEndFrame) {
             brickStatus = Definitions::BrickStatus::Destroyed;
         }
+    }
+}
+
+void Brick::updateShine(double dt) {
+    currentShineFrame = currentShineFrame + (20 * dt);
+    if ((int)currentShineFrame == shineEndFrame) {
+        currentShineFrame = shineStartFrame;
+        shineAnimDone = true;
     }
 }

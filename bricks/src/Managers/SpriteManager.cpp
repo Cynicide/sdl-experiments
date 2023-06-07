@@ -88,6 +88,9 @@ void SpriteManager::loadSprites() {
     shipExplosion = loadAlphaTexture("assets\\images\\explosion-sheet.png");
     laserPaddle = loadAlphaTexture("assets\\images\\paddle-lasermode.png");
     longPaddle = loadAlphaTexture("assets\\images\\paddle-long.png");
+    turret = loadAlphaTexture("assets\\images\\turret-gun.png");
+    turretBase = loadAlphaTexture("assets\\images\\turret-base.png");
+    turretBullet = loadAlphaTexture("assets\\images\\turret-bullet-sheet.png");
 
     // Ball
     ball = loadAlphaTexture("assets\\images\\ball.png");

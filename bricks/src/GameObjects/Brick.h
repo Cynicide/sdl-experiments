@@ -16,13 +16,15 @@ public:
     ~Brick(){};
 
     void render();    
-    Definitions::BrickStatus hit();
-    void update(double dt);    
+    void renderShine();
+    void update(double dt);
+    void updateShine(double dt);
+
 
     SDL_FRect brickRect;
     Definitions::BrickStatus brickStatus = Definitions::BrickStatus::Good;
-    
     Definitions::BrickType brickType;
+    Definitions::BrickStatus hit();
     
     Brick* topNeighbour = nullptr;
     Brick* bottomNeighbour = nullptr;
@@ -40,6 +42,12 @@ private:
     static const int destructionEndFrame = 10;
     float currentdestructionFrame = destructionStartFrame;
     
+    static const int shineStartFrame = 10;
+    static const int shineEndFrame = 20;
+    float currentShineFrame = shineStartFrame;
+    bool shineAnimDone = false;
+
+
     SDL_Texture* brickSprite;
     SDL_Rect brickSpriteClips[numSprites];
 

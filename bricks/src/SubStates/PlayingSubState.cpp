@@ -100,7 +100,7 @@ void PlayingSubState::update(double dt) {
     }
 
     // Update Each Brick
-    gameContext->levelManager.update(dt);
+    gameContext->levelManager.update(dt, gameContext->paddle.paddleRect);
     
     // If the warp powerup is active update it
     if (levelWarp != nullptr) {

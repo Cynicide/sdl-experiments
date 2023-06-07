@@ -33,13 +33,15 @@ void ServingSubState::update(double dt) {
     }
 
     gameContext->paddle.updateServing(dt);
-
+    gameContext->levelManager.update(dt, gameContext->paddle.paddleRect);
 
     for (int b = 0; b < 3; ++b) {
         if (gameContext->ballList[b] != nullptr) {
             gameContext->ballList[b]->update(dt, gameContext->paddle.paddleRect);
         }
     }
+
+    
 
     int mx, my;
     Uint32 mouseState = SDL_GetMouseState(&mx, &my);
