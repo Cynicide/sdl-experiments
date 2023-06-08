@@ -15,6 +15,9 @@ bool DyingSubState::enter() {
     if (gameContext->lives != 0) {
         gameContext->lives = gameContext->lives - 1;
     }
+
+    gameContext->cleanup();
+
     return true;
 }
 bool DyingSubState::exit() {
@@ -25,7 +28,6 @@ bool DyingSubState::exit() {
 void DyingSubState::handleEvent( SDL_Event& e ) {
             if( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_SPACE ) )
             {
-                gameContext->AddBall();
                 sNextState = servingSubState;
             }
 }

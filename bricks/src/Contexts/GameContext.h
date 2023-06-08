@@ -79,11 +79,15 @@ class GameContext {
         void AddLife();
 
         void AddPowerUp(float xPos, float yPos, int parentWidth);
-        Definitions::PowerUpType randomizePowerUp();
         void ClearPowerups();
+        Definitions::PowerUpType randomizePowerUp();
 
         void AddBullets(SDL_FRect paddleRect);
         void ClearBullets();
+
+        void cleanup();
+
+        void resetGame();
 
     private:
         constexpr static float borderWidthV = 32.f;

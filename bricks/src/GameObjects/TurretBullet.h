@@ -5,7 +5,7 @@
 
 class TurretBullet {
     public:
-        TurretBullet(SpriteManager* spriteManager, SDL_FRect position, double angle);
+        TurretBullet(SpriteManager* spriteManager, SDL_FRect position, SDL_FRect paddleRect);
         ~TurretBullet(){};
 
         void render();    
@@ -14,19 +14,27 @@ class TurretBullet {
         SDL_FRect turretBulletRect;
 
     private:
-        void SliceSpriteSheet();
+        void sliceSpriteSheet();
         void moveBullet(double dt);
+        void setAngle(SDL_FRect paddleRect);
 
+        // Sprite
         SDL_Texture* turretBulletSprite;
-
-        Vector2d vel = {0,0};
-
-        static const int numSprites = 3;
-        static const int lastSprite = 2;
-        SDL_Rect turretBulletSpriteClips[numSprites];
         int turretBulletHeight = 0;
         int turretBulletWidth = 0;
 
+        // Sprite Animation
+        static const int numSprites = 3;
+        static const int lastSprite = 2;
+        float currentFrame = 0.f;
+        SDL_Rect turretBulletSpriteClips[numSprites];
+
+        // Movement
+        Vector2d vel = {0,0};
+
         double angle = 0.f;
         int speed = 100;
+
+        double deltaX = 0.f;
+        double deltaY = 0.f;
 };

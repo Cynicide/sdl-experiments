@@ -16,7 +16,7 @@ Level::Level(SpriteManager* spriteManager, AudioManager* audioManager) {
 
 void Level::update(double dt, SDL_FRect paddleRect) {
     for (auto &i : brickList) {
-        if (i.brickStatus != Definitions::BrickStatus::Destroyed) {
+        if (i.brickStatus != Definitions::BrickStatus::BrickDestroyed) {
             i.update(dt);
         }
     }
@@ -26,9 +26,9 @@ void Level::update(double dt, SDL_FRect paddleRect) {
     }
 }
 
-void Level::updateShine(double dt, SDL_FRect paddleRect) {
+void Level::updatePreServe(double dt) {
     for (auto &i : brickList) {
-            i.updateShine(dt);
+            i.updatePreServe(dt);
     }
 
     for (auto &t : turretList) {
@@ -36,11 +36,21 @@ void Level::updateShine(double dt, SDL_FRect paddleRect) {
     }
 }
 
+void Level::updateServe(double dt, SDL_FRect paddleRect) {
+    for (auto &i : brickList) {
+            i.updatePreServe(dt);
+    }
+
+    for (auto &t : turretList) {
+            t.updateServe(dt, paddleRect);
+    }
+}
+
 
 void Level::render() 
 {
     for (auto &i : brickList) {
-        if (i.brickStatus != Definitions::BrickStatus::Destroyed) {
+        if (i.brickStatus != Definitions::BrickStatus::BrickDestroyed) {
             i.render();
         }
     }
@@ -55,9 +65,9 @@ void Level::render()
     }
 }
 
-void Level::renderShine() {
+void Level::renderPreServe() {
     for (auto &i : brickList) {
-            i.renderShine();
+            i.renderPreServe();
     }
     for (auto &t : turretList) {
             t.renderBase();
@@ -93,8 +103,17 @@ void Level::destroy() {
 
 }
 
+void Level::restartGame() {
+    levelIterator = levelFiles.begin();
+}
+
 void Level::nextLevel() {
     ++levelIterator;
+}
+
+void Level::clearLevel() {
+    level.clear();
+    turretList.clear();
 }
 
 void Level::LoadLevel() {
@@ -103,6 +122,7 @@ void Level::LoadLevel() {
     int word;
 
     std::ifstream inFile(*levelIterator);
+    turretList.clear();
     level.clear();
     if(inFile)
     {
@@ -248,5 +268,11 @@ void Level::findNeighbours() {
                 brick.leftNeighbour = &neighbour;
             }
         }     
+    }
+}
+
+void Level::clearTurretBullets() {
+    for (auto &t : turretList) {
+        t.deleteBullet();
     }
 }

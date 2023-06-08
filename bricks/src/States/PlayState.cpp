@@ -46,6 +46,12 @@ bool PlayState::exit()
 void PlayState::handleEvent( SDL_Event& e )
 {  
     sCurrentState->handleEvent( e );
+                    //Exit on quit
+    if( ( ( e.type == SDL_KEYDOWN ) && ( e.key.keysym.sym == SDLK_r ) ))
+    {
+        gameContext->resetGame();
+        sNextState = &loadLevelSubState;
+    }
 }
 
 void PlayState::update(double dt)

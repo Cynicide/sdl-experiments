@@ -12,37 +12,37 @@ public:
     ~Ball(){};
 
     // State Methods
-    void render();
-    void updateStuck(double dt, SDL_FRect paddleRect);
+    void update(double dt);
     void update(double dt, SDL_FRect paddleRect);
-    void update(double dt); 
+    void updateStuck(double dt, SDL_FRect paddleRect);
+    void render();
+    void reset();
 
     // Collision
     void hitTopWall(SDL_FRect border);
     void hitRightWall(SDL_FRect border);
     void hitLeftWall(SDL_FRect border);    
+    void hitLightning();
     void hitPaddle(Vector2d normals, SDL_FRect paddleRect);
     void hitBrick(Vector2d normals);
-    void hitLightning();
+
  
-    // Veolicity and Speed
+    // Movement
     void speedUp();
     float getCurrentVel();
     void setSpeed(int ballSpeed);
+    void changeAngle(int hitLocation, int paddleSize);
     Vector2d vel;
     SDL_FRect ballRect;
 
-    // Magnetic Mode
+    // Magnetic Powerup
     void setStuckOffset(int offset);
     void resetStuckOffset();
     void stickToPaddle();
-    void freeFromPaddle();
-    bool stuckToPaddle = false;
-    int stuckOffset = 0;
+    void releaseFromPaddle();
 
-    // Other
-    void changeAngle(int hitLocation, int paddleSize);
-    void reset();
+    bool stuckToPaddle = false; // Is the ball stuck to the paddle?
+    int stuckOffset = 0; // The offset from the center when stuck.
 
 private:
     // Sprite 

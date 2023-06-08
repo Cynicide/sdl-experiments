@@ -110,7 +110,7 @@ void PlayingSubState::update(double dt) {
     // Is the Level Over? Check each brick that can be destroyed to make sure it is.
     bool nextLevel = true;
     for (auto &i : gameContext->levelManager.brickList) {
-        if (i.brickStatus != Definitions::BrickStatus::Destroyed && i.brickType != Definitions::BrickType::Indestructable) {
+        if (i.brickStatus != Definitions::BrickStatus::BrickDestroyed && i.brickType != Definitions::BrickType::Indestructable) {
             // If any bricks remain do not advance to the next level.
             nextLevel = false;
             break;
@@ -208,7 +208,7 @@ void PlayingSubState::update(double dt) {
                 // ToDo: Change to Swept aabb
                 // Check each brick                
                 for (auto &i : gameContext->levelManager.brickList) {
-                    if (i.brickStatus == Definitions::BrickStatus::Good) {
+                    if (i.brickStatus == Definitions::BrickStatus::BrickGood) {
                         // Check if we are inside the brick. 
                         if (physics.AABBCheck(gameContext->bulletList[r]->bulletRect, i.brickRect)) {
                             gameContext->bulletList[r]->hit();
@@ -222,6 +222,15 @@ void PlayingSubState::update(double dt) {
         }
     }
 
+    // Collision for the Turret Bullets
+
+    for (auto &t : gameContext->levelManager.turretList) {
+        if (t.turretBullet != nullptr) {
+            if (physics.AABBCheck(t.turretBullet->turretBulletRect, gameContext->paddle.paddleRect)) {
+                sNextState = dyingSubState;
+            }
+        }
+    }
 
     // Collision for the Ball(s)
 
@@ -315,18 +324,46 @@ void PlayingSubState::update(double dt) {
                 }
             }
 
-
-            // Collision - Bricks
+            // Collision - Bricks and Turrets
             float firstCollisionTime = std::numeric_limits<float>::max();
+            float firstTurretCollisionTime = std::numeric_limits<float>::max();
+
             std::vector<Brick> collisionList = {};
+
             Vector2d firstCollision;
-            Brick* firstHitBrick = nullptr;
             
+            Brick* firstHitBrick = nullptr;
+            Turret* firstHitTurret = nullptr;
+
+            for (auto &t : gameContext->levelManager.turretList) {
+                if (t.turretStatus == Definitions::TurretStatus::TurretGood) {
+                    if (physics.AABBCheck(gameContext->ballList[b]->ballRect, t.collisionRect)) {
+                        gameContext->ballList[b]->ballRect.x = gameContext->ballList[b]->ballRect.x - (gameContext->ballList[b]->vel.x * dt);
+                        gameContext->ballList[b]->ballRect.y = gameContext->ballList[b]->ballRect.y - (gameContext->ballList[b]->vel.y * dt);                         
+                    }
+
+                    if (physics.AABBCheck(bpb, t.collisionRect)) {
+
+                        Vector2d collision;
+                        double collisiontime;
+
+                        // Perform a Swept AABB check against the ball and the brick and get the collision time                
+                        collisiontime = physics.SweptAABB(gameContext->ballList[b]->ballRect, t.collisionRect, gameContext->ballList[b]->vel, collision.x, collision.y);
+
+                        if (collisiontime < firstTurretCollisionTime && (abs(collision.x) > 0.0001f || abs(collision.y) > 0.0001f)) {
+                            firstTurretCollisionTime = collisiontime;
+                            firstCollision = collision;
+                            firstHitTurret = &t;
+                        }
+                    }
+                }
+            }
+
             // Check each brick for collision
             for (auto &i : gameContext->levelManager.brickList) 
             {
                 // First Make sure the brick is not destroyed
-                if (i.brickStatus == Definitions::BrickStatus::Good) {
+                if (i.brickStatus == Definitions::BrickStatus::BrickGood) {
                     // Then if we are already inside a brick we need to move out as swept aabb will not work.
                     if (physics.AABBCheck(gameContext->ballList[b]->ballRect, i.brickRect)) {
                         gameContext->ballList[b]->ballRect.x = gameContext->ballList[b]->ballRect.x - (gameContext->ballList[b]->vel.x * dt);
@@ -334,50 +371,58 @@ void PlayingSubState::update(double dt) {
                     }
 
                     // Then do a check against the Broad Phase Bounding Box
-                    if (physics.AABBCheck(bpb, i.brickRect)){                             
+                    if (physics.AABBCheck(bpb, i.brickRect)){                            
 
-                    Vector2d collision;
-                    double collisiontime;
+                        Vector2d collision;
+                        double collisiontime;
 
-                    // Add this to a collection so we can report on multiple collisions per check
-                    collisionList.push_back(i);
-                    
-                    // Perform a Swept AABB check against the ball and the brick and get the collision time                
-                    collisiontime = physics.SweptAABB(gameContext->ballList[b]->ballRect, i.brickRect, gameContext->ballList[b]->vel, collision.x, collision.y);
-
-                    // Ensure there are no other bricks blocking the collision
-                    if (abs(collision.x) > 0.0001f || abs(collision.y) > 0.0001f) {
-                        std::stringstream ssBrAddr;
-                        ssBrAddr << static_cast<void*>(&i);
+                        // Add this to a collection so we can report on multiple collisions per check
+                        collisionList.push_back(i);
                         
-                        std::string brAddr;
-                        brAddr = ssBrAddr.str();
-                        spdlog::info("Brick: " + brAddr + " -- CollisionTime: " + std::to_string(collisiontime));
-                    }
-                    // If the collision time is shorter than the last collision time we reported point to it
-                    
-                    if (collisiontime < firstCollisionTime && (abs(collision.x) > 0.0001f || abs(collision.y) > 0.0001f)) {
-                        firstCollisionTime = collisiontime;
-                        firstCollision = collision;
-                        firstHitBrick = &i;
-                    }
+                        // Perform a Swept AABB check against the ball and the brick and get the collision time                
+                        collisiontime = physics.SweptAABB(gameContext->ballList[b]->ballRect, i.brickRect, gameContext->ballList[b]->vel, collision.x, collision.y);
+
+                        // Do we even still need this?
+                        // Ensure there are no other bricks blocking the collision
+                        if (abs(collision.x) > 0.0001f || abs(collision.y) > 0.0001f) {
+                            std::stringstream ssBrAddr;
+                            ssBrAddr << static_cast<void*>(&i);
+                            
+                            std::string brAddr;
+                            brAddr = ssBrAddr.str();
+                            spdlog::info("Brick: " + brAddr + " -- CollisionTime: " + std::to_string(collisiontime));
+                        }
+                        // If the collision time is shorter than the last collision time we reported point to it
+                        
+                        if (collisiontime < firstCollisionTime && (abs(collision.x) > 0.0001f || abs(collision.y) > 0.0001f)) {
+                            firstCollisionTime = collisiontime;
+                            firstCollision = collision;
+                            firstHitBrick = &i;
+                        }
                 }
             }
         }
 
+            if (firstHitTurret != nullptr) {
+                firstHitTurret->hitTurret();
+            }
 
             if (firstHitBrick != nullptr) {
                 
                 // Temp Variable to hold the status 
-                Definitions::BrickStatus brickStatus = Definitions::BrickStatus::Good;
+                Definitions::BrickStatus brickStatus = Definitions::BrickStatus::BrickGood;
 
                 brickStatus = firstHitBrick->hit();
-                gameContext->ballList[b]->hitBrick(firstCollision);
+                //gameContext->ballList[b]->hitBrick(firstCollision);
 
-                if (brickStatus == Definitions::BrickStatus::Exploding) {
+                if (brickStatus == Definitions::BrickStatus::BrickExploding) {
                     // try and spawn a powerup
                     gameContext->AddPowerUp(firstHitBrick->brickRect.x, firstHitBrick->brickRect.y, firstHitBrick->brickRect.w);
                 }
+            }
+
+            if (firstHitBrick != nullptr || firstHitTurret != nullptr) {
+               gameContext->ballList[b]->hitBrick(firstCollision); 
             }
 
             if (collisionList.size() > 1) {

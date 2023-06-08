@@ -151,11 +151,24 @@ void GameContext::AddBullets(SDL_FRect paddleRect) {
     }
 }
 
-void GameContext:: ClearBullets() {
+void GameContext::ClearBullets() {
     for (int p = 0; p < 2; ++p) {
         if (bulletList[p] != nullptr) {
             delete(bulletList[p]);
             bulletList[p] = nullptr;
         }
     }    
+}
+
+void GameContext::resetGame() {
+    levelManager.clearLevel();
+    levelManager.restartGame();
+    cleanup();
+}
+
+void GameContext::cleanup() {
+    levelManager.clearTurretBullets();
+    ClearBalls();
+    ClearBullets();
+    ClearPowerups();
 }

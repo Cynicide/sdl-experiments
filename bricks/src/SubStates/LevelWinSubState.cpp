@@ -25,13 +25,11 @@ void LevelWinSubState::handleEvent( SDL_Event& e ) {
 void LevelWinSubState::update(double dt) {
 
     if ( gameContext->levelManager.lastLevelCheck()) {
-        // We need to handle ending the game
-        gameContext->ClearBalls();
-        gameContext->ClearPowerups();
+        // ToDo: We need to handle ending the game
+        gameContext->cleanup();
     } else {
         gameContext->levelManager.nextLevel();
-        gameContext->ClearBalls();
-        gameContext->ClearPowerups();
+        gameContext->cleanup();
         sNextState = loadLevelSubState;
     }
 

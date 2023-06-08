@@ -30,7 +30,7 @@ void PreServeSubState::update(double dt) {
     if (letsGoElement.done() == true) {
         sNextState = servingSubState;
     }
-    gameContext->levelManager.updateShine(dt, gameContext->paddle.paddleRect);
+    gameContext->levelManager.updatePreServe(dt);
     gameContext->paddle.updateServing(dt);
 }
 
@@ -43,7 +43,7 @@ void PreServeSubState::render() {
         gameContext->borderT.render();
         gameContext->borderTL.render();
         gameContext->borderTR.render();
-        gameContext->levelManager.renderShine();
+        gameContext->levelManager.renderPreServe();
         gameContext->paddle.renderServing();
         letsGoElement.render();
 }

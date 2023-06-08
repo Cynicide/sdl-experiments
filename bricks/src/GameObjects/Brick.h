@@ -15,14 +15,14 @@ public:
     Brick(float _xpos, float _ypos, Definitions::BrickType type, SDL_Texture* sprite, Mix_Chunk* collisionSound);
     ~Brick(){};
 
-    void render();    
-    void renderShine();
+    void updatePreServe(double dt);
+    void renderPreServe();
+    
     void update(double dt);
-    void updateShine(double dt);
-
+    void render();
 
     SDL_FRect brickRect;
-    Definitions::BrickStatus brickStatus = Definitions::BrickStatus::Good;
+    Definitions::BrickStatus brickStatus = Definitions::BrickStatus::BrickGood;
     Definitions::BrickType brickType;
     Definitions::BrickStatus hit();
     

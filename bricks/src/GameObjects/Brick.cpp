@@ -73,7 +73,7 @@ void Brick::SliceSpriteSheet() {
 
 void Brick::render() 
 {
-    if (brickStatus == Definitions::BrickStatus::Exploding) {
+    if (brickStatus == Definitions::BrickStatus::BrickExploding) {
             int frame = (int)currentdestructionFrame;
             SDL_Rect solidSprite = {brickSpriteClips[frame].x, brickSpriteClips[frame].y, brickSpriteClips[frame].w, brickSpriteClips[frame].h};
             SDL_RenderCopyF(gRenderer, brickSprite, &solidSprite, &brickRect );
@@ -96,7 +96,7 @@ void Brick::render()
     //SDL_RenderDrawRectF(gRenderer, &brickRect);
 }
 
-void Brick::renderShine() {
+void Brick::renderPreServe() {
     if (shineAnimDone == false) {
         int frame = (int)currentShineFrame;
         SDL_Rect solidSprite = {brickSpriteClips[frame].x, brickSpriteClips[frame].y, brickSpriteClips[frame].w, brickSpriteClips[frame].h};
@@ -122,22 +122,22 @@ Definitions::BrickStatus Brick::hit() {
 
         if (health == 0) {
             spdlog::info("Brick at: " + std::to_string(xpos) + "," + std::to_string(ypos) + " has been marked as destroyed.");
-            brickStatus = Definitions::BrickStatus::Exploding;      
+            brickStatus = Definitions::BrickStatus::BrickExploding;      
         }
     }
     return brickStatus;
 }
 
 void Brick::update(double dt) {
-    if (brickStatus == Definitions::BrickStatus::Exploding) {
+    if (brickStatus == Definitions::BrickStatus::BrickExploding) {
         currentdestructionFrame = currentdestructionFrame + (60 * dt);
         if ((int)currentdestructionFrame == destructionEndFrame) {
-            brickStatus = Definitions::BrickStatus::Destroyed;
+            brickStatus = Definitions::BrickStatus::BrickDestroyed;
         }
     }
 }
 
-void Brick::updateShine(double dt) {
+void Brick::updatePreServe(double dt) {
     currentShineFrame = currentShineFrame + (20 * dt);
     if ((int)currentShineFrame == shineEndFrame) {
         currentShineFrame = shineStartFrame;

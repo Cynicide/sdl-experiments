@@ -1,5 +1,6 @@
 #include <Turret.h>
 #include <random>
+#include <globals.h>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -15,7 +16,7 @@ Turret::Turret(float _xpos, float _ypos, SpriteManager* spriteManager)
     // Slightly randomize the time between shots
     std::random_device rd;
     std::mt19937 engine(rd());
-    std::uniform_int_distribution<int> distribution(-5, 5);
+    std::uniform_int_distribution<int> distribution(-bulletTimeVariance, bulletTimeVariance);
     int randomNumber = distribution(engine);
     shotTimer = baseShotTimer + randomNumber;
 
@@ -42,44 +43,102 @@ void Turret::SliceSpriteSheet() {
 }
 
 void Turret::update(double dt) {
+
     if (angle != 0.f) {
         angle = 0.f;
     }
 }
 
-void Turret::update(double dt, SDL_FRect paddleRect) {
+void Turret::updateServe(double dt, SDL_FRect paddleRect) {
     angle = calculateRotationAngle(paddleRect);
+}
 
-    currentShotTimer = currentShotTimer + (60 * dt);
-    spdlog::info("Current Shot Timer: " + std::to_string(currentShotTimer));
-    if (currentShotTimer > shotTimer) {
-        if (turretBullet == nullptr) {
-            spdlog::info("Firing");
-            turretBullet = new TurretBullet(spriteManager, calculateBulletPosition(), angle);
+void Turret::hitTurret() {
+    turretStatus = Definitions::TurretStatus::TurretDead;
+    currentShotTimer = 0.f;
+}
+
+void Turret::update(double dt, SDL_FRect paddleRect) {
+    
+    switch (turretStatus) {
+        case Definitions::TurretStatus::TurretGood: {
+            angle = calculateRotationAngle(paddleRect);
+
+            currentShotTimer = currentShotTimer + (60 * dt);
+            if (currentShotTimer > shotTimer) {
+                if (turretBullet == nullptr) {
+                    turretBullet = new TurretBullet(spriteManager, calculateBulletPosition(), paddleRect);
+                }
+                currentShotTimer = 0.f;
+            }
+            break;
         }
-        currentShotTimer = 0.f;
+
+        case Definitions::TurretStatus::TurretExploding: {
+            break;
+        }
+        case Definitions::TurretStatus::TurretDead: {
+            break;
+        }        
     }
+    
+    // Does this Turret have an active Bullet?
     if (turretBullet != nullptr) {
         turretBullet->update(dt);
+
+        // Remove the bullet if it falls off the bottom of the screen
+        if (turretBullet->turretBulletRect.y > SCREEN_HEIGHT) {
+            deleteBullet();
+        }
     }
 }
 
 void Turret::renderBase() {
-    SDL_RenderCopyF(gRenderer, turretBase, NULL, &turretRect );
+    switch(turretStatus) {
+        case Definitions::TurretStatus::TurretGood: {
+            SDL_RenderCopyF(gRenderer, turretBase, NULL, &turretRect );
+            break;
+        }
+        case Definitions::TurretStatus::TurretExploding: {
+            break;
+        }
+        case Definitions::TurretStatus::TurretDead: {
+            break;
+        }
+    }
 }
 
 void Turret::renderTurret() {
-    SDL_RenderCopyExF(gRenderer, turretSprite, NULL, &turretRect, angle, &rotationPoint,  SDL_FLIP_NONE);
+switch(turretStatus) {
+        case Definitions::TurretStatus::TurretGood: {
+            SDL_RenderCopyExF(gRenderer, turretSprite, NULL, &turretRect, angle, &rotationPoint,  SDL_FLIP_NONE);
+            break;
+        }
+        case Definitions::TurretStatus::TurretExploding: {
+            break;
+        }
+        case Definitions::TurretStatus::TurretDead: {
+            break;
+        }
+    }
     if (turretBullet != nullptr) {
         turretBullet->render();
     }
 }
 
+void Turret::deleteBullet() {
+    if (turretBullet != nullptr) {
+        delete turretBullet;
+        turretBullet = nullptr;
+    }
+
+}
+
 double Turret::calculateRotationAngle(SDL_FRect paddleRect)
 {
     // Calculate the angle between the two sprite rects
-    double deltaX = turretRect.x - paddleRect.x;
-    double deltaY = turretRect.y - paddleRect.y;
+    double deltaX = (turretRect.x + (turretRect.w / 2)) - (paddleRect.x + (paddleRect.w / 2));
+    double deltaY = (turretRect.y + (turretRect.h / 2)) - (paddleRect.y + (paddleRect.h / 2));
     
     double angle = std::atan2(deltaY, deltaX) * 180.0 / M_PI;
 

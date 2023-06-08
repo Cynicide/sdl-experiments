@@ -1,17 +1,25 @@
 #include <TurretBullet.h>
 #include <cmath>
 
-TurretBullet::TurretBullet(SpriteManager* spriteManager, SDL_FRect position, double angle) {
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
+TurretBullet::TurretBullet(SpriteManager* spriteManager, SDL_FRect position, SDL_FRect paddleRect) {
     this->turretBulletSprite = spriteManager->turretBullet;
     this->turretBulletRect = position;
-    this->angle = angle;
-
+    
     spriteManager->getTextureDimensions(turretBulletSprite, turretBulletWidth, turretBulletHeight);
-    //turretBulletRect = {0, 0, (float)(turretBulletWidth / numSprites), (float)turretBulletHeight};
-    SliceSpriteSheet();
+    setAngle(paddleRect);
+    sliceSpriteSheet();
 }
 
-void TurretBullet::SliceSpriteSheet() {
+void TurretBullet::setAngle(SDL_FRect paddleRect) {
+    double deltaX = (turretBulletRect.x + (turretBulletRect.w / 2)) - (paddleRect.x + (paddleRect.w / 2));
+    double deltaY = (turretBulletRect.y + (turretBulletRect.h / 2)) - (paddleRect.y + (paddleRect.h / 2));
+    angle = std::atan2(deltaY, deltaX) * 180.0 / M_PI;
+}
+
+void TurretBullet::sliceSpriteSheet() {
     for( int i = 0; i <= numSprites - 1; i++ ) {
         turretBulletSpriteClips[ i ].x =   i * (turretBulletWidth / numSprites);
         turretBulletSpriteClips[ i ].y =   0;
@@ -21,11 +29,20 @@ void TurretBullet::SliceSpriteSheet() {
 }
 
 void TurretBullet::update(double dt) {
+    currentFrame = currentFrame + (30 * dt);
+        if ((int)currentFrame > (float)lastSprite) {
+            currentFrame = 0.0f;
+        }
+    spdlog::info("---------- BULLET ---------");
+    spdlog::info("X: " + std::to_string(turretBulletRect.x) + " Y: "+ std::to_string(turretBulletRect.x) + " W: " + std::to_string(turretBulletRect.w) + " H: " + std::to_string(turretBulletRect.h));
+    spdlog::info("CurrentFrame: " + std::to_string(currentFrame));
     moveBullet(dt);
 }
 
 void TurretBullet::render() {
-    SDL_Rect solidSprite = {turretBulletSpriteClips[0].x, turretBulletSpriteClips[0].y, turretBulletSpriteClips[0].w, turretBulletSpriteClips[0].h};
+    int frame = (int)currentFrame;
+    // What is causing this segfault
+    SDL_Rect solidSprite = {turretBulletSpriteClips[frame].x, turretBulletSpriteClips[frame].y, turretBulletSpriteClips[frame].w, turretBulletSpriteClips[frame].h};
     SDL_RenderCopyF(gRenderer, turretBulletSprite, &solidSprite, &turretBulletRect );
 }
 
@@ -39,5 +56,5 @@ void TurretBullet::moveBullet(double dt) {
 
     // Update the object's position
     turretBulletRect.x += -deltaX * dt;
-    turretBulletRect.y += deltaY * dt;
+    turretBulletRect.y += -deltaY * dt;
 }

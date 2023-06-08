@@ -13,6 +13,8 @@ void ServingSubState::setPlayingSubState(SubState* playingSubState) {
 
 bool ServingSubState::enter() {
     gameContext->paddle.reset();
+    gameContext->cleanup();
+    gameContext->AddBall();
     return true;
 }
 bool ServingSubState::exit() {
@@ -25,7 +27,7 @@ void ServingSubState::handleEvent( SDL_Event& e ) {
 }
 void ServingSubState::update(double dt) {
 
-
+    // Todo: Do we need this?
     for (int b = 0; b < 3; ++b) {
         if (gameContext->ballList[b] != nullptr) {
             gameContext->ballList[b]->reset();
@@ -33,7 +35,7 @@ void ServingSubState::update(double dt) {
     }
 
     gameContext->paddle.updateServing(dt);
-    gameContext->levelManager.update(dt, gameContext->paddle.paddleRect);
+    gameContext->levelManager.updateServe(dt, gameContext->paddle.paddleRect);
 
     for (int b = 0; b < 3; ++b) {
         if (gameContext->ballList[b] != nullptr) {

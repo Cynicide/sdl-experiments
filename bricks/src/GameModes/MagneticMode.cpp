@@ -17,7 +17,7 @@ bool MagneticMode::enter() {
 bool MagneticMode::exit() {
     for (int b = 0; b < 3; ++b) {
         if (gameContext->ballList[b] != nullptr) {
-                gameContext->ballList[b]->freeFromPaddle();
+                gameContext->ballList[b]->releaseFromPaddle();
                 gameContext->ballList[b]->resetStuckOffset();
         }
     }
@@ -40,7 +40,7 @@ void MagneticMode::update(double dt) {
     {
         for (int b = 0; b < 3; ++b) {
             if (gameContext->ballList[b] != nullptr) {
-                gameContext->ballList[b]->freeFromPaddle();
+                gameContext->ballList[b]->releaseFromPaddle();
                 gameContext->ballList[b]->resetStuckOffset();
             }
         }

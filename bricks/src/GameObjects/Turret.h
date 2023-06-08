@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SpriteManager.h>
-
+#include <Definitions.h>
 #include <TurretBullet.h>
 
 class Turret {
@@ -13,11 +13,16 @@ class Turret {
         void renderTurret();
         void update(double dt);
         void update(double dt, SDL_FRect paddleRect);
+        void updateServe(double dt, SDL_FRect paddleRect);
+
+        void deleteBullet();
+        void hitTurret();
 
         SDL_FRect turretRect;
         SDL_FRect collisionRect;
 
         TurretBullet* turretBullet = nullptr;
+        Definitions::TurretStatus turretStatus = Definitions::TurretStatus::TurretGood;
 
     private:
         void SliceSpriteSheet();
@@ -41,7 +46,9 @@ class Turret {
         int turretWidth = 0;
 
         // ToDo: How do I make a float a static const
-        float baseShotTimer = 200.f;
+        float baseShotTimer = 400.f;
         float shotTimer = 0.f;
         float currentShotTimer = 0.f;
+
+        int bulletTimeVariance = 50;
 };

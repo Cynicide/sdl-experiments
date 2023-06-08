@@ -13,8 +13,10 @@ public:
     void render();
     void update(double dt, SDL_FRect paddleRect);
 
-    void renderShine();
-    void updateShine(double dt, SDL_FRect paddleRect);
+    void renderPreServe();
+    void updatePreServe(double dt);
+
+    void updateServe(double dt, SDL_FRect paddleRect);
 
     void destroy();
     void getLevelFiles();
@@ -24,6 +26,10 @@ public:
 
     void LoadLevel();
     void CreateLevel();
+    void restartGame();
+    void clearLevel();
+
+    void clearTurretBullets();
 
     Level(SpriteManager* spriteManager, AudioManager* audioManager);
 
