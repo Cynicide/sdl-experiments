@@ -21,7 +21,7 @@ class Turret {
         SDL_FRect turretRect;
         SDL_FRect collisionRect;
 
-        TurretBullet* turretBullet = nullptr;
+        std::unique_ptr<TurretBullet> turretBullet = nullptr;
         Definitions::TurretStatus turretStatus = Definitions::TurretStatus::TurretGood;
 
     private:

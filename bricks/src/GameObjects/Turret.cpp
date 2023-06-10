@@ -28,8 +28,7 @@ Turret::Turret(float _xpos, float _ypos, SpriteManager* spriteManager)
 
 Turret::~Turret() {
     if (turretBullet != nullptr) {
-        delete turretBullet;
-        turretBullet = nullptr;
+        turretBullet.reset();
     }
 }
 
@@ -67,7 +66,7 @@ void Turret::update(double dt, SDL_FRect paddleRect) {
             currentShotTimer = currentShotTimer + (60 * dt);
             if (currentShotTimer > shotTimer) {
                 if (turretBullet == nullptr) {
-                    turretBullet = new TurretBullet(spriteManager, calculateBulletPosition(), paddleRect);
+                    turretBullet = std::make_unique<TurretBullet>(spriteManager, calculateBulletPosition(), paddleRect);
                 }
                 currentShotTimer = 0.f;
             }
@@ -128,8 +127,7 @@ switch(turretStatus) {
 
 void Turret::deleteBullet() {
     if (turretBullet != nullptr) {
-        delete turretBullet;
-        turretBullet = nullptr;
+        turretBullet.reset();
     }
 
 }

@@ -205,7 +205,7 @@ void PlayingSubState::update(double dt) {
                     continue;
                 }
 
-                // ToDo: Change to Swept aabb
+
                 // Check each brick                
                 for (auto &i : gameContext->levelManager.brickList) {
                     if (i.brickStatus == Definitions::BrickStatus::BrickGood) {
@@ -214,6 +214,19 @@ void PlayingSubState::update(double dt) {
                             gameContext->bulletList[r]->hit();
                             i.hit();
                             // Move onto the next bullet as we don't need to check any more bricks
+                            break;
+                        }
+                    }    
+                }
+                // ToDo: Change to Swept aabb
+                // Check each turret                
+                for (auto &t : gameContext->levelManager.turretList) {
+                    if (t.turretStatus == Definitions::TurretStatus::TurretGood) {
+                        // Check if we are inside the turret. 
+                        if (physics.AABBCheck(gameContext->bulletList[r]->bulletRect, t.turretRect)) {
+                            gameContext->bulletList[r]->hit();
+                            t.hitTurret();
+                            // Move onto the next turret as we don't need to check any more bricks
                             break;
                         }
                     }    

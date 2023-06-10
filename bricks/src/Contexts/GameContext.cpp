@@ -126,8 +126,10 @@ void GameContext::AddBullets(SDL_FRect paddleRect) {
 
         // Create a stack to hold the bullets
         std::stack<float> bulletStack;
-        bulletStack.push(paddleRect.x + (paddleRect.w * 0.25));
-        bulletStack.push(paddleRect.x + (paddleRect.w * 0.75));
+        
+        // Push the location to spawn each bullet above the paddle
+        bulletStack.push(paddleRect.x + (paddleRect.w * 0.33));
+        bulletStack.push(paddleRect.x + (paddleRect.w * 0.66));
 
         // Look for empty elements in the bullet array
         for (int p = 0; p < 2; ++p) {
@@ -147,7 +149,7 @@ void GameContext::AddBullets(SDL_FRect paddleRect) {
                 }            
                 break;
             }
-    }  
+        }  
     }
 }
 
