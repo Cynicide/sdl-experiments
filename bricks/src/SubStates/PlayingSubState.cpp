@@ -132,7 +132,7 @@ void PlayingSubState::update(double dt) {
     // Collision Warp
     // If we collide with the warp object behave as if the level had been completed.
     if (levelWarp != nullptr) {
-        if (physics.AABBCheck(gameContext->paddle.paddleRect, levelWarp->warpRect)) {
+        if (physics.AABBCheck(gameContext->paddle.paddleRect, levelWarp->warpPortalCollisionRect)) {
             sNextState = levelWinSubState;
         }
     }

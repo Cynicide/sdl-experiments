@@ -33,9 +33,6 @@ void TurretBullet::update(double dt) {
         if ((int)currentFrame > (float)lastSprite) {
             currentFrame = 0.0f;
         }
-    spdlog::info("---------- BULLET ---------");
-    spdlog::info("X: " + std::to_string(turretBulletRect.x) + " Y: "+ std::to_string(turretBulletRect.x) + " W: " + std::to_string(turretBulletRect.w) + " H: " + std::to_string(turretBulletRect.h));
-    spdlog::info("CurrentFrame: " + std::to_string(currentFrame));
     moveBullet(dt);
 }
 

@@ -3,7 +3,7 @@
 PreServeSubState::PreServeSubState(GameContext* gameContext, SubState*& sNextState) : 
     gameContext(gameContext),
     sNextState(sNextState),
-    letsGoElement(&gameContext->spriteManager, &gameContext->audioManager) 
+    letsGoElement(&gameContext->spriteManager, gameContext->spriteManager.letsGoTop, gameContext->spriteManager.letsGoBottom,  gameContext->audioManager.letsGo) 
     {
 }
 

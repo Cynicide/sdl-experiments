@@ -223,7 +223,7 @@ void Level::CreateLevel() {
                         break;
                     }
                     case 9: {
-                        Turret tmpTurret(posX, posY, spriteManager);
+                        Turret tmpTurret(posX, posY, spriteManager, audioManager);
                         turretList.push_back(tmpTurret);
                         break;
                     }

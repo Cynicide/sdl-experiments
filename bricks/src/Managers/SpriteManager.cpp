@@ -81,16 +81,20 @@ void SpriteManager::loadSprites() {
     stars = loadAlphaTexture("assets\\images\\stars.png");
     logo = loadAlphaTexture("assets\\images\\logo.png");
     background = loadAlphaTexture("assets\\images\\background.png");
-    letsGo = loadAlphaTexture("assets\\images\\lets-go-sheet.png");
-    
+    letsGoTop = loadAlphaTexture("assets\\images\\lets-go-top.png");
+    letsGoBottom = loadAlphaTexture("assets\\images\\lets-go-bottom.png");
+    levelCompleteTop = loadAlphaTexture("assets\\images\\level-complete-top.png");
+    levelCompleteBottom = loadAlphaTexture("assets\\images\\level-complete-bottom.png");
+
     // Ship
     paddle = loadAlphaTexture("assets\\images\\paddle.png");
     shipExplosion = loadAlphaTexture("assets\\images\\explosion-sheet.png");
     laserPaddle = loadAlphaTexture("assets\\images\\paddle-lasermode.png");
     longPaddle = loadAlphaTexture("assets\\images\\paddle-long.png");
-    turret = loadAlphaTexture("assets\\images\\turret-gun.png");
+    turret = loadAlphaTexture("assets\\images\\turret-gun-sheet.png");
     turretBase = loadAlphaTexture("assets\\images\\turret-base.png");
     turretBullet = loadAlphaTexture("assets\\images\\turret-bullet-sheet.png");
+    turretExplosion = loadAlphaTexture("assets\\images\\turret-explosion-sheet.png");
 
     // Ball
     ball = loadAlphaTexture("assets\\images\\ball.png");
@@ -126,5 +130,6 @@ void SpriteManager::loadSprites() {
     capsuleMagnetic = loadAlphaTexture("assets\\images\\capsule-magnetic-sheet.png");
 
     // Level Warp
-    levelWarp = loadAlphaTexture("assets\\images\\level-skip-sheet.png");
+    levelWarpPortal = loadAlphaTexture("assets\\images\\level-skip-portal-sheet.png");
+    levelWarpArrow = loadAlphaTexture("assets\\images\\level-skip-arrow.png");
 }

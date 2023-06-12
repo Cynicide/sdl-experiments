@@ -19,7 +19,10 @@ public:
     SDL_Texture* stars;
     SDL_Texture* logo;
     SDL_Texture* background;
-    SDL_Texture* letsGo;
+    SDL_Texture* letsGoTop;
+    SDL_Texture* letsGoBottom;
+    SDL_Texture* levelCompleteTop;
+    SDL_Texture* levelCompleteBottom;    
 
     SDL_Texture* paddle;
     SDL_Texture* longPaddle;
@@ -28,6 +31,7 @@ public:
     SDL_Texture* turret;
     SDL_Texture* turretBase;
     SDL_Texture* turretBullet;
+    SDL_Texture* turretExplosion;
 
     SDL_Texture* ball;
     SDL_Texture* bullet;
@@ -57,7 +61,8 @@ public:
     SDL_Texture* capsuleJump;
     SDL_Texture* capsuleMagnetic;
 
-    SDL_Texture* levelWarp;
+    SDL_Texture* levelWarpPortal;
+    SDL_Texture* levelWarpArrow;
     
 private:
     SDL_Surface* loadSurface(std::string path);

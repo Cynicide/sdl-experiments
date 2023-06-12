@@ -5,7 +5,7 @@
 #include <ServingSubState.h>
 #include <Paddle.h>
 
-#include <LetsGoUIElement.h>
+#include <VerticalSplitTextUI.h>
 
 class PreServeSubState : public SubState
 {
@@ -30,5 +30,5 @@ private:
     SubState*& sNextState;
     SubState* servingSubState;
 
-    LetsGoUIElement letsGoElement;
+    VerticalSplitTextUI letsGoElement;
 };

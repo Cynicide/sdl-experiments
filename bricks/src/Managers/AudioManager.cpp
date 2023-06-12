@@ -21,10 +21,12 @@ Mix_Music* AudioManager::loadMusic(const char * filename) {
 }
 
 void AudioManager::loadAudio() {
-    ping = loadSound("assets\\audio\\ping.wav");
-    pong = loadSound("assets\\audio\\pong.wav"); 
-    explosion = loadSound("assets\\audio\\explosion.wav");
-    laser = loadSound("assets\\audio\\laser.wav"); 
-    letsGo = loadMusic("assets\\audio\\letsgo.mp3");
+    ping = loadSound("assets\\audio\\ping.wav"); // 1
+    pong = loadSound("assets\\audio\\pong.wav"); // 3
+    explosion = loadSound("assets\\audio\\explosion.wav"); // 2 
+    laser = loadSound("assets\\audio\\laser.wav"); // 4
+    turretExplosion = loadSound("assets\\audio\\turret-explosion.wav"); // 5
+    letsGo = loadMusic("assets\\audio\\letsgo.mp3"); // Music
+
 
 }

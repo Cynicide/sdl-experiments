@@ -5,13 +5,17 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-Turret::Turret(float _xpos, float _ypos, SpriteManager* spriteManager)
+Turret::Turret(float _xpos, float _ypos, SpriteManager* spriteManager, AudioManager* audioManager)
 {
     this->turretSprite = spriteManager->turret;
     this->turretBase = spriteManager->turretBase;
+    this->turretExplosion = spriteManager->turretExplosion;
     this->spriteManager = spriteManager;
+    this->explosionSound = audioManager->turretExplosion;
 
+    spriteManager->getTextureDimensions(turretSprite, turretGunWidth, turretGunHeight);
     spriteManager->getTextureDimensions(turretBase, turretWidth, turretHeight);
+    spriteManager->getTextureDimensions(turretExplosion, explosionSpriteWidth, explosionSpriteHeight);
 
     // Slightly randomize the time between shots
     std::random_device rd;
@@ -22,22 +26,37 @@ Turret::Turret(float _xpos, float _ypos, SpriteManager* spriteManager)
 
     rotationPoint = {(float)(turretWidth / 2), (float)(turretHeight * 0.25f)};
     
-    turretRect = {_xpos, _ypos, (float)turretWidth, (float)turretHeight};
+    turretRect = {_xpos, _ypos, (float)turretGunWidth / numSprites, (float)turretGunHeight};
     collisionRect = {_xpos, _ypos, (float)turretWidth, (float)turretHeight / 2};
+    explosionRect = {_xpos, _ypos, (float)turretWidth / numExplosionSprites, (float)turretHeight};
+    
+    sliceSpriteSheet();
+    sliceExplosionSpriteSheet();
+
 }
 
 Turret::~Turret() {
     if (turretBullet != nullptr) {
-        turretBullet.reset();
+        delete turretBullet;
+        turretBullet = nullptr;
     }
 }
 
-void Turret::SliceSpriteSheet() {
+void Turret::sliceSpriteSheet() {
     for( int i = 0; i <= numSprites - 1; i++ ) {
-        turretSpriteClips[ i ].x =   i * (turretWidth / numSprites);
+        turretSpriteClips[ i ].x =   i * (turretGunWidth / numSprites);
         turretSpriteClips[ i ].y =   0;
-        turretSpriteClips[ i ].w =  (turretWidth / numSprites);
-        turretSpriteClips[ i ].h = turretHeight;
+        turretSpriteClips[ i ].w =  (turretGunWidth / numSprites);
+        turretSpriteClips[ i ].h = turretGunHeight;
+        }
+}
+
+void Turret::sliceExplosionSpriteSheet() {
+    for( int i = 0; i <= numExplosionSprites - 1; i++ ) {
+        turretExplosionSpriteClips[ i ].x =   i * (explosionSpriteWidth / numExplosionSprites);
+        turretExplosionSpriteClips[ i ].y =   0;
+        turretExplosionSpriteClips[ i ].w =  (explosionSpriteWidth / numExplosionSprites);
+        turretExplosionSpriteClips[ i ].h = explosionSpriteHeight;
         }
 }
 
@@ -46,15 +65,36 @@ void Turret::update(double dt) {
     if (angle != 0.f) {
         angle = 0.f;
     }
+    currentSprite = currentSprite + (15 * dt);
+    if ((int)currentSprite > (float)lastSprite) {
+        currentSprite = 0.0f;
+    }
 }
 
 void Turret::updateServe(double dt, SDL_FRect paddleRect) {
     angle = calculateRotationAngle(paddleRect);
+    currentSprite = currentSprite + (15 * dt);
+    if ((int)currentSprite > (float)lastSprite) {
+        currentSprite = 0.0f;
+    }
 }
 
 void Turret::hitTurret() {
-    turretStatus = Definitions::TurretStatus::TurretDead;
+    turretStatus = Definitions::TurretStatus::TurretExploding;
     currentShotTimer = 0.f;
+    if (explosionSoundPlayed == false) {
+        explode();
+        explosionSoundPlayed = true;
+    }
+}
+
+void Turret::explode() {
+    if (Mix_Playing(5)) {
+        Mix_HaltChannel(5);
+        Mix_PlayChannel(5, explosionSound, 0);
+    } else {
+        Mix_PlayChannel(5, explosionSound, 0);
+    }
 }
 
 void Turret::update(double dt, SDL_FRect paddleRect) {
@@ -64,16 +104,25 @@ void Turret::update(double dt, SDL_FRect paddleRect) {
             angle = calculateRotationAngle(paddleRect);
 
             currentShotTimer = currentShotTimer + (60 * dt);
+            spdlog::debug("Current Shot Timer: " + std::to_string(currentShotTimer));
             if (currentShotTimer > shotTimer) {
                 if (turretBullet == nullptr) {
-                    turretBullet = std::make_unique<TurretBullet>(spriteManager, calculateBulletPosition(), paddleRect);
+                    spdlog::info("Firing");
+                    turretBullet = new TurretBullet(spriteManager, calculateBulletPosition(), paddleRect);
                 }
                 currentShotTimer = 0.f;
             }
+
+            currentSprite = currentSprite + (15 * dt);
+            if ((int)currentSprite > (float)lastSprite) {
+                currentSprite = 0.0f;
+            }
+
             break;
         }
 
         case Definitions::TurretStatus::TurretExploding: {
+            currentExplosionSprite = currentExplosionSprite + (60 * dt);
             break;
         }
         case Definitions::TurretStatus::TurretDead: {
@@ -110,10 +159,32 @@ void Turret::renderBase() {
 void Turret::renderTurret() {
 switch(turretStatus) {
         case Definitions::TurretStatus::TurretGood: {
-            SDL_RenderCopyExF(gRenderer, turretSprite, NULL, &turretRect, angle, &rotationPoint,  SDL_FLIP_NONE);
+            //SDL_RenderCopyExF(gRenderer, turretSprite, NULL, &turretRect, angle, &rotationPoint,  SDL_FLIP_NONE);
+            int frame = (int)currentSprite;
+            SDL_Rect solidSprite = {turretSpriteClips[frame].x, turretSpriteClips[frame].y, turretSpriteClips[frame].w, turretSpriteClips[frame].h};
+            SDL_RenderCopyExF(gRenderer, turretSprite, &solidSprite, &turretRect, angle, NULL, SDL_FLIP_NONE);
             break;
         }
         case Definitions::TurretStatus::TurretExploding: {
+            
+            int frame = (int)currentExplosionSprite;
+
+            if (frame < lastExplosionSprite) {
+                SDL_FRect explosionRect;
+                float turretMidX = turretRect.x + (turretRect.w / 2);
+                float turretMidY = turretRect.y + (turretRect.h /2 );
+
+                explosionRect.x = turretMidX - ((explosionSpriteWidth / numExplosionSprites) / 2);
+                explosionRect.y = turretMidY - (explosionSpriteHeight / 2);
+                explosionRect.w = explosionSpriteWidth / numExplosionSprites;
+                explosionRect.h = explosionSpriteHeight;
+
+                SDL_Rect solidSprite = {turretExplosionSpriteClips[frame].x, turretExplosionSpriteClips[frame].y, turretExplosionSpriteClips[frame].w, turretExplosionSpriteClips[frame].h};
+                SDL_RenderCopyF(gRenderer, turretExplosion, &solidSprite, &explosionRect);               
+            } else {
+                turretStatus = Definitions::TurretStatus::TurretDead;
+                currentShotTimer = 0.f;
+            }
             break;
         }
         case Definitions::TurretStatus::TurretDead: {
@@ -127,7 +198,8 @@ switch(turretStatus) {
 
 void Turret::deleteBullet() {
     if (turretBullet != nullptr) {
-        turretBullet.reset();
+        delete turretBullet;
+        turretBullet = nullptr;
     }
 
 }

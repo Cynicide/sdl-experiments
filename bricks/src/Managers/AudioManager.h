@@ -14,6 +14,7 @@ public:
     Mix_Chunk* pong;
     Mix_Chunk* explosion;
     Mix_Chunk* laser;
+    Mix_Chunk* turretExplosion;
 
     Mix_Music* letsGo;
 
