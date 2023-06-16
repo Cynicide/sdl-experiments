@@ -2,11 +2,11 @@
 #include <SpriteManager.h>
 #include <Definitions.h>
 
-class Bullet {
+class PlayerBullet {
 
     public:
-        Bullet(SpriteManager* spriteManager, float xLocation, float yLocation);
-        ~Bullet(){};
+        PlayerBullet(SpriteManager* spriteManager, float xLocation, float yLocation);
+        ~PlayerBullet(){};
         SDL_FRect bulletRect;
 
         void update(double dt);

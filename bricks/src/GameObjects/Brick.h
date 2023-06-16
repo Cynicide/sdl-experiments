@@ -12,7 +12,7 @@ class Brick
 {
 public:
 
-    Brick(float _xpos, float _ypos, Definitions::BrickType type, SDL_Texture* sprite, Mix_Chunk* collisionSound);
+    Brick(float _xpos, float _ypos, Definitions::BrickType type, SDL_Texture* sprite);
     ~Brick(){};
 
     void updatePreServe(double dt);
@@ -50,8 +50,6 @@ private:
 
     SDL_Texture* brickSprite;
     SDL_Rect brickSpriteClips[numSprites];
-
-    Mix_Chunk* collisionSound;
 
     float brickHeight = 32.f;
     float brickWidth = 64.f;

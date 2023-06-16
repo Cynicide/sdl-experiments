@@ -4,6 +4,8 @@
 #include <GameContext.h>
 #include <LoadLevelSubState.h>
 
+#include <VerticalSplitTextUI.h>
+
 class LevelWinSubState : public SubState
 {
 public:
@@ -26,4 +28,6 @@ private:
     GameContext* gameContext;
     SubState*& sNextState;
     SubState* loadLevelSubState;
+
+    VerticalSplitTextUI levelEndElement;
 };

@@ -1,14 +1,16 @@
 #pragma once
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h> 
 #include <SpriteManager.h>
+#include <AudioManager.h>
 #include <Vector2d.h>
 
 class Ball
 {
 public:
 
-    Ball(SpriteManager* spriteManager);
-    Ball(SpriteManager* spriteManager, float x, float y, float currentVel);
+    Ball(SpriteManager* spriteManager, AudioManager* audioManager);
+    Ball(SpriteManager* spriteManager, float x, float y, float currentVel, AudioManager* audioManager);
     ~Ball(){};
 
     // State Methods
@@ -55,6 +57,10 @@ private:
     int startingVel = 400;
     int speedUpAmount = 20;
     float currentVel = 0;
+
+    //Audio
+    Mix_Chunk* audioBrickHit;
+    Mix_Chunk* audioPaddleHit;
 
     void flipY();
     void flipX();

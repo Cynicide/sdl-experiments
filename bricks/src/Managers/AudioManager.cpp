@@ -27,6 +27,5 @@ void AudioManager::loadAudio() {
     laser = loadSound("assets\\audio\\laser.wav"); // 4
     turretExplosion = loadSound("assets\\audio\\turret-explosion.wav"); // 5
     letsGo = loadMusic("assets\\audio\\letsgo.mp3"); // Music
-
-
+    levelEnd = loadMusic("assets\\audio\\levelend.mp3"); // Music
 }

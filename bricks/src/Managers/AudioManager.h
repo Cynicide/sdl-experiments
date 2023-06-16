@@ -17,6 +17,7 @@ public:
     Mix_Chunk* turretExplosion;
 
     Mix_Music* letsGo;
+    Mix_Music* levelEnd;
 
     Mix_Chunk * loadSound(const char * filename);
     Mix_Music* loadMusic(const char * filename);

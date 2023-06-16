@@ -13,7 +13,7 @@ void PreServeSubState::setServingSubState( SubState* servingSubState) {
 
 bool PreServeSubState::enter() {
     gameContext->paddle.reset();
-    gameContext->ClearPowerups();
+    gameContext->powerupList.clear();
     return true;
 }
 bool PreServeSubState::exit() {

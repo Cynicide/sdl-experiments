@@ -45,7 +45,7 @@ void LaserMode::update(double dt) {
         Uint32 mouseState = SDL_GetMouseState(&mx, &my);
         if (mouseState == SDL_BUTTON(1)) 
         {
-            gameContext->AddBullets(gameContext->paddle.paddleRect);
+            gameContext->bulletList.shoot(gameContext->paddle.paddleRect);
             currentCooldown = maxCooldown;
         }
     }

@@ -6,9 +6,8 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 
-Brick::Brick(float _xpos, float _ypos, Definitions::BrickType type, SDL_Texture* sprite, Mix_Chunk* collisionSound) {
+Brick::Brick(float _xpos, float _ypos, Definitions::BrickType type, SDL_Texture* sprite) {
     
-    this->collisionSound = collisionSound;
     brickType = type;
 
     switch (brickType) {
@@ -107,16 +106,6 @@ void Brick::renderPreServe() {
 }
 
 Definitions::BrickStatus Brick::hit() {
-    
-    if (Mix_Playing(3)) {
-        Mix_HaltChannel(3);
-        Mix_PlayChannel(3, collisionSound, 0);
-    } else {
-        Mix_PlayChannel(3, collisionSound, 0);
-    } 
-    
-    //Mix_PlayChannel( 3, collisionSound, 0 );
-    
     if (destructable == true) {
         health = health - 1;
 

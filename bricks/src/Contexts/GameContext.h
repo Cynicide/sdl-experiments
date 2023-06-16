@@ -3,7 +3,7 @@
 #include <TiledBackground.h>
 #include <Paddle.h>
 #include <Ball.h>
-#include <Bullet.h>
+#include <PlayerBulletList.h>
 #include <BorderHorizontal.h>
 #include <BorderVertical.h>
 #include <BorderCorner.h>
@@ -11,7 +11,7 @@
 #include <Lightning.h>
 #include <Level.h>
 #include <ScrollingBackground.h>
-#include <Powerup.h>
+#include <PowerupList.h>
 #include <LifeCounter.h>
 #include <Logo.h>
 #include <Definitions.h>
@@ -29,6 +29,12 @@ class GameContext {
 
         GameContext();
         ~GameContext(){};
+
+        //Game Concepts
+        const static int MAXBALLS = 3;
+        const static int startingLives = 3;
+        const static int maxLives = 5;
+        int lives = startingLives;
 
         // Managers
         SpriteManager spriteManager;
@@ -62,68 +68,25 @@ class GameContext {
         TTF_Font* publicPixel24;
 
         //Lists
-        Ball* ballList[3] = {};
-        Powerup* powerupList[5] = {};
-        Bullet* bulletList[2] = {};
+        Ball* ballList[MAXBALLS] = {};
+        PowerupList powerupList;
+        PlayerBulletList bulletList;
+        
+        // Ball Methods
+        void addBall();
+        void addBallsAtLocation(float x, float y, float currentVal);
+        void updateBalls(double dt);       
+        void clearBalls();
 
-        //Game Concepts
-        const static int startingLives = 3;
-        const static int maxLives = 5;
-        int lives = startingLives;
-
-
-        void AddBall();
-        void AddBallsAtLocation(float x, float y, float currentVal);        
-        void ClearBalls();
-
-        void AddLife();
-
-        void AddPowerUp(float xPos, float yPos, int parentWidth);
-        void ClearPowerups();
-        Definitions::PowerUpType randomizePowerUp();
-
-        void AddBullets(SDL_FRect paddleRect);
-        void ClearBullets();
+        // Life Methods
+        void addLife();
 
         void cleanup();
-
         void resetGame();
 
     private:
+        //ToDo: Can we remove these?
         constexpr static float borderWidthV = 32.f;
         constexpr static float borderWidthC = 32.f;
-
-        const int MAXBALLS = 3;
-        const int MAXPOWERUPS = 5;
-        const int MAXBULLETS = 2;
-
-        /*
-        
-        Extra Life  0 - 5    5%
-        Slow        6 - 28   22%
-        Wide        29 - 52  23%
-        Triple      53 - 69  16%
-        Laser       70 - 79  10% 
-        LevelSkip:  80 - 85  5%    
-        Magnetic:   86 - 100 15%
-
-
-        */
-        
-        /*int extraLifeChance = 1;
-        int slowBallChance = 2;
-        int wideChance = 3;
-        int tripleBallChance = 4;
-        int laserChance = 54;
-        int levelSkipChance = 55;
-        int magneticChance = 100;*/
-
-        int extraLifeChance = 5;
-        int slowBallChance = 28;
-        int wideChance = 52;
-        int tripleBallChance = 69;
-        int laserChance = 79;
-        int levelSkipChance = 85;
-        int magneticChance = 100;
 
 };

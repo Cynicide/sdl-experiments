@@ -129,12 +129,12 @@ void Paddle::reset() {
 }
 
 void Paddle::hit() {
-    if (Mix_Playing(1)) {
+    /*if (Mix_Playing(1)) {
         Mix_HaltChannel(1);
         Mix_PlayChannel(1, collisionSound, 0);
     } else {
         Mix_PlayChannel(1, collisionSound, 0);
-    }     
+    }*/     
 }
 
 void Paddle::explode() {

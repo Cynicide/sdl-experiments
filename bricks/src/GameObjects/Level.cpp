@@ -86,6 +86,16 @@ bool Level::lastLevelCheck() {
     }
 }
 
+bool Level::isLevelComplete() {
+    for (auto &i : brickList) {
+        if (i.brickStatus != Definitions::BrickStatus::BrickDestroyed && i.brickType != Definitions::BrickType::Indestructable) {
+            // If any bricks remain do not advance to the next level.
+            return false;
+        }
+    }
+    return true;
+}
+
 void Level::getLevelFiles() {
     spdlog::info("Getting a list of levels");
     for (auto &p : std::filesystem::recursive_directory_iterator(path)) {
@@ -169,56 +179,56 @@ void Level::CreateLevel() {
                     case 1: {
                         type = Definitions::BrickType::Red;
                         sprite = spriteManager->brickRed;
-                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        Brick tmpBrick(posX, posY, type, sprite);
                         brickList.push_back(tmpBrick);
                         break;  
                     }
                     case 2: {
                         type = Definitions::BrickType::Blue;
                         sprite = spriteManager->brickBlue;
-                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        Brick tmpBrick(posX, posY, type, sprite);
                         brickList.push_back(tmpBrick);
                         break;  
                     }
                     case 3: {
                         type = Definitions::BrickType::Yellow;
                         sprite = spriteManager->brickYellow;
-                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        Brick tmpBrick(posX, posY, type, sprite);
                         brickList.push_back(tmpBrick);
                         break;  
                     }
                     case 4: {
                         type = Definitions::BrickType::Tough;
                         sprite = spriteManager->brickTough;
-                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        Brick tmpBrick(posX, posY, type, sprite);
                         brickList.push_back(tmpBrick);
                         break;  
                     }
                     case 5: {
                         type = Definitions::BrickType::Indestructable;
                         sprite = spriteManager->brickIndestructable;
-                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        Brick tmpBrick(posX, posY, type, sprite);
                         brickList.push_back(tmpBrick);
                         break; 
                     }
                     case 6: {
                         type = Definitions::BrickType::Orange;
                         sprite = spriteManager->brickOrange;
-                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        Brick tmpBrick(posX, posY, type, sprite);
                         brickList.push_back(tmpBrick);
                         break; 
                     }
                     case 7: {
                         type = Definitions::BrickType::Green;
                         sprite = spriteManager->brickGreen;
-                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        Brick tmpBrick(posX, posY, type, sprite);
                         brickList.push_back(tmpBrick);
                         break; 
                     }
                     case 8: {
                         type = Definitions::BrickType::Purple;
                         sprite = spriteManager->brickPurple;
-                        Brick tmpBrick(posX, posY, type, sprite, audioManager->ping);
+                        Brick tmpBrick(posX, posY, type, sprite);
                         brickList.push_back(tmpBrick);
                         break;
                     }

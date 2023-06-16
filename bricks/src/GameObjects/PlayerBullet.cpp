@@ -1,6 +1,6 @@
-#include <Bullet.h>
+#include <PlayerBullet.h>
 
-Bullet::Bullet(SpriteManager* spriteManager, float xLocation, float yLocation) {
+PlayerBullet::PlayerBullet(SpriteManager* spriteManager, float xLocation, float yLocation) {
     this->bulletSprite = spriteManager->bullet;
     currentVel = startingVel;
     spriteManager->getTextureDimensions(bulletSprite, bulletWidth, bulletHeight);
@@ -8,7 +8,7 @@ Bullet::Bullet(SpriteManager* spriteManager, float xLocation, float yLocation) {
     sliceSpriteSheet();
 }
 
-void Bullet::update(double dt) {
+void PlayerBullet::update(double dt) {
     if (bulletStatus == Definitions::BulletStatus::BulletGood) {
         move(dt);
         spdlog::debug("Bullet CurrentVel: " + std::to_string(currentVel));
@@ -25,11 +25,11 @@ void Bullet::update(double dt) {
     }
 }
 
-void Bullet::move(double dt) {
+void PlayerBullet::move(double dt) {
     bulletRect.y = bulletRect.y - (currentVel * dt); 
 }
 
-void Bullet::render() {
+void PlayerBullet::render() {
 
     if (bulletStatus == Definitions::BulletStatus::BulletGood) {
         SDL_Rect goodBullet = {bulletSpriteClips[0].x, bulletSpriteClips[0].y, bulletSpriteClips[0].w, bulletSpriteClips[0].h};
@@ -45,12 +45,12 @@ void Bullet::render() {
 
 
 
-void Bullet::hit() {
+void PlayerBullet::hit() {
     bulletStatus = Definitions::BulletStatus::BulletExploding;
     currentFrame = 1.0f;
 }
 
-void Bullet::sliceSpriteSheet() {
+void PlayerBullet::sliceSpriteSheet() {
     for( int i = 0; i <= numSprites - 1; i++ ) {
         bulletSpriteClips[ i ].x =   i * (bulletWidth / numSprites);
         bulletSpriteClips[ i ].y =   0;

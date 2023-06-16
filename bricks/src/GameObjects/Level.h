@@ -22,7 +22,7 @@ public:
     void getLevelFiles();
     void nextLevel();
     bool lastLevelCheck();
-
+    bool isLevelComplete();
 
     void LoadLevel();
     void CreateLevel();

@@ -53,5 +53,5 @@ void VerticalSplitTextUI::reset() {
     musicDone = false;
     musicStarted = false;
     topRect = {(float)(SCREEN_WIDTH / 2) - ( spriteWidth / 2), (float)0 - spriteHeight, (float)spriteWidth, (float)spriteHeight};
-    bottomRect = {(float)(SCREEN_WIDTH / 2) - ( spriteWidth / 2), (float)(SCREEN_HEIGHT + spriteHeight), (float)spriteWidth, (float)spriteHeight};
+    bottomRect = {(float)(SCREEN_WIDTH / 2) - ( spriteWidth / 2), (float)SCREEN_HEIGHT, (float)spriteWidth, (float)spriteHeight};
 }

@@ -41,9 +41,9 @@ bool PlayingSubState::exit() {
         levelWarp = nullptr;
     }
 
-    gameContext->ClearBalls();
-    gameContext->ClearBullets();
-    gameContext->ClearPowerups();
+    gameContext->clearBalls();
+    gameContext->bulletList.clear();
+    gameContext->powerupList.clear();
     gameContext->paddle.setNormalPaddle();
 
     return true;
@@ -62,42 +62,14 @@ void PlayingSubState::update(double dt) {
     // Update the paddle position
     gameContext->paddle.updatePlaying(dt);
 
-    // Update each ball. If they are stuck to the paddle treat them as if they are being served.
-    for (int b = 0; b < 3; ++b) {
-        if (gameContext->ballList[b] != nullptr) {
-            if (gameContext->ballList[b]->stuckToPaddle == true) {
-                gameContext->ballList[b]->updateStuck(dt, gameContext->paddle.paddleRect);
-            } else {
-                gameContext->ballList[b]->update(dt);
-            }
-
-        }
-    }
+    // Update each ball
+    gameContext->updateBalls(dt);
 
     // Update each powerup
-    for (int p = 0; p < 5; ++p) {
-        if (gameContext->powerupList[p] != nullptr) {
-            gameContext->powerupList[p]->update(dt);
-            // If they have fallen off the bottom of the screen delete them.
-            if (gameContext->powerupList[p]->powerupRect.y > SCREEN_HEIGHT) {
-                delete(gameContext->powerupList[p]);
-                gameContext->powerupList[p] = nullptr; 
-            }
-        }
-    }
+    gameContext->powerupList.update(dt);
 
     // Update each Bullet.
-    for (int p = 0; p < 2; ++p) {
-        if (gameContext->bulletList[p] != nullptr) {
-            //If they have a status of Dead delete them.
-            if (gameContext->bulletList[p]->bulletStatus == Definitions::BulletStatus::BulletDead) {
-                delete(gameContext->bulletList[p]);
-                gameContext->bulletList[p] = nullptr;
-            } else {
-                gameContext->bulletList[p]->update(dt);
-            }
-        }
-    }
+    gameContext->bulletList.update(dt);
 
     // Update Each Brick
     gameContext->levelManager.update(dt, gameContext->paddle.paddleRect);
@@ -107,15 +79,8 @@ void PlayingSubState::update(double dt) {
         levelWarp->update(dt);
     }
 
-    // Is the Level Over? Check each brick that can be destroyed to make sure it is.
-    bool nextLevel = true;
-    for (auto &i : gameContext->levelManager.brickList) {
-        if (i.brickStatus != Definitions::BrickStatus::BrickDestroyed && i.brickType != Definitions::BrickType::Indestructable) {
-            // If any bricks remain do not advance to the next level.
-            nextLevel = false;
-            break;
-        }
-    }
+    // Is the Level Over? 
+    bool nextLevel = gameContext->levelManager.isLevelComplete();
 
     // Run the game mode update logic
     sCurrentMode->update(dt);
@@ -139,13 +104,13 @@ void PlayingSubState::update(double dt) {
 
     // Collision Powerup
     // Check for Collision with the paddle
-    for (int p = 0; p < 5; ++p) {
-        if (gameContext->powerupList[p] != nullptr) {
-            if (physics.AABBCheck(gameContext->paddle.paddleRect, gameContext->powerupList[p]->powerupRect)) {
+    for (int p = 0; p < gameContext->powerupList.MAXPOWERUPS; ++p) {
+        if (gameContext->powerupList.get(p) != nullptr) {
+            if (physics.AABBCheck(gameContext->paddle.paddleRect, gameContext->powerupList.get(p)->powerupRect)) {
                 // Fire Powerup Effect
-                switch(gameContext->powerupList[p]->powerupType) {
+                switch(gameContext->powerupList.get(p)->powerupType) {
                     case Definitions::PowerUpType::ExtraLife: {
-                        gameContext->AddLife();
+                        gameContext->addLife();
                         break;
                     }
                     case Definitions::PowerUpType::SlowBall: {
@@ -153,9 +118,9 @@ void PlayingSubState::update(double dt) {
                         break;
                     }
                     case Definitions::PowerUpType::TripleBall: {
-                        for (int b = 0; b < 3; ++b) {
+                        for (int b = 0; b < gameContext->MAXBALLS; ++b) {
                             if (gameContext->ballList[b] != nullptr) {
-                                gameContext->AddBallsAtLocation(gameContext->ballList[b]->ballRect.x, gameContext->ballList[b]->ballRect.y, gameContext->ballList[b]->getCurrentVel());
+                                gameContext->addBallsAtLocation(gameContext->ballList[b]->ballRect.x, gameContext->ballList[b]->ballRect.y, gameContext->ballList[b]->getCurrentVel());
                                 break;
                             }
                         }
@@ -180,38 +145,37 @@ void PlayingSubState::update(double dt) {
                 };
 
                 // Delete the powerup and cleanup.
-                delete(gameContext->powerupList[p]);
-                gameContext->powerupList[p] = nullptr;
+                //delete(gameContext->powerupList[p]);
+                //gameContext->powerupList[p] = nullptr;
+                gameContext->powerupList.remove(p);
             }
         }
     }
 
     // Collision for Lasers
     // Top Border
-    for (int r = 0; r < 2; ++r) {        
-        if (gameContext->bulletList[r] != nullptr) {
-            if(gameContext->bulletList[r]->bulletStatus == Definitions::BulletStatus::BulletGood) {
+    for (int r = 0; r < gameContext->bulletList.MAXBULLETS; ++r) {        
+        if (gameContext->bulletList.get(r) != nullptr) {
+            if(gameContext->bulletList.get(r)->bulletStatus == Definitions::BulletStatus::BulletGood) {
 
                 // If the bullet has left the top of the screen something has gone wrong, delete it.
-                if(gameContext->bulletList[r]->bulletRect.y < 0) {
-                    delete(gameContext->bulletList[r]);
-                    gameContext->bulletList[r] = nullptr;
+                if(gameContext->bulletList.get(r)->bulletRect.y < 0) {
+                    gameContext->bulletList.remove(r);
                 }
 
                 // Did we hit the top wall?
-                if (physics.AABBCheck(gameContext->bulletList[r]->bulletRect, gameContext->borderT.borderRect)) {
-                    gameContext->bulletList[r]->hit();
+                if (physics.AABBCheck(gameContext->bulletList.get(r)->bulletRect, gameContext->borderT.borderRect)) {
+                    gameContext->bulletList.get(r)->hit();
                     //if we've hit the wall we don't need to check any bricks
                     continue;
                 }
-
 
                 // Check each brick                
                 for (auto &i : gameContext->levelManager.brickList) {
                     if (i.brickStatus == Definitions::BrickStatus::BrickGood) {
                         // Check if we are inside the brick. 
-                        if (physics.AABBCheck(gameContext->bulletList[r]->bulletRect, i.brickRect)) {
-                            gameContext->bulletList[r]->hit();
+                        if (physics.AABBCheck(gameContext->bulletList.get(r)->bulletRect, i.brickRect)) {
+                            gameContext->bulletList.get(r)->hit();
                             i.hit();
                             // Move onto the next bullet as we don't need to check any more bricks
                             break;
@@ -223,8 +187,8 @@ void PlayingSubState::update(double dt) {
                 for (auto &t : gameContext->levelManager.turretList) {
                     if (t.turretStatus == Definitions::TurretStatus::TurretGood) {
                         // Check if we are inside the turret. 
-                        if (physics.AABBCheck(gameContext->bulletList[r]->bulletRect, t.turretRect)) {
-                            gameContext->bulletList[r]->hit();
+                        if (physics.AABBCheck(gameContext->bulletList.get(r)->bulletRect, t.turretRect)) {
+                            gameContext->bulletList.get(r)->hit();
                             t.hitTurret();
                             // Move onto the next turret as we don't need to check any more bricks
                             break;
@@ -250,7 +214,7 @@ void PlayingSubState::update(double dt) {
     // TODO: Add consts for maxballs, max powerups etc
     // TODO: Move slice SpriteSheet
     // Collision - Bottom Border
-    for (int b = 0; b < 3; ++b) {
+    for (int b = 0; b < gameContext->MAXBALLS; ++b) {
         if (gameContext->ballList[b] != nullptr) {
             if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->lightning.bBorder)) {
                 delete(gameContext->ballList[b]);
@@ -261,7 +225,7 @@ void PlayingSubState::update(double dt) {
 
     // Kill the player if there are no more balls.
     bool killPlayer = true;
-    for (int b = 0; b < 3; ++b) {
+    for (int b = 0; b < gameContext->MAXBALLS; ++b) {
         if (gameContext->ballList[b] != nullptr) {
                 killPlayer = false;
         }
@@ -271,7 +235,7 @@ void PlayingSubState::update(double dt) {
         sNextState = dyingSubState;
     }
 
-    for (int b = 0; b < 3; ++b) {
+    for (int b = 0; b < gameContext->MAXBALLS; ++b) {
         if (gameContext->ballList[b] != nullptr) {
 
             bpb = physics.GetSweptBroadphaseBox(gameContext->ballList[b]->ballRect, gameContext->ballList[b]->vel.x * dt, gameContext->ballList[b]->vel.y * dt);    
@@ -430,7 +394,7 @@ void PlayingSubState::update(double dt) {
 
                 if (brickStatus == Definitions::BrickStatus::BrickExploding) {
                     // try and spawn a powerup
-                    gameContext->AddPowerUp(firstHitBrick->brickRect.x, firstHitBrick->brickRect.y, firstHitBrick->brickRect.w);
+                    gameContext->powerupList.add(firstHitBrick->brickRect.x, firstHitBrick->brickRect.y, firstHitBrick->brickRect.w);
                 }
             }
 
@@ -470,23 +434,14 @@ void PlayingSubState::render() {
         gameContext->lifeCounter.render(gameContext->lives);
         gameContext->paddle.renderPlaying();
         gameContext->levelManager.render();
-        for (int b = 0; b < 3; ++b) {
+        for (int b = 0; b < gameContext->MAXBALLS; ++b) {
             if (gameContext->ballList[b] != nullptr) {
                 gameContext->ballList[b]->render();
             }
         }
 
-        for (int p = 0; p < 5; ++p) {
-            if (gameContext->powerupList[p] != nullptr) {
-                gameContext->powerupList[p]->render();
-            }
-        }
-
-        for (int r = 0; r < 2; ++r) {
-            if (gameContext->bulletList[r] != nullptr) {
-                gameContext->bulletList[r]->render();
-            }
-        }
+        gameContext->powerupList.render();
+        gameContext->bulletList.render();
 
         if (levelWarp != nullptr) {
             levelWarp->render();

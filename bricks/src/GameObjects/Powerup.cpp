@@ -1,11 +1,13 @@
 #include <globals.h>
 #include <Powerup.h>
+#include <random>
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-Powerup::Powerup(SpriteManager* spriteManager, float parentXPos, float parentYPos, int parentWidth, Definitions::PowerUpType powerupType) {
+Powerup::Powerup(SpriteManager* spriteManager, float parentXPos, float parentYPos, int parentWidth) {
     
-    this->powerupType = powerupType;
+    //this->powerupType = powerupType;
+    randomizePowerup();
 
     switch (this->powerupType) {
         case Definitions::PowerUpType::Laser: {
@@ -82,4 +84,40 @@ void Powerup::SliceSpriteSheet() {
         powerupSpriteClips[ i ].w =  (powerupWidth / numSprites);
         powerupSpriteClips[ i ].h = powerupHeight;
         }
+}
+
+void Powerup::randomizePowerup() {
+    
+    std::random_device rd;
+    std::mt19937 engine(rd());
+    std::uniform_int_distribution<int> distribution(1, 100);
+
+    spdlog::info("Randomizing Powerup");
+
+    int randomNumber = distribution(engine);
+    if (randomNumber < extraLifeChance) {
+        spdlog::info("Generating Extra Life Powerup");
+        powerupType = Definitions::PowerUpType::ExtraLife;
+    } else if (randomNumber < slowBallChance) {
+        spdlog::info("Generating Slow Powerup");
+        powerupType = Definitions::PowerUpType::SlowBall;
+    } else if (randomNumber < wideChance) {
+        spdlog::info("Generating Wide Powerup");
+        powerupType = Definitions::PowerUpType::Wide;
+    } else if (randomNumber <= tripleBallChance) {
+        spdlog::info("Generating Triple Powerup");
+        powerupType = Definitions::PowerUpType::TripleBall;
+    } else if (randomNumber <= laserChance) {
+        spdlog::info("Generating Laser Powerup");
+        powerupType = Definitions::PowerUpType::Laser;
+    } else if (randomNumber <= levelSkipChance) {
+        spdlog::info("Generating Level Skip Powerup");
+        powerupType = Definitions::PowerUpType::LevelSkip;
+    } else if (randomNumber <= magneticChance){
+        spdlog::info("Generating Magnetic Powerup");
+        powerupType = Definitions::PowerUpType::Magnetic; 
+    } else {
+        spdlog::info("Generating Laser Powerup");
+        powerupType = Definitions::PowerUpType::Laser;         
+    }
 }

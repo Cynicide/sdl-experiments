@@ -6,9 +6,10 @@
 
 #include <Sign.h>
 
-Ball::Ball(SpriteManager* spriteManager) {
+Ball::Ball(SpriteManager* spriteManager, AudioManager* audioManager) {
     this->ballSprite = spriteManager->ball;
-
+    this->audioPaddleHit = audioManager->pong;
+    this->audioBrickHit = audioManager->ping;
     currentVel = startingVel;
     vel.x = currentVel;
     vel.y = currentVel;
@@ -16,9 +17,12 @@ Ball::Ball(SpriteManager* spriteManager) {
     spriteManager->getTextureDimensions(ballSprite, ballWidth, ballHeight);
 }
 
-Ball::Ball(SpriteManager* spriteManager, float x, float y, float currentVel) {
+Ball::Ball(SpriteManager* spriteManager, float x, float y, float currentVel, AudioManager* audioManager) {
     this->currentVel = currentVel;
     this->ballSprite = spriteManager->ball;
+    this->audioPaddleHit = audioManager->pong;
+    this->audioBrickHit = audioManager->ping;
+    
     spriteManager->getTextureDimensions(ballSprite, ballWidth, ballHeight);
 
     vel.x = currentVel;
@@ -102,6 +106,14 @@ void Ball::hitPaddle(Vector2d normals, SDL_FRect paddleRect){
 
     speedUp();
 
+    // Play Collision Sound
+    if (Mix_Playing(1)) {
+        Mix_HaltChannel(1);
+        Mix_PlayChannel(1, audioPaddleHit, 0);
+    } else {
+        Mix_PlayChannel(1, audioPaddleHit, 0);
+    }   
+
 }
 
 //Collision with a brick or turret
@@ -113,6 +125,13 @@ void Ball::hitBrick(Vector2d normals){
     if (abs(normals.y) > 0.0001f) {
         flipY();
     }
+
+    if (Mix_Playing(3)) {
+        Mix_HaltChannel(3);
+        Mix_PlayChannel(3, audioBrickHit, 0);
+    } else {
+        Mix_PlayChannel(3, audioBrickHit, 0);
+    } 
 }
 
 // Speed the ball up

@@ -14,7 +14,7 @@ void ServingSubState::setPlayingSubState(SubState* playingSubState) {
 bool ServingSubState::enter() {
     gameContext->paddle.reset();
     gameContext->cleanup();
-    gameContext->AddBall();
+    gameContext->addBall();
     return true;
 }
 bool ServingSubState::exit() {
