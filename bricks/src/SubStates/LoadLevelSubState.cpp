@@ -10,12 +10,11 @@ void LoadLevelSubState::setPreServeSubState(SubState* letsGoSubState) {
     this->letsGoSubState = letsGoSubState;
 }
 bool LoadLevelSubState::enter() {
-    gameContext->clearBalls();
+    gameContext->ballList.clear();
     gameContext->bulletList.clear();
     gameContext->powerupList.clear();
     gameContext->levelManager.LoadLevel();
     gameContext->levelManager.CreateLevel();
-    gameContext->addBall();
     
     sNextState = letsGoSubState;
     return true;

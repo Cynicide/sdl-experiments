@@ -1,28 +1,28 @@
 #include <SpriteManager.h>
-
-#include <SDL2/SDL_image.h>
-//#include <iostream>
-
 #include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
+#include <SDL2/SDL_image.h>
 
 SpriteManager::SpriteManager() {
-    spdlog::info("Creating Sprite Manager");
+    auto logger = spdlog::get("fileLogger");
+    logger->info("Creating Sprite Manager");
     loadSprites();
 }
 
 bool SpriteManager::getTextureDimensions(SDL_Texture * texture, int &width, int &height) {
+    auto logger = spdlog::get("fileLogger");
         bool bQuery = SDL_QueryTexture(texture, NULL, NULL, &width, &height);
         if (bQuery == 1) {
-            spdlog::error("Error querying sprite.");
-            spdlog::error( SDL_GetError());
+            logger->error("Error querying sprite.");
+            logger->error( SDL_GetError());
             return false;
     } 
     return true;
 }
 
 SpriteManager::~SpriteManager() {
-    spdlog::info("Destroying Textures");
+    auto logger = spdlog::get("fileLogger");
+    logger->info("Destroying Textures");
+    // ToDo: Properly de-allocate textures
     /*SDL_DestroyTexture(stars);
     SDL_DestroyTexture(logo);
     SDL_DestroyTexture(background);
@@ -44,24 +44,26 @@ SpriteManager::~SpriteManager() {
 }
 
 SDL_Surface* SpriteManager::loadSurface( std::string path) {
+    auto logger = spdlog::get("fileLogger");
     //Load image at specified path
     SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
     if( loadedSurface == NULL )
     {
-        spdlog::error( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
+        logger->error( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
     }
     return loadedSurface;
 }
 
 SDL_Texture* SpriteManager::loadAlphaTexture(std::string path) {
+    auto logger = spdlog::get("fileLogger");
     SDL_Surface* surface = loadSurface(path);
 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(gRenderer, surface);
 
     bool bQuery = SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
     if (bQuery == 1) {
-        spdlog::info("Error setting Texture Blend Mode: ");
-        spdlog::info(SDL_GetError());
+        logger->info("Error setting Texture Blend Mode: ");
+        logger->info(SDL_GetError());
     }
     SDL_FreeSurface(surface);
     return texture;
@@ -85,6 +87,8 @@ void SpriteManager::loadSprites() {
     letsGoBottom = loadAlphaTexture("assets\\images\\lets-go-bottom.png");
     levelCompleteTop = loadAlphaTexture("assets\\images\\level-complete-top.png");
     levelCompleteBottom = loadAlphaTexture("assets\\images\\level-complete-bottom.png");
+    gameOverTop = loadAlphaTexture("assets\\images\\game-over-top.png");
+    gameOverBottom = loadAlphaTexture("assets\\images\\game-over-bottom.png");
 
     // Ship
     paddle = loadAlphaTexture("assets\\images\\paddle.png");

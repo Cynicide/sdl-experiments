@@ -1,4 +1,5 @@
 #include <LaserMode.h>
+#include "spdlog/spdlog.h"
 
 LaserMode::LaserMode(GameContext *gameContext, GameMode*& sNextMode) : 
     gameContext(gameContext),
@@ -28,6 +29,7 @@ void LaserMode::handleEvent( SDL_Event& e ) {
 }
 
 void LaserMode::update(double dt) {
+    auto logger = spdlog::get("fileLogger");
     //These are not if/else as I want to handle decrementing and firing on the same update.
     //Decrement the cooldown if it's running
     if (currentCooldown > 0) {
@@ -51,7 +53,7 @@ void LaserMode::update(double dt) {
     }
 
     currentDuration = currentDuration + (60 * dt);
-    spdlog::debug("LaserMode: " + std::to_string(currentDuration));
+    logger->debug("LaserMode: " + std::to_string(currentDuration));
     if (currentDuration >= (double)powerupDuration) {
         sNextMode = normalGameMode;
         currentDuration = 0;

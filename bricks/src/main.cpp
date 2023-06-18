@@ -3,9 +3,6 @@
 #include <SDL2/SDL_mixer.h> 
 #include <SDL2/SDL_image.h>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-
 #include <GameContext.h>
 
 #include <globals.h>
@@ -13,8 +10,13 @@
 
 #include <StartState.h>
 #include <ExitState.h>
+#include <GameOverState.h>
 #include <Timer.h>
 #include <sstream>
+#include <iostream>
+
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
 
 #include <TextManager.h>
 
@@ -25,10 +27,13 @@ void closeSDL();
 // Methods
 bool initSDL () {
 
-    spdlog::info("Initializing SDL.");
+    auto logger = spdlog::get("fileLogger");
+
+    logger->info("Initializing SDL.");
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
     {
-        spdlog::error("SDL Could not be initialized! SDL_Error: ",  SDL_GetError());
+        
+        logger->error("SDL Could not be initialized! SDL_Error: ",  SDL_GetError());
         return false;
     } 
 
@@ -43,15 +48,15 @@ bool initSDL () {
     SCREEN_WIDTH = 1920;
     
     // Create SDL Window
-    spdlog::info("Creating Window.");
+    logger->info("Creating Window.");
     gWindow = SDL_CreateWindow(appName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (gWindow == NULL) 
     {
-        spdlog::error("Window could not be created! SDL_Error: ", SDL_GetError());
+        logger->error("Window could not be created! SDL_Error: ", SDL_GetError());
         return false;
     } 
 
-    spdlog::info("Creating Renderer.");
+    logger->info("Creating Renderer.");
     gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
 
     // Capture the Mouse to the Window
@@ -65,17 +70,17 @@ bool initSDL () {
     PLAYFIELD_STARTX = screenWidthMidpoint - (PLAYFIELD_WIDTH /2);
 
     // Initialize SDL Mixer
-    spdlog::info("Creating Audio Mixer.");
+    logger->info("Creating Audio Mixer.");
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        spdlog::error("SDL Mixer cannot be created! SDL_Error: ", SDL_GetError());
+        logger->error("SDL Mixer cannot be created! SDL_Error: ", SDL_GetError());
         return false;
     }
 
     // Initialize SDL TTF
-    spdlog::info("Initializing SDL TTF.");
+    logger->info("Initializing SDL TTF.");
     if (TTF_Init() < 0)
     {
-        spdlog::error("SDL TTF Could not be initialized! SDL_Error: ", SDL_GetError());
+        logger->error("SDL TTF Could not be initialized! SDL_Error: ", SDL_GetError());
         return false;
     }
 
@@ -83,7 +88,7 @@ bool initSDL () {
     int imgFlags = IMG_INIT_PNG;
     if( !( IMG_Init( imgFlags ) & imgFlags ) )
     {
-        spdlog::error( "SDL_image could not initialize! SDL_image Error: ", IMG_GetError() );
+        logger->error( "SDL_image could not initialize! SDL_image Error: ", IMG_GetError() );
         return false;
     }
     else
@@ -97,37 +102,50 @@ bool initSDL () {
 void closeSDL() 
 {
 
-    spdlog::info("Destroying Renderer");
+    auto logger = spdlog::get("fileLogger");
+    
+    logger->info("Destroying Renderer");
     SDL_DestroyRenderer(gRenderer);
     
-    spdlog::info("Destroying Window");
+    logger->info("Destroying Window");
     SDL_DestroyWindow( gWindow );
 
-    spdlog::info("Quitting TTF");
+    logger->info("Quitting TTF");
     TTF_Quit();
 
-    spdlog::info("Closing Mixer");
+    logger->info("Closing Mixer");
     Mix_CloseAudio();
     
     gWindow = NULL;
     gRenderer = NULL;
 
-    spdlog::info("SDL Quit");
+    logger->info("SDL Quit");
     SDL_Quit();
 }
 
 // Main
 int main (int argc, char* args[]) 
-{
-    // Start Logging
-    auto console = spdlog::stdout_color_mt("console");  
-    spdlog::info("Starting Bricks!");
+{ 
+
+    try 
+    {
+        auto logger = spdlog::basic_logger_mt("fileLogger", "logs/Bricks.txt", true);
+    }
+    catch (const spdlog::spdlog_ex &ex)
+    {
+        std::cout << "Log init failed: " << ex.what() << std::endl;
+    }
+
+    auto logger = spdlog::get("fileLogger");
+
+    
+    logger->info("Starting Bricks!");
     
     // Starting SDL    
-    spdlog::info("SDL starting...");
+    logger->info("SDL starting...");
     if( !initSDL()) 
     {
-        spdlog::error("Failed to Initialize!");
+        logger->info("Failed to Initialize!");
         //closeSDL();
         return 1;
     }
@@ -141,9 +159,12 @@ int main (int argc, char* args[])
     // Instantiate Game States
     PlayState playState(&gameContext);
     StartState startState(&gameContext, &playState);
+    GameOverState gameOverState(&gameContext, &startState);
     ExitState exitState;
 
-    spdlog::info("Getting Start State.");
+    playState.setGameOverState(&gameOverState);
+
+    logger->info("Getting Start State.");
 	gCurrentState = &startState;
 	gCurrentState->enter();
 
@@ -153,14 +174,14 @@ int main (int argc, char* args[])
     double currentTime = (double)SDL_GetPerformanceCounter() / (double)SDL_GetPerformanceFrequency();
 
     //While the user hasn't quit
-    spdlog::info("Starting Game Loop.");
+    logger->info("Starting Game Loop.");
     while( !(dynamic_cast<ExitState*>(gCurrentState)))
     {
         
         double newTime = (double)SDL_GetPerformanceCounter() / (double)SDL_GetPerformanceFrequency();
-        spdlog::debug ("Time: " + std::to_string(newTime));
+        logger->debug("Time: " + std::to_string(newTime));
         double frameTime = newTime - currentTime;
-        spdlog::debug ("FrameTime: " + std::to_string(frameTime));
+        logger->debug("FrameTime: " + std::to_string(frameTime));
         currentTime = newTime;
         
         while (frameTime > 0.0) {
@@ -199,7 +220,7 @@ int main (int argc, char* args[])
         //Update screen
         SDL_RenderPresent( gRenderer );
 		}
-    spdlog::info("Quitting SDL");
+    logger->info("Quitting SDL");
     closeSDL();
     return 0;
 }

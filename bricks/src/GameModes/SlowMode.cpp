@@ -1,6 +1,4 @@
 #include <SlowMode.h>
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 
 SlowMode::SlowMode(GameContext *gameContext, GameMode*& sNextMode) : 
     gameContext(gameContext),
@@ -26,11 +24,7 @@ void SlowMode::handleEvent( SDL_Event& e ) {
 }
 
 void SlowMode::update(double dt) {
-    for (int b = 0; b < 3; ++b) {
-        if (gameContext->ballList[b] != nullptr) {
-            gameContext->ballList[b]->setSpeed(ballSpeed);
-        }
-    }
+    gameContext->ballList.setSpeed(ballSpeed);
     sNextMode = normalGameMode;
 }
 

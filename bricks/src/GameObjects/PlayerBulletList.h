@@ -19,7 +19,6 @@ class PlayerBulletList {
         const static int MAXBULLETS = 2;
 
     private:
-        //ToDo: Get MAXBULLETS working globally
         PlayerBullet* bulletList[MAXBULLETS] = {};
 
         SpriteManager* spriteManager;

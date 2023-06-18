@@ -60,7 +60,6 @@ void Text::moveBottomLeft(int screen_width, int screen_height, int* playfield_st
         textRect.y = ((float)screen_height - verticalOffset) - (textRect.h);
         textRect.x = horizontalOffset;
     } else {
-        spdlog::info("Text Bottom Left Playfield");
         textRect.y = ((float)screen_height - verticalOffset) - (textRect.h);
         textRect.x = static_cast<float>(*playfield_start_x) + horizontalOffset;
     }

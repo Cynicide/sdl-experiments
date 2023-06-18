@@ -1,6 +1,6 @@
 #include <LevelWarp.h>
 #include <globals.h>
-
+#include "spdlog/spdlog.h"
 
 LevelWarp::LevelWarp(SpriteManager* spriteManager){
 
@@ -22,6 +22,7 @@ LevelWarp::LevelWarp(SpriteManager* spriteManager){
 }
 
 void LevelWarp::update(double dt) {
+    auto logger = spdlog::get("fileLogger");
     currentPortalFrame = currentPortalFrame + (30 * dt);
     if ((int)currentPortalFrame > (float)lastFrame) {
         currentPortalFrame = 0.0f;
@@ -29,7 +30,7 @@ void LevelWarp::update(double dt) {
 
     currentArrowBlinkTimer = currentArrowBlinkTimer + (30 * dt);
     
-    spdlog::info("ArrowBlink: " + std::to_string(currentArrowBlinkTimer));
+    logger->info("ArrowBlink: " + std::to_string(currentArrowBlinkTimer));
     if ((int)currentArrowBlinkTimer > arrowBlinkTimer)
     {
         arrowBlink = !arrowBlink;

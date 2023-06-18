@@ -14,7 +14,12 @@ void ServingSubState::setPlayingSubState(SubState* playingSubState) {
 bool ServingSubState::enter() {
     gameContext->paddle.reset();
     gameContext->cleanup();
-    gameContext->addBall();
+    gameContext->ballList.add();
+    for (int b = 0; b < 3; ++b) {
+        if (gameContext->ballList.get(b) != nullptr) {
+            gameContext->ballList.get(b)->reset();
+        }
+    }
     return true;
 }
 bool ServingSubState::exit() {
@@ -26,24 +31,9 @@ void ServingSubState::handleEvent( SDL_Event& e ) {
 
 }
 void ServingSubState::update(double dt) {
-
-    // Todo: Do we need this?
-    for (int b = 0; b < 3; ++b) {
-        if (gameContext->ballList[b] != nullptr) {
-            gameContext->ballList[b]->reset();
-        }
-    }
-
     gameContext->paddle.updateServing(dt);
     gameContext->levelManager.updateServe(dt, gameContext->paddle.paddleRect);
-
-    for (int b = 0; b < 3; ++b) {
-        if (gameContext->ballList[b] != nullptr) {
-            gameContext->ballList[b]->update(dt, gameContext->paddle.paddleRect);
-        }
-    }
-
-    
+    gameContext->ballList.updateServing(dt, gameContext->paddle.paddleRect);
 
     int mx, my;
     Uint32 mouseState = SDL_GetMouseState(&mx, &my);
@@ -65,9 +55,5 @@ void ServingSubState::render() {
     gameContext->lifeCounter.render(gameContext->lives);
     gameContext->paddle.renderServing();
     gameContext->levelManager.render();
-    for (int b = 0; b < 3; ++b) {
-        if (gameContext->ballList[b] != nullptr) {
-            gameContext->ballList[b]->render();
-        }
-    }
+    gameContext->ballList.render();
 }

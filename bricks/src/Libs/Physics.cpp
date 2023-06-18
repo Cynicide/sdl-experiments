@@ -1,5 +1,8 @@
 #include <Physics.h>
-//#include <iostream>
+//#include <string>
+//#include <fstream>
+
+#include "spdlog/spdlog.h"
 
 Physics::Physics() {
 
@@ -112,11 +115,11 @@ double Physics::SweptAABB(SDL_FRect rectA, SDL_FRect rectB, Vector2d rectAVel, f
 
 Vector2d Physics::ProcessCollision(SDL_FRect &rectA, SDL_FRect rectB, Vector2d &rectAVel, double dt) 
 {
-
-    spdlog::debug("----------------------- COLLISION -----------------------");
-    spdlog::debug("Processing Collision for RectB Location: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y));     
-    spdlog::debug("RectA: " + std::to_string(rectA.x) + " : " + std::to_string(rectA.y) + " : " + std::to_string(rectA.w) + " : " + std::to_string(rectA.h));    
-    spdlog::debug("RectB: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y) + " : " + std::to_string(rectB.w) + " : " + std::to_string(rectB.h));    
+    auto logger = spdlog::get("fileLogger");
+    logger->debug("----------------------- COLLISION -----------------------");
+    logger->debug("Processing Collision for RectB Location: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y));     
+    logger->debug("RectA: " + std::to_string(rectA.x) + " : " + std::to_string(rectA.y) + " : " + std::to_string(rectA.w) + " : " + std::to_string(rectA.h));    
+    logger->debug("RectB: " + std::to_string(rectB.x) + " : " + std::to_string(rectB.y) + " : " + std::to_string(rectB.w) + " : " + std::to_string(rectB.h));    
 
     float normalx, normaly;
     SweptAABB(rectA, rectB, rectAVel, normalx, normaly);

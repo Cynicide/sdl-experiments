@@ -1,4 +1,5 @@
 #include <PowerupList.h>
+#include "spdlog/spdlog.h"
 
 PowerupList::PowerupList(SpriteManager* spriteManager) {
     this->spriteManager = spriteManager;
@@ -9,9 +10,10 @@ PowerupList::~PowerupList() {
 }
 
 void PowerupList::add(float x, float y, int parentWidth) {
+    auto logger = spdlog::get("fileLogger");
     for (int p = 0; p < MAXPOWERUPS; ++p) {
         if (powerupList[p] == nullptr) {
-            spdlog::info("Adding powerup at: " + p);
+            logger->info("Adding powerup at: " + p);
             powerupList[p] = new Powerup(spriteManager, x, y, parentWidth);
             break;
         }

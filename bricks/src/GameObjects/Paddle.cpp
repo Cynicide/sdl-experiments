@@ -1,5 +1,5 @@
 #include <Paddle.h>
-//#include <iostream>
+#include "spdlog/spdlog.h"
 #include <Vector2d.h>
 
 Paddle::Paddle(SpriteManager* spriteManager, Mix_Chunk* collisionSound, Mix_Chunk* explosionSound) : 
@@ -53,7 +53,8 @@ void Paddle::renderPlaying() {
 }
 
 void Paddle::renderDying() {
-    spdlog::debug("Rendering Explosion");
+    auto logger = spdlog::get("fileLogger");
+    logger->debug("Rendering Explosion");
     int frame = (int)currentdestructionFrame;
 
     if (frame < destructionEndFrame) {
@@ -129,12 +130,7 @@ void Paddle::reset() {
 }
 
 void Paddle::hit() {
-    /*if (Mix_Playing(1)) {
-        Mix_HaltChannel(1);
-        Mix_PlayChannel(1, collisionSound, 0);
-    } else {
-        Mix_PlayChannel(1, collisionSound, 0);
-    }*/     
+   
 }
 
 void Paddle::explode() {
@@ -147,7 +143,7 @@ void Paddle::explode() {
 }
 
 void Paddle::sliceExplosionSheet() {
-
+    auto logger = spdlog::get("fileLogger");
         for( int i = 0; i <= numExplosionSprites - 1; i++ ) 
         {
         explosionSpriteClips[ i ].x =   i * (explosionWidth / numExplosionSprites);
@@ -155,5 +151,5 @@ void Paddle::sliceExplosionSheet() {
         explosionSpriteClips[ i ].w =  (explosionWidth / numExplosionSprites);
         explosionSpriteClips[ i ].h = explosionHeight;
         }
-        spdlog::info("Slicing paddle Sprite Sheet");
+        logger->info("Slicing paddle Sprite Sheet");
 }

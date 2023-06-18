@@ -4,9 +4,6 @@
 #include <string>
 #include <SDL2/SDL.h>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-
 class SpriteManager
 {
 public:
@@ -22,7 +19,9 @@ public:
     SDL_Texture* letsGoTop;
     SDL_Texture* letsGoBottom;
     SDL_Texture* levelCompleteTop;
-    SDL_Texture* levelCompleteBottom;    
+    SDL_Texture* levelCompleteBottom;
+    SDL_Texture* gameOverTop;
+    SDL_Texture* gameOverBottom;    
 
     SDL_Texture* paddle;
     SDL_Texture* longPaddle;

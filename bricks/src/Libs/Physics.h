@@ -3,13 +3,6 @@
 #include <Vector2d.h>
 #include <SDL2/SDL.h>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-
-//#include <iostream>
-#include <string>
-#include <fstream>
-
 class Physics { 
     public:
         Physics();

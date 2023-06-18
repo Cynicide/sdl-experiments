@@ -39,7 +39,6 @@ void DyingSubState::update(double dt) {
 void DyingSubState::render() {
         gameContext->tiledBackground.render();
         gameContext->lightning.render();
-
         gameContext->borderL.render();
         gameContext->borderR.render();
         gameContext->borderT.render();
@@ -48,9 +47,5 @@ void DyingSubState::render() {
         gameContext->lifeCounter.render(gameContext->lives);
         gameContext->paddle.renderDying();
         gameContext->levelManager.render();
-        for (int b = 0; b < 3; ++b) {
-            if (gameContext->ballList[b] != nullptr) {
-                gameContext->ballList[b]->render();
-            }
-        }
+        gameContext->ballList.render();
 }

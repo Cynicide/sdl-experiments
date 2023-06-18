@@ -1,10 +1,6 @@
 #include <Brick.h>
-//#include <iostream>
 #include <algorithm>
-
 #include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-
 
 Brick::Brick(float _xpos, float _ypos, Definitions::BrickType type, SDL_Texture* sprite) {
     
@@ -106,11 +102,12 @@ void Brick::renderPreServe() {
 }
 
 Definitions::BrickStatus Brick::hit() {
+    auto logger = spdlog::get("fileLogger");
     if (destructable == true) {
         health = health - 1;
 
         if (health == 0) {
-            spdlog::info("Brick at: " + std::to_string(xpos) + "," + std::to_string(ypos) + " has been marked as destroyed.");
+            logger->info("Brick at: " + std::to_string(xpos) + "," + std::to_string(ypos) + " has been marked as destroyed.");
             brickStatus = Definitions::BrickStatus::BrickExploding;      
         }
     }

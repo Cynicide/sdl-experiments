@@ -1,11 +1,9 @@
 #include <TextManager.h>
-
 #include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/fmt/ranges.h"
 
 TextManager::TextManager() {
-    spdlog::info("Creating Font Manager");
+    auto logger = spdlog::get("fileLogger");
+    logger->info("Creating Font Manager");
     loadFonts();
 }
 

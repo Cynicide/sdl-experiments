@@ -1,21 +1,19 @@
 #include <StartState.h>
-
 #include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 
 StartState::StartState(GameContext* gameContext, PlayState* playState) :
     gameContext(gameContext),
     playState(playState)
  {
-//    this->playState = playState;
-//    this->gameContext = gameContext;
-}
+
+ }
 
 bool StartState::enter()
 {
+    auto logger = spdlog::get("fileLogger");
     //Loading success flag
     bool success = true;
-    spdlog::info("Entered StartState.");
+    logger->info("Entered StartState.");
 
     font = gameContext->publicPixel24;
 
@@ -38,7 +36,8 @@ bool StartState::enter()
 
 bool StartState::exit()
 {
-    spdlog::info("Exited StartState");
+    auto logger = spdlog::get("fileLogger");
+    logger->info("Exited StartState");
     spaceToStart.destroy();
     qToQuit.destroy();
     clickToLaunch.destroy();

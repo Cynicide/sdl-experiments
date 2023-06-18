@@ -1,17 +1,19 @@
 #pragma once
 
-#include <TiledBackground.h>
-#include <Paddle.h>
-#include <Ball.h>
+#include <BallList.h>
 #include <PlayerBulletList.h>
+#include <PowerupList.h>
+
 #include <BorderHorizontal.h>
 #include <BorderVertical.h>
 #include <BorderCorner.h>
-#include <Brick.h>
+
+#include <Paddle.h>
 #include <Lightning.h>
 #include <Level.h>
 #include <ScrollingBackground.h>
-#include <PowerupList.h>
+#include <TiledBackground.h>
+
 #include <LifeCounter.h>
 #include <Logo.h>
 #include <Definitions.h>
@@ -20,10 +22,6 @@
 #include <AudioManager.h>
 #include <SpriteManager.h>
 
-#include <vector>
-
-#include <Text.h>
-
 class GameContext {
     public:
 
@@ -31,7 +29,7 @@ class GameContext {
         ~GameContext(){};
 
         //Game Concepts
-        const static int MAXBALLS = 3;
+        //const static int MAXBALLS = 3;
         const static int startingLives = 3;
         const static int maxLives = 5;
         int lives = startingLives;
@@ -68,15 +66,17 @@ class GameContext {
         TTF_Font* publicPixel24;
 
         //Lists
-        Ball* ballList[MAXBALLS] = {};
+        //Ball* ballList[MAXBALLS] = {};
+
         PowerupList powerupList;
         PlayerBulletList bulletList;
+        BallList ballList;
         
         // Ball Methods
-        void addBall();
-        void addBallsAtLocation(float x, float y, float currentVal);
-        void updateBalls(double dt);       
-        void clearBalls();
+        //void addBall();
+        //void addBallsAtLocation(float x, float y, float currentVal);
+        //void updateBalls(double dt);       
+        //void clearBalls();
 
         // Life Methods
         void addLife();

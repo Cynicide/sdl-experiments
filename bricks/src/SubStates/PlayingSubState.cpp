@@ -2,6 +2,7 @@
 #include <Sign.h>
 #include <Vector2d.h>
 #include <sstream>
+#include "spdlog/spdlog.h"
 
 //BUG: Laser doesn't despawn when hitting invulnerable block sometimes.
 
@@ -41,7 +42,7 @@ bool PlayingSubState::exit() {
         levelWarp = nullptr;
     }
 
-    gameContext->clearBalls();
+    gameContext->ballList.clear();
     gameContext->bulletList.clear();
     gameContext->powerupList.clear();
     gameContext->paddle.setNormalPaddle();
@@ -55,6 +56,8 @@ void PlayingSubState::handleEvent( SDL_Event& e ) {
 
 }
 void PlayingSubState::update(double dt) {
+    auto logger = spdlog::get("fileLogger");
+
     // =================================================
     // ===================   Update  ===================
     // =================================================
@@ -63,7 +66,7 @@ void PlayingSubState::update(double dt) {
     gameContext->paddle.updatePlaying(dt);
 
     // Update each ball
-    gameContext->updateBalls(dt);
+    gameContext->ballList.update(dt, gameContext->paddle.paddleRect);
 
     // Update each powerup
     gameContext->powerupList.update(dt);
@@ -118,9 +121,10 @@ void PlayingSubState::update(double dt) {
                         break;
                     }
                     case Definitions::PowerUpType::TripleBall: {
-                        for (int b = 0; b < gameContext->MAXBALLS; ++b) {
-                            if (gameContext->ballList[b] != nullptr) {
-                                gameContext->addBallsAtLocation(gameContext->ballList[b]->ballRect.x, gameContext->ballList[b]->ballRect.y, gameContext->ballList[b]->getCurrentVel());
+                        // This loops through and find an active ball to spawn the rest from
+                        for (int b = 0; b < gameContext->ballList.MAXBALLS; ++b) {
+                            if (gameContext->ballList.get(b) != nullptr) {
+                                gameContext->ballList.fillAtLocation(gameContext->ballList.get(b)->ballRect.x, gameContext->ballList.get(b)->ballRect.y, gameContext->ballList.get(b)->getCurrentVel());
                                 break;
                             }
                         }
@@ -211,22 +215,21 @@ void PlayingSubState::update(double dt) {
 
     // Collision for the Ball(s)
 
-    // TODO: Add consts for maxballs, max powerups etc
     // TODO: Move slice SpriteSheet
     // Collision - Bottom Border
-    for (int b = 0; b < gameContext->MAXBALLS; ++b) {
-        if (gameContext->ballList[b] != nullptr) {
-            if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->lightning.bBorder)) {
-                delete(gameContext->ballList[b]);
-                gameContext->ballList[b] = nullptr;
+    for (int b = 0; b < gameContext->ballList.MAXBALLS; ++b) {
+        if (gameContext->ballList.get(b) != nullptr) {
+            if (physics.AABBCheck(gameContext->ballList.get(b)->ballRect, gameContext->lightning.bBorder)) {
+                gameContext->ballList.remove(b);
             }
         }
     }
 
     // Kill the player if there are no more balls.
+    // ToDo: Move this up to the previous loop. Why are there so many Ball Loops?
     bool killPlayer = true;
-    for (int b = 0; b < gameContext->MAXBALLS; ++b) {
-        if (gameContext->ballList[b] != nullptr) {
+    for (int b = 0; b < gameContext->ballList.MAXBALLS; ++b) {
+        if (gameContext->ballList.get(b) != nullptr) {
                 killPlayer = false;
         }
     }
@@ -235,66 +238,66 @@ void PlayingSubState::update(double dt) {
         sNextState = dyingSubState;
     }
 
-    for (int b = 0; b < gameContext->MAXBALLS; ++b) {
-        if (gameContext->ballList[b] != nullptr) {
+    for (int b = 0; b < gameContext->ballList.MAXBALLS; ++b) {
+        if (gameContext->ballList.get(b) != nullptr) {
 
-            bpb = physics.GetSweptBroadphaseBox(gameContext->ballList[b]->ballRect, gameContext->ballList[b]->vel.x * dt, gameContext->ballList[b]->vel.y * dt);    
+            bpb = physics.GetSweptBroadphaseBox(gameContext->ballList.get(b)->ballRect, gameContext->ballList.get(b)->vel.x * dt, gameContext->ballList.get(b)->vel.y * dt);    
 
             // Collision - Top Border
-            if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->borderT.borderRect)) 
+            if (physics.AABBCheck(gameContext->ballList.get(b)->ballRect, gameContext->borderT.borderRect)) 
             {
-                gameContext->ballList[b]->hitTopWall(gameContext->borderT.borderRect);
+                gameContext->ballList.get(b)->hitTopWall(gameContext->borderT.borderRect);
             }
 
             // Collision - Side Borders
-            if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->borderL.borderRect))  
+            if (physics.AABBCheck(gameContext->ballList.get(b)->ballRect, gameContext->borderL.borderRect))  
             {
-                gameContext->ballList[b]->hitLeftWall(gameContext->borderL.borderRect);
+                gameContext->ballList.get(b)->hitLeftWall(gameContext->borderL.borderRect);
             }
             
-            if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->borderR.borderRect))  
+            if (physics.AABBCheck(gameContext->ballList.get(b)->ballRect, gameContext->borderR.borderRect))  
             {
-                gameContext->ballList[b]->hitRightWall(gameContext->borderR.borderRect);
+                gameContext->ballList.get(b)->hitRightWall(gameContext->borderR.borderRect);
             }
 
             // Collision - Paddle
             // Only check for collision if the ball is on the lower half of the screen
-            if (gameContext->ballList[b]->ballRect.y > SCREEN_HEIGHT / 2) 
+            if (gameContext->ballList.get(b)->ballRect.y > SCREEN_HEIGHT / 2) 
             {
                 // If we are already inside the paddle then the paddle may have moved into the ball as the player can move as fast as they can move the mouse
-                if (physics.AABBCheck(gameContext->ballList[b]->ballRect, gameContext->paddle.paddleRect)) {             
+                if (physics.AABBCheck(gameContext->ballList.get(b)->ballRect, gameContext->paddle.paddleRect)) {             
                     // This is a disgusting hack that moves the ball above the paddle 
-                    gameContext->ballList[b]->ballRect.y = gameContext->paddle.paddleRect.y - gameContext->ballList[b]->ballRect.h ;
+                    gameContext->ballList.get(b)->ballRect.y = gameContext->paddle.paddleRect.y - gameContext->ballList.get(b)->ballRect.h ;
                 } 
                 // If we are not inside the paddle then perform a broad phase collision check
                 if (physics.AABBCheck(bpb, gameContext->paddle.paddleRect)) 	
                     {                             
                     Vector2d collision;
                     // If the broad phase check is true then make a swept aabb check and adjust the movement of the ball
-                    physics.SweptAABB(gameContext->ballList[b]->ballRect, gameContext->paddle.paddleRect, gameContext->ballList[b]->vel, collision.x, collision.y);
+                    physics.SweptAABB(gameContext->ballList.get(b)->ballRect, gameContext->paddle.paddleRect, gameContext->ballList.get(b)->vel, collision.x, collision.y);
 
                     if (abs(collision.x) > 0.0001f || abs(collision.y) > 0.0001f) {
                         // Trigger stickiness if we are in magnetic mode
                         if (sCurrentMode == &magneticMode) {
                             gameContext->paddle.hit();
-                            gameContext->ballList[b]->hitPaddle(collision, gameContext->paddle.paddleRect);
-                            gameContext->ballList[b]->stuckToPaddle = true;
+                            gameContext->ballList.get(b)->hitPaddle(collision, gameContext->paddle.paddleRect);
+                            gameContext->ballList.get(b)->stuckToPaddle = true;
                             
-                            // Move the ball of it's off the edge of the paddle, to stop it colliding with the walsl if the players moves to either end of the playfield.
-                            if (gameContext->ballList[b]->ballRect.x < gameContext->paddle.paddleRect.x) {
-                                gameContext->ballList[b]->ballRect.x = gameContext->paddle.paddleRect.x + 5;
+                            // Move the ball of it's off the edge of the paddle, to stop it colliding with the wall if the players moves to either end of the playfield.
+                            if (gameContext->ballList.get(b)->ballRect.x < gameContext->paddle.paddleRect.x) {
+                                gameContext->ballList.get(b)->ballRect.x = gameContext->paddle.paddleRect.x + 5;
                             }
 
-                            if ((gameContext->ballList[b]->ballRect.x + gameContext->ballList[b]->ballRect.w) > (gameContext->paddle.paddleRect.x + gameContext->paddle.paddleRect.w)) {
-                                gameContext->ballList[b]->ballRect.x = (gameContext->paddle.paddleRect.x + gameContext->paddle.paddleRect.w) - gameContext->ballList[b]->ballRect.w - 5;
+                            if ((gameContext->ballList.get(b)->ballRect.x + gameContext->ballList.get(b)->ballRect.w) > (gameContext->paddle.paddleRect.x + gameContext->paddle.paddleRect.w)) {
+                                gameContext->ballList.get(b)->ballRect.x = (gameContext->paddle.paddleRect.x + gameContext->paddle.paddleRect.w) - gameContext->ballList.get(b)->ballRect.w - 5;
                             }
 
                             // Store the offset for when we move the paddle
-                            gameContext->ballList[b]->stuckOffset = gameContext->ballList[b]->ballRect.x - gameContext->paddle.paddleRect.x;
+                            gameContext->ballList.get(b)->stuckOffset = gameContext->ballList.get(b)->ballRect.x - gameContext->paddle.paddleRect.x;
 
                         } else {
                             gameContext->paddle.hit();
-                            gameContext->ballList[b]->hitPaddle(collision, gameContext->paddle.paddleRect);
+                            gameContext->ballList.get(b)->hitPaddle(collision, gameContext->paddle.paddleRect);
                         }
 
                     }
@@ -314,9 +317,9 @@ void PlayingSubState::update(double dt) {
 
             for (auto &t : gameContext->levelManager.turretList) {
                 if (t.turretStatus == Definitions::TurretStatus::TurretGood) {
-                    if (physics.AABBCheck(gameContext->ballList[b]->ballRect, t.collisionRect)) {
-                        gameContext->ballList[b]->ballRect.x = gameContext->ballList[b]->ballRect.x - (gameContext->ballList[b]->vel.x * dt);
-                        gameContext->ballList[b]->ballRect.y = gameContext->ballList[b]->ballRect.y - (gameContext->ballList[b]->vel.y * dt);                         
+                    if (physics.AABBCheck(gameContext->ballList.get(b)->ballRect, t.collisionRect)) {
+                        gameContext->ballList.get(b)->ballRect.x = gameContext->ballList.get(b)->ballRect.x - (gameContext->ballList.get(b)->vel.x * dt);
+                        gameContext->ballList.get(b)->ballRect.y = gameContext->ballList.get(b)->ballRect.y - (gameContext->ballList.get(b)->vel.y * dt);                         
                     }
 
                     if (physics.AABBCheck(bpb, t.collisionRect)) {
@@ -325,7 +328,7 @@ void PlayingSubState::update(double dt) {
                         double collisiontime;
 
                         // Perform a Swept AABB check against the ball and the brick and get the collision time                
-                        collisiontime = physics.SweptAABB(gameContext->ballList[b]->ballRect, t.collisionRect, gameContext->ballList[b]->vel, collision.x, collision.y);
+                        collisiontime = physics.SweptAABB(gameContext->ballList.get(b)->ballRect, t.collisionRect, gameContext->ballList.get(b)->vel, collision.x, collision.y);
 
                         if (collisiontime < firstTurretCollisionTime && (abs(collision.x) > 0.0001f || abs(collision.y) > 0.0001f)) {
                             firstTurretCollisionTime = collisiontime;
@@ -342,9 +345,9 @@ void PlayingSubState::update(double dt) {
                 // First Make sure the brick is not destroyed
                 if (i.brickStatus == Definitions::BrickStatus::BrickGood) {
                     // Then if we are already inside a brick we need to move out as swept aabb will not work.
-                    if (physics.AABBCheck(gameContext->ballList[b]->ballRect, i.brickRect)) {
-                        gameContext->ballList[b]->ballRect.x = gameContext->ballList[b]->ballRect.x - (gameContext->ballList[b]->vel.x * dt);
-                        gameContext->ballList[b]->ballRect.y = gameContext->ballList[b]->ballRect.y - (gameContext->ballList[b]->vel.y * dt); 
+                    if (physics.AABBCheck(gameContext->ballList.get(b)->ballRect, i.brickRect)) {
+                        gameContext->ballList.get(b)->ballRect.x = gameContext->ballList.get(b)->ballRect.x - (gameContext->ballList.get(b)->vel.x * dt);
+                        gameContext->ballList.get(b)->ballRect.y = gameContext->ballList.get(b)->ballRect.y - (gameContext->ballList.get(b)->vel.y * dt); 
                     }
 
                     // Then do a check against the Broad Phase Bounding Box
@@ -357,7 +360,7 @@ void PlayingSubState::update(double dt) {
                         collisionList.push_back(i);
                         
                         // Perform a Swept AABB check against the ball and the brick and get the collision time                
-                        collisiontime = physics.SweptAABB(gameContext->ballList[b]->ballRect, i.brickRect, gameContext->ballList[b]->vel, collision.x, collision.y);
+                        collisiontime = physics.SweptAABB(gameContext->ballList.get(b)->ballRect, i.brickRect, gameContext->ballList.get(b)->vel, collision.x, collision.y);
 
                         // Do we even still need this?
                         // Ensure there are no other bricks blocking the collision
@@ -367,7 +370,7 @@ void PlayingSubState::update(double dt) {
                             
                             std::string brAddr;
                             brAddr = ssBrAddr.str();
-                            spdlog::info("Brick: " + brAddr + " -- CollisionTime: " + std::to_string(collisiontime));
+                            logger->info("Brick: " + brAddr + " -- CollisionTime: " + std::to_string(collisiontime));
                         }
                         // If the collision time is shorter than the last collision time we reported point to it
                         
@@ -399,11 +402,11 @@ void PlayingSubState::update(double dt) {
             }
 
             if (firstHitBrick != nullptr || firstHitTurret != nullptr) {
-               gameContext->ballList[b]->hitBrick(firstCollision); 
+               gameContext->ballList.get(b)->hitBrick(firstCollision); 
             }
 
             if (collisionList.size() > 1) {
-                spdlog::info("@@@@@@@@@@@@@@@@@@@@@@ COLLISION POSSIBLE FOR MORE THAN ONE BLOCK (" + std::to_string(collisionList.size()) + ")");
+                logger->info("@@@@@@@@@@@@@@@@@@@@@@ COLLISION POSSIBLE FOR MORE THAN ONE BLOCK (" + std::to_string(collisionList.size()) + ")");
             }
         }
     }
@@ -434,11 +437,7 @@ void PlayingSubState::render() {
         gameContext->lifeCounter.render(gameContext->lives);
         gameContext->paddle.renderPlaying();
         gameContext->levelManager.render();
-        for (int b = 0; b < gameContext->MAXBALLS; ++b) {
-            if (gameContext->ballList[b] != nullptr) {
-                gameContext->ballList[b]->render();
-            }
-        }
+        gameContext->ballList.render();
 
         gameContext->powerupList.render();
         gameContext->bulletList.render();

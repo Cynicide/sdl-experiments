@@ -1,9 +1,6 @@
 #include <TurretBullet.h>
 #include <cmath>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-
 TurretBullet::TurretBullet(SpriteManager* spriteManager, SDL_FRect position, SDL_FRect paddleRect) {
     this->turretBulletSprite = spriteManager->turretBullet;
     this->turretBulletRect = position;

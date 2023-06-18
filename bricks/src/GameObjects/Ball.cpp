@@ -1,9 +1,6 @@
 #include <Ball.h>
-
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 #include <cmath>
-
+#include "spdlog/spdlog.h"
 #include <Sign.h>
 
 Ball::Ball(SpriteManager* spriteManager, AudioManager* audioManager) {
@@ -47,7 +44,7 @@ void Ball::update(double dt, SDL_FRect paddleRect) {
 // Moves the ball when the Magnetic Powerup is active
 void Ball::updateStuck(double dt, SDL_FRect paddleRect) {
     ballRect.x = paddleRect.x + stuckOffset;
-    ballRect.y = paddleRect.y - paddleRect.h;
+    ballRect.y = paddleRect.y - ballRect.h;
 }
 
 
@@ -136,9 +133,10 @@ void Ball::hitBrick(Vector2d normals){
 
 // Speed the ball up
 void Ball::speedUp() {
+    auto logger = spdlog::get("fileLogger");
     if (currentVel < maxVel ) {
         currentVel = currentVel + speedUpAmount;
-        spdlog::debug("Speedup:" + std::to_string(currentVel));
+        logger->debug("Speedup:" + std::to_string(currentVel));
     }
 }
 
@@ -194,11 +192,11 @@ void Ball::render() {
 }
 
 void Ball::changeAngle(int hitLocation, int paddleSize) {
-    
+     auto logger = spdlog::get("fileLogger");   
     // Hit Location should be between paddleSize and -paddleSize
     // Smaller numbers are generated closer to the center
-    spdlog::info("HitLocation: " + std::to_string(hitLocation));
-    spdlog::info("PaddleSize / 2: " + std::to_string(paddleSize / 2 ));
+    logger->info("HitLocation: " + std::to_string(hitLocation));
+    logger->info("PaddleSize / 2: " + std::to_string(paddleSize / 2 ));
 
     float paddleHalf = paddleSize / 2;
 
@@ -252,7 +250,7 @@ void Ball::changeAngle(int hitLocation, int paddleSize) {
         vel.y = -currentVel;
     }
 
-    spdlog::info("Bounce Resolved: VX: " + std::to_string(vel.x) + " VY: " + std::to_string(vel.y));
+    logger->info("Bounce Resolved: VX: " + std::to_string(vel.x) + " VY: " + std::to_string(vel.y));
 }
 
 

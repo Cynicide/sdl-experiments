@@ -1,9 +1,7 @@
 #include <Turret.h>
 #include <random>
 #include <globals.h>
-
 #include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 
 Turret::Turret(float _xpos, float _ypos, SpriteManager* spriteManager, AudioManager* audioManager)
 {
@@ -98,16 +96,16 @@ void Turret::explode() {
 }
 
 void Turret::update(double dt, SDL_FRect paddleRect) {
-    
+     auto logger = spdlog::get("fileLogger");   
     switch (turretStatus) {
         case Definitions::TurretStatus::TurretGood: {
             angle = calculateRotationAngle(paddleRect);
 
             currentShotTimer = currentShotTimer + (60 * dt);
-            spdlog::debug("Current Shot Timer: " + std::to_string(currentShotTimer));
+            logger->debug("Current Shot Timer: " + std::to_string(currentShotTimer));
             if (currentShotTimer > shotTimer) {
                 if (turretBullet == nullptr) {
-                    spdlog::info("Firing");
+                    logger->info("Firing");
                     turretBullet = new TurretBullet(spriteManager, calculateBulletPosition(), paddleRect);
                 }
                 currentShotTimer = 0.f;

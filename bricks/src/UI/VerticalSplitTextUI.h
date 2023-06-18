@@ -24,7 +24,7 @@ class VerticalSplitTextUI {
         // Both Sprites are the same Dimensions
         int spriteHeight = 0;
         int spriteWidth = 0;
-        int uiSpeed = 600;
+        int uiSpeed = 900;
         
         bool animationDone = false;
         bool musicDone = false;

@@ -17,8 +17,6 @@ class PowerupList {
         const static int MAXPOWERUPS = 5;
 
     private:
-        //ToDo: Get MAXPOWERUPS working globally
         Powerup* powerupList[MAXPOWERUPS] = {};
-
         SpriteManager* spriteManager;
 };

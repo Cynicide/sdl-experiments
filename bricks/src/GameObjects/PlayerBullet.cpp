@@ -1,4 +1,5 @@
 #include <PlayerBullet.h>
+#include "spdlog/spdlog.h"
 
 PlayerBullet::PlayerBullet(SpriteManager* spriteManager, float xLocation, float yLocation) {
     this->bulletSprite = spriteManager->bullet;
@@ -9,9 +10,10 @@ PlayerBullet::PlayerBullet(SpriteManager* spriteManager, float xLocation, float 
 }
 
 void PlayerBullet::update(double dt) {
+    auto logger = spdlog::get("fileLogger");
     if (bulletStatus == Definitions::BulletStatus::BulletGood) {
         move(dt);
-        spdlog::debug("Bullet CurrentVel: " + std::to_string(currentVel));
+        logger->debug("Bullet CurrentVel: " + std::to_string(currentVel));
         if (currentVel < maxVel) {
             currentVel = currentVel + speedUpAmount;
         }

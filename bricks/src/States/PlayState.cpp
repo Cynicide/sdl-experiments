@@ -1,6 +1,6 @@
 #include <PlayState.h>
-#include <TextManager.h>
-#include <sstream>
+#include <statemanagers.h>
+#include "spdlog/spdlog.h"
 
 PlayState::PlayState(GameContext* gameContext) :
     gameContext(gameContext),
@@ -14,7 +14,8 @@ PlayState::PlayState(GameContext* gameContext) :
 
 bool PlayState::enter()
 {
-    spdlog::info("Entered PlayState");
+    auto logger = spdlog::get("fileLogger");
+    logger->info("Entered PlayState");
     //Loading success flag
     bool success = true;
  
@@ -28,6 +29,8 @@ bool PlayState::enter()
     levelWinSubState.setLoadLevelSubState(&loadLevelSubState);
     preServeSubState.setServingSubState(&servingSubState);
 
+    gameContext->lives = gameContext->startingLives;
+
     // This seems like a bit of a hack. You're not supposed to call these methods.
     loadLevelSubState.enter();
     sCurrentState = &loadLevelSubState;
@@ -37,9 +40,9 @@ bool PlayState::enter()
 
 bool PlayState::exit()
 {
-    
+    auto logger = spdlog::get("fileLogger");
     sCurrentState->exit();
-    spdlog::info("Exited PlayState");
+    logger->info("Exited PlayState");
     return true;
 }
 
@@ -67,9 +70,17 @@ void PlayState::update(double dt)
         sCurrentState = sNextState;
         sNextState = nullptr;
     }
+
+    if (gameContext->lives == 0) {
+        setNextState(gameOverState);
+    }
 }
 
 void PlayState::render()
 {
     sCurrentState->render();
+}
+
+void PlayState::setGameOverState(GameState* gameOverState) {
+    this->gameOverState = gameOverState;
 }

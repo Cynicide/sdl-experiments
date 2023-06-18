@@ -1,13 +1,10 @@
 #include <Level.h>
 #include <Definitions.h>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/fmt/ranges.h"
-
 #include <sstream>
 #include <fstream>
 #include <filesystem>
+#include "spdlog/spdlog.h"
 
 Level::Level(SpriteManager* spriteManager, AudioManager* audioManager) {
     this->spriteManager = spriteManager;
@@ -97,7 +94,8 @@ bool Level::isLevelComplete() {
 }
 
 void Level::getLevelFiles() {
-    spdlog::info("Getting a list of levels");
+    auto logger = spdlog::get("fileLogger");
+    logger->info("Getting a list of levels");
     for (auto &p : std::filesystem::recursive_directory_iterator(path)) {
         if (p.path().extension() == ext) {
             levelFiles.push_back(path + p.path().filename().string());
@@ -127,7 +125,43 @@ void Level::clearLevel() {
 }
 
 void Level::LoadLevel() {
+    auto logger = spdlog::get("fileLogger");
+    std::string line;
+    char word;
 
+    std::ifstream inFile(*levelIterator);
+    turretList.clear();
+    level.clear();
+    if(inFile)
+    {
+        while(getline(inFile, line, '\n'))        
+        {
+            //create a temporary vector that will contain all the columns
+            std::vector<char> tempVec;    
+            std::istringstream ss(line);
+            
+            //read word by word(or int by int) 
+            while(ss >> word)
+            {
+                if (word != ' ') {
+                    tempVec.push_back(word);
+                }
+                //add the word to the temporary vector 
+            }      
+            //now all the words from the current line has been added to the temporary vector 
+            level.emplace_back(tempVec);
+        }    
+    }
+    else 
+    {
+        logger->error("Error loading level. File cannot be opened");
+    }
+    
+    inFile.close();
+}
+
+/*void Level::LoadLevel() {
+    auto logger = spdlog::get("fileLogger");
     std::string line;
     int word;
 
@@ -154,13 +188,92 @@ void Level::LoadLevel() {
     }
     else 
     {
-        spdlog::error("Error loading level. File cannot be opened");
+        logger->error("Error loading level. File cannot be opened");
     }
     
     inFile.close();
-}
+}*/
 
 void Level::CreateLevel() {
+
+    auto logger = spdlog::get("fileLogger");
+
+    float posX = startX;
+    float posY = startY;
+
+    brickList.clear();
+
+    for(std::vector<char> &newvec: level)
+        {
+        for(const char &elem: newvec)
+        {
+            if (elem != '0') 
+            {
+                // ToDo: Maybe look at making all these std::unique_ptr
+                switch (elem) {
+                    case '1': {
+                        Brick tmpBrick(posX, posY, Definitions::BrickType::Red, spriteManager->brickRed);
+                        brickList.push_back(tmpBrick);
+                        break;  
+                    }
+                    case '2': {
+                        Brick tmpBrick(posX, posY, Definitions::BrickType::Blue, spriteManager->brickBlue);
+                        brickList.push_back(tmpBrick);
+                        break;  
+                    }
+                    case '3': {
+                        Brick tmpBrick(posX, posY, Definitions::BrickType::Yellow, spriteManager->brickYellow);
+                        brickList.push_back(tmpBrick);
+                        break;  
+                    }
+                    case '4': {
+                        Brick tmpBrick(posX, posY, Definitions::BrickType::Tough, spriteManager->brickTough);
+                        brickList.push_back(tmpBrick);
+                        break;  
+                    }
+                    case '5': {
+                        Brick tmpBrick(posX, posY, Definitions::BrickType::Indestructable, spriteManager->brickIndestructable);
+                        brickList.push_back(tmpBrick);
+                        break; 
+                    }
+                    case '6': {
+                        Brick tmpBrick(posX, posY, Definitions::BrickType::Orange, spriteManager->brickOrange);
+                        brickList.push_back(tmpBrick);
+                        break; 
+                    }
+                    case '7': {
+                        Brick tmpBrick(posX, posY, Definitions::BrickType::Green, spriteManager->brickGreen);
+                        brickList.push_back(tmpBrick);
+                        break; 
+                    }
+                    case '8': {
+                        Brick tmpBrick(posX, posY, Definitions::BrickType::Purple, spriteManager->brickPurple);
+                        brickList.push_back(tmpBrick);
+                        break;
+                    }
+                    case '9': {
+                        Turret tmpTurret(posX, posY, spriteManager, audioManager);
+                        turretList.push_back(tmpTurret);
+                        break;
+                    }
+                    default: {
+                        logger->error("Ended up in default when parsing brick vector. This should not happen.");
+                        break;  
+                    }
+                }
+            }
+            posX = posX + brickSizeX;
+        }
+        posX = startX;
+        posY = posY + brickSizeY;
+        }
+
+        // Assign neighbour pointers for all bricks
+        // ToDo: Do Remove all this
+        findNeighbours();
+}
+
+/*void Level::CreateLevel() {
 
     float posX = startX;
     float posY = startY;
@@ -254,7 +367,7 @@ void Level::CreateLevel() {
 
         // Assign neighbour pointers for all bricks
         findNeighbours();
-}   
+}*/
 
 void Level::findNeighbours() {
     for (auto &brick : brickList) {

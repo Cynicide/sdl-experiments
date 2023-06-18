@@ -1,10 +1,9 @@
 #include <AudioManager.h>
-
 #include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 
 AudioManager::AudioManager() {
-    spdlog::info("Creating Audio Manager");
+    auto logger = spdlog::get("fileLogger");
+    logger->info("Creating Audio Manager");
     loadAudio();
 }
 
@@ -28,4 +27,5 @@ void AudioManager::loadAudio() {
     turretExplosion = loadSound("assets\\audio\\turret-explosion.wav"); // 5
     letsGo = loadMusic("assets\\audio\\letsgo.mp3"); // Music
     levelEnd = loadMusic("assets\\audio\\levelend.mp3"); // Music
+    gameOver = loadMusic("assets\\audio\\gameover.mp3"); // Music
 }

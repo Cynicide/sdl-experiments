@@ -49,8 +49,9 @@ private:
     std::vector<std::string>::iterator levelIterator;
     std::vector<std::string>::iterator lastLevel;
 
-    std::vector<std::vector<int>> level;
-    
+    //std::vector<std::vector<int>> level;
+    std::vector<std::vector<char>> level;
+
     float startX = PLAYFIELD_STARTX + 32;
     float startY = 116;
 
