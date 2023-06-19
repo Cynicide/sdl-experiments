@@ -49,6 +49,14 @@ void Turret::sliceSpriteSheet() {
         }
 }
 
+bool Turret::isGood() {
+    if (turretStatus == Definitions::TurretStatus::TurretGood) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void Turret::sliceExplosionSpriteSheet() {
     for( int i = 0; i <= numExplosionSprites - 1; i++ ) {
         turretExplosionSpriteClips[ i ].x =   i * (explosionSpriteWidth / numExplosionSprites);

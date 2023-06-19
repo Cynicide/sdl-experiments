@@ -14,15 +14,14 @@ void PowerupList::add(float x, float y, int parentWidth) {
     for (int p = 0; p < MAXPOWERUPS; ++p) {
         if (powerupList[p] == nullptr) {
             logger->info("Adding powerup at: " + p);
-            powerupList[p] = new Powerup(spriteManager, x, y, parentWidth);
+            powerupList[p] = std::make_unique<Powerup>(spriteManager, x, y, parentWidth);
             break;
         }
     }
 }
 
 void PowerupList::remove(int index) {
-    delete powerupList[index];
-    powerupList[index] = nullptr;
+    powerupList[index].reset();
 }
 
 void PowerupList::clear() {
@@ -33,7 +32,7 @@ void PowerupList::clear() {
     }
 }
 
-Powerup* PowerupList::get(int index) {
+std::shared_ptr<Powerup> PowerupList::get(int index) {
     return powerupList[index];
 }
 
@@ -43,8 +42,7 @@ void PowerupList::update(double dt) {
             powerupList[p]->update(dt);
             // If they have fallen off the bottom of the screen delete them.
             if (powerupList[p]->powerupRect.y > SCREEN_HEIGHT) {
-                delete(powerupList[p]);
-                powerupList[p] = nullptr; 
+                powerupList[p].reset(); 
             }
         }
     }

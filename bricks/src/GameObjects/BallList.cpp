@@ -12,7 +12,7 @@ BallList::~BallList() {
 void BallList::add() {
     for (int b = 0; b < MAXBALLS; ++b) {
         if (ballList[b] == nullptr) {
-            ballList[b] = new Ball(spriteManager, audioManager);
+            ballList[b] = std::make_unique<Ball>(spriteManager, audioManager);
             break;
         }
     }
@@ -21,14 +21,13 @@ void BallList::add() {
 void BallList::fillAtLocation(float x, float y, float currentVel) {
     for (int b = 0; b < MAXBALLS; ++b) {
         if (ballList[b] == nullptr) {
-            ballList[b] = new Ball(spriteManager, x, y, currentVel, audioManager);
+            ballList[b] = std::make_unique<Ball>(spriteManager, x, y, currentVel, audioManager);
         }
     }
 }
 
 void BallList::remove(int index) {
-    delete(ballList[index]);
-    ballList[index] = nullptr;
+    ballList[index].reset();
 }
 
 void BallList::clear() {
@@ -39,7 +38,7 @@ void BallList::clear() {
     }
 }
 
-Ball* BallList::get(int index) {
+std::shared_ptr<Ball> BallList::get(int index) {
     return ballList[index];
 }
 

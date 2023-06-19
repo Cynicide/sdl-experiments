@@ -19,6 +19,7 @@ class Turret {
 
         void deleteBullet();
         void hitTurret();
+        bool isGood();
 
         SDL_FRect turretRect;
         SDL_FRect collisionRect;

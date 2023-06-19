@@ -25,12 +25,8 @@ public:
     Definitions::BrickStatus brickStatus = Definitions::BrickStatus::BrickGood;
     Definitions::BrickType brickType;
     Definitions::BrickStatus hit();
-    
-    Brick* topNeighbour = nullptr;
-    Brick* bottomNeighbour = nullptr;
-    Brick* leftNeighbour = nullptr;
-    Brick* rightNeighbour = nullptr;
-
+    bool isGood();
+    bool isExploding();
 private:
 
     float xpos; 

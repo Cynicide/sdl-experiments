@@ -6,6 +6,7 @@
 #include <Brick.h>
 #include <Turret.h>
 #include <Powerup.h>
+#include <memory>
 
 class Level
 {
@@ -28,15 +29,18 @@ public:
     void CreateLevel();
     void restartGame();
     void clearLevel();
+    void clearGameObjects();
 
     void clearTurretBullets();
 
     Level(SpriteManager* spriteManager, AudioManager* audioManager);
 
-    ~Level(){};
+    ~Level();
 
-    std::vector<Brick> brickList;
-    std::vector<Turret> turretList;
+    std::vector<std::shared_ptr<Brick>> brickList;
+    //std::vector<Brick*> brickList;
+    //std::vector<Turret*> turretList;
+    std::vector<std::shared_ptr<Turret>> turretList;
 
 private:
 
@@ -60,7 +64,4 @@ private:
 
     float turretSizeX = 64;
     float turretizeY = 64;
-
-    void findNeighbours();
-
 };

@@ -1,6 +1,7 @@
 # pragma once
 #include <Powerup.h>
 #include <SpriteManager.h>
+#include <memory>
 
 class PowerupList {
     public:
@@ -10,13 +11,13 @@ class PowerupList {
         void add(float x, float y, int parentWidth);
         void remove(int index);
         void clear();
-        Powerup* get(int index);
+        std::shared_ptr<Powerup> get(int index);
         void update(double dt);
         void render();
 
         const static int MAXPOWERUPS = 5;
 
     private:
-        Powerup* powerupList[MAXPOWERUPS] = {};
+        std::shared_ptr<Powerup> powerupList[MAXPOWERUPS];
         SpriteManager* spriteManager;
 };

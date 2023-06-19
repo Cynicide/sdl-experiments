@@ -35,7 +35,7 @@ void PlayerBulletList::shoot(SDL_FRect paddleRect) {
                 float xLoc = bulletStack.top();
                 bulletStack.pop();
                 //ToDo: Magic number. Why 16?
-                bulletList[p] = new PlayerBullet(spriteManager, xLoc, paddleRect.y + 16);
+                bulletList[p] = std::make_unique<PlayerBullet>(spriteManager, xLoc, paddleRect.y + 16);
             }
             // If the stack is empty play the audio break out of the loop
             if (bulletStack.empty()) {
@@ -52,8 +52,7 @@ void PlayerBulletList::shoot(SDL_FRect paddleRect) {
 }
 
 void PlayerBulletList::remove(int index) {
-    delete(bulletList[index]);
-    bulletList[index] = nullptr;
+    bulletList[index].reset();
 }
 
 void PlayerBulletList::clear() {
@@ -64,7 +63,7 @@ void PlayerBulletList::clear() {
     }    
 }
 
-PlayerBullet* PlayerBulletList::get(int index) {
+std::shared_ptr<PlayerBullet> PlayerBulletList::get(int index) {
     return bulletList[index];
 }
 

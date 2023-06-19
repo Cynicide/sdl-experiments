@@ -4,6 +4,7 @@
 #include <Ball.h>
 #include <SpriteManager.h>
 #include <AudioManager.h>
+#include <memory>
 
 class BallList {
 public:
@@ -14,7 +15,7 @@ public:
         void fillAtLocation(float x, float y, float currentVel);
         void remove(int index);
         void clear();
-        Ball* get(int index);
+        std::shared_ptr<Ball> get(int index);
         void update(double dt, SDL_FRect paddleRect);
         void render();
         void updateServing(double dt, SDL_FRect paddleRect);
@@ -25,7 +26,7 @@ public:
         const static int MAXBALLS = 3;
 
 private:
-        Ball* ballList[MAXBALLS] = {};
+        std::shared_ptr<Ball> ballList[MAXBALLS];
 
         SpriteManager* spriteManager;
         AudioManager* audioManager;

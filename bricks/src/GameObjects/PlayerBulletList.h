@@ -3,6 +3,7 @@
 #include <SpriteManager.h>
 #include <AudioManager.h>
 #include <SDL2/SDL.h>
+#include <memory>
 
 class PlayerBulletList {
     public:
@@ -12,14 +13,14 @@ class PlayerBulletList {
         void shoot(SDL_FRect paddleRect);
         void remove(int index);
         void clear();
-        PlayerBullet* get(int index);
+        std::shared_ptr<PlayerBullet> get(int index);
         void update(double dt);
         void render();
 
         const static int MAXBULLETS = 2;
 
     private:
-        PlayerBullet* bulletList[MAXBULLETS] = {};
+        std::shared_ptr<PlayerBullet> bulletList[MAXBULLETS] = {};
 
         SpriteManager* spriteManager;
         AudioManager* audioManager;

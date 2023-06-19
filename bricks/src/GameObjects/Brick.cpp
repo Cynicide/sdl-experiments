@@ -56,6 +56,21 @@ Brick::Brick(float _xpos, float _ypos, Definitions::BrickType type, SDL_Texture*
     brickRect = {xpos, ypos, brickWidth, brickHeight};
 }
 
+bool Brick::isGood() {
+    if(brickStatus == Definitions::BrickStatus::BrickGood) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool Brick::isExploding() {
+    if (brickStatus == Definitions::BrickStatus::BrickExploding) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 void Brick::SliceSpriteSheet() {
     for( int i = 0; i <= numSprites - 1; i++ ) {
