@@ -72,7 +72,9 @@ void PlayState::update(double dt)
     }
 
     if (gameContext->lives == 0) {
-        setNextState(gameOverState);
+        if (gameContext->paddle.isExplosionComplete()) {
+            setNextState(gameOverState);
+        }
     }
 }
 

@@ -2,6 +2,8 @@
 #include "spdlog/spdlog.h"
 #include <SDL2/SDL_image.h>
 
+    // TODO: Move slice SpriteSheet here
+
 SpriteManager::SpriteManager() {
     auto logger = spdlog::get("fileLogger");
     logger->info("Creating Sprite Manager");

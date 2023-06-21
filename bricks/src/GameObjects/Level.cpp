@@ -25,6 +25,10 @@ void Level::update(double dt, SDL_FRect paddleRect) {
     for (auto turret : turretList) {
             turret->update(dt, paddleRect);
     }
+
+    if (levelWarp != nullptr) {
+        levelWarp->update(dt);
+    }
 }
 
 void Level::updatePreServe(double dt) {
@@ -47,6 +51,25 @@ void Level::updateServe(double dt, SDL_FRect paddleRect) {
     }
 }
 
+void Level::createLevelWarp() {
+    levelWarp = std::make_unique<LevelWarp>(spriteManager);
+}
+
+void Level::destroyLevelWarp() {
+    levelWarp.reset();
+}
+
+bool Level::warpIsActive() {
+    if (levelWarp == nullptr) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+SDL_FRect Level::getWarpCollisionRect() {
+    return levelWarp->warpPortalCollisionRect;
+}
 
 void Level::render() 
 {
@@ -63,6 +86,10 @@ void Level::render()
     // Turret Sprites should rendered seperately from their bases stop the turret rendering under the base next to it/
     for (auto turret : turretList) {
             turret->renderTurret();
+    }
+
+    if (levelWarp != nullptr) {
+        levelWarp->render();
     }
 }
 

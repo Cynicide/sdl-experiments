@@ -69,6 +69,8 @@ void Paddle::renderDying() {
 
         SDL_Rect solidSprite = {explosionSpriteClips[frame].x, explosionSpriteClips[frame].y, explosionSpriteClips[frame].w, explosionSpriteClips[frame].h};
         SDL_RenderCopyF(gRenderer, explosionSprite, &solidSprite, &explosionRect);               
+    } else {
+        explosionComplete = true;
     }
 }
 
@@ -95,7 +97,7 @@ void Paddle::setLaserPaddle() {
 }
 
 void Paddle::move() {
-    // Hmmm... This looks bad. How do we replace this?
+    // How can we replace these hardcodings.
     int borderHeight = 16;
     int borderWidth = 32;      
 
@@ -127,6 +129,11 @@ void Paddle::reset() {
     innerExplosionTimer = 0;
     explosionSoundPlayed = false;
     currentTexture = paddleSprite;
+    explosionComplete = false;
+}
+
+bool Paddle::isExplosionComplete() {
+    return explosionComplete;
 }
 
 void Paddle::hit() {
@@ -134,6 +141,7 @@ void Paddle::hit() {
 }
 
 void Paddle::explode() {
+    // ToDo: Refactor this so the audio library takes care of checking and playing.
     if (Mix_Playing(2)) {
         Mix_HaltChannel(2);
         Mix_PlayChannel(2, explosionSound, 0);

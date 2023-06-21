@@ -34,6 +34,8 @@ public:
     void setLongPaddle();
     void setLaserPaddle();
 
+    bool isExplosionComplete();
+    
     SDL_FRect paddleRect;
 
 private:
@@ -72,6 +74,8 @@ private:
     int innerExplosionTimer = 0;
     int innerExplosionTimerMax = 2;
     bool explosionSoundPlayed = false;
+    bool explosionComplete = false;
+
 
     void sliceExplosionSheet();
 };

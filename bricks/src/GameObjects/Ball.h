@@ -15,6 +15,8 @@ public:
 
     // State Methods
     void update(double dt);
+    void revertUpdate(double dt);
+    void moveAbovePaddle(SDL_FRect paddleRect);
     void update(double dt, SDL_FRect paddleRect);
     void updateStuck(double dt, SDL_FRect paddleRect);
     void render();

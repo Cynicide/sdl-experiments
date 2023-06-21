@@ -28,8 +28,7 @@ class GameContext {
         GameContext();
         ~GameContext(){};
 
-        //Game Concepts
-        //const static int MAXBALLS = 3;
+        //Lives
         const static int startingLives = 3;
         const static int maxLives = 5;
         int lives = startingLives;
@@ -65,22 +64,12 @@ class GameContext {
         TTF_Font* publicPixel12;
         TTF_Font* publicPixel24;
 
-        //Lists
-        //Ball* ballList[MAXBALLS] = {};
-
         PowerupList powerupList;
         PlayerBulletList bulletList;
         BallList ballList;
-        
-        // Ball Methods
-        //void addBall();
-        //void addBallsAtLocation(float x, float y, float currentVal);
-        //void updateBalls(double dt);       
-        //void clearBalls();
 
         // Life Methods
         void addLife();
-
         void cleanup();
         void resetGame();
 

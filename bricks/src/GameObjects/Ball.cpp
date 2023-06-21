@@ -33,6 +33,15 @@ void Ball::update(double dt) {
         move(dt);
 }
 
+void Ball::revertUpdate(double dt) {
+    ballRect.x -= vel.x * dt;
+    ballRect.y -= vel.y * dt;
+}
+
+void Ball::moveAbovePaddle(SDL_FRect paddleRect) {
+    ballRect.y = paddleRect.y - ballRect.h ;
+}
+
 // Moves the ball in lock step with the paddle
 void Ball::update(double dt, SDL_FRect paddleRect) {
     ballRect.x = (paddleRect.x + (paddleRect.w / 2)) - (ballWidth / 2);

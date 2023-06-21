@@ -42,6 +42,7 @@ private:
     SDL_FRect bpb;
     Physics physics;
 
+    // ToDo: Is there a better way to do this sNextState?
     SubState*& sNextState;
     SubState* dyingSubState;
     SubState* levelWinSubState;
@@ -54,7 +55,4 @@ private:
     SlowMode slowGameMode;
     LaserMode laserMode;
     MagneticMode magneticMode;
-
-    LevelWarp* levelWarp = nullptr;
-
 };

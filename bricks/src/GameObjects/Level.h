@@ -6,6 +6,7 @@
 #include <Brick.h>
 #include <Turret.h>
 #include <Powerup.h>
+#include <LevelWarp.h>
 #include <memory>
 
 class Level
@@ -28,18 +29,21 @@ public:
     void LoadLevel();
     void CreateLevel();
     void restartGame();
+
     void clearLevel();
     void clearGameObjects();
-
     void clearTurretBullets();
+
+    bool warpIsActive();
+    void createLevelWarp();
+    void destroyLevelWarp();
+    SDL_FRect getWarpCollisionRect();
 
     Level(SpriteManager* spriteManager, AudioManager* audioManager);
 
     ~Level();
 
     std::vector<std::shared_ptr<Brick>> brickList;
-    //std::vector<Brick*> brickList;
-    //std::vector<Turret*> turretList;
     std::vector<std::shared_ptr<Turret>> turretList;
 
 private:
@@ -53,8 +57,9 @@ private:
     std::vector<std::string>::iterator levelIterator;
     std::vector<std::string>::iterator lastLevel;
 
-    //std::vector<std::vector<int>> level;
     std::vector<std::vector<char>> level;
+
+    std::unique_ptr<LevelWarp> levelWarp;
 
     float startX = PLAYFIELD_STARTX + 32;
     float startY = 116;
