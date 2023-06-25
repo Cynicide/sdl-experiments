@@ -5,7 +5,7 @@ StartState::StartState(GameContext* gameContext, PlayState* playState) :
     gameContext(gameContext),
     playState(playState)
  {
-
+    titleTrack = gameContext->audioManager.titleTrack;
  }
 
 bool StartState::enter()
@@ -31,6 +31,8 @@ bool StartState::enter()
     instructions = Text(font, "INSTRUCTIONS:", 0, 0, gRenderer);
     instructions.offsetAboveVertically(clickToLaunch.getYLocation(), clickToLaunch.getXLocation());
 
+    Mix_PlayMusic(titleTrack, -1);
+
     return success;
 }
 
@@ -42,6 +44,7 @@ bool StartState::exit()
     qToQuit.destroy();
     clickToLaunch.destroy();
     instructions.destroy();
+    Mix_HaltMusic();
     return true;
 }
 

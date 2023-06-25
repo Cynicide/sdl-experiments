@@ -19,6 +19,7 @@ public:
     Mix_Music* letsGo;
     Mix_Music* levelEnd;
     Mix_Music* gameOver;
+    Mix_Music* titleTrack;
 
     Mix_Chunk * loadSound(const char * filename);
     Mix_Music* loadMusic(const char * filename);

@@ -28,4 +28,5 @@ void AudioManager::loadAudio() {
     letsGo = loadMusic("assets\\audio\\letsgo.mp3"); // Music
     levelEnd = loadMusic("assets\\audio\\levelend.mp3"); // Music
     gameOver = loadMusic("assets\\audio\\gameover.mp3"); // Music
+    titleTrack = loadMusic("assets\\audio\\title-track.mp3"); // Music
 }

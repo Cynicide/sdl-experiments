@@ -8,6 +8,7 @@
 #include <Logo.h>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h> 
 
 class StartState : public GameState
 {
@@ -34,4 +35,6 @@ private:
     Text qToQuit;
     Text clickToLaunch;
     Text instructions;
+
+    Mix_Music* titleTrack;
 };
