@@ -28,13 +28,11 @@ This was just a first cut at getting something up and going so I chose the class
 
 After Pong I created this quickly in a week to teach my son mouse movement. You move the character to the puddle and they will jump up and down, you have to do it as many times as you can in 60 seconds. I lifted a lot of code from Pong and added the Sprite support. The project is badly implemented as almost all the logic is stored in the Play state due to the short development timeframe. It also only supports 1920x1080.
 
-## Brick Dreams (Dev Time: Two Months so far)
+## Demoscene Tunnel Effect
 
-![Brick Dreams Main Menu Screenshot](images/brick-dreams-1.jpg "Brick Dreams Main Menu Screenshot") ![Brick Dreams In Game Screenshot](images/brick-dreams-2.jpg "Brick DreamsIn Game Screenshot")
+![Demoscene Tunnel Effect Screenshot](images/sdl-tunnel.png "Demoscene Tunnel Effect Screenshot")
 
-For this project I chose to emulate a game in the Breakout genre. In this project the issues with the Singleton pattern became apparant as such I ended up replacing most, if not all of them. Once again I have discovered that I have no real desire to implement physics or collision detection myself and will probably use Bullet or Box2d for future projects. I did end up bringing in spdlog to handle logging and I think this will mark a shift away from doing everything myself to attempting to use more libraries. When developing solo with only a few hours of free time a night you can easily lose a few weeks hunting down problems in your own code.
+This is a 3d tunnel effect using texture sampling techniques from the demoscene. Written in C++ using SDL2. It is built with clang and mingw, there is a makefile included. 
 
-Issues with resolving collision detection remain especially for cases where both the player and another target can move. I wanted to only check collision against the ball but this can complicate things where the player can move the paddle as fast as they can move the mouse. The player controls simply map the mouse coordinates to the paddle so it can move pretty quickly. As such it leads to the ugly hack where if the paddle moves into the ball we simply place it above the paddle. This causes other issues and may not be a permenant fix. There were some issues surrounding the ball being close to two things at once and moving inside the second thing after colliding with the first thing. The simplest, but probably not the best approach was to check if the ball was inside anything after the update had completed and move it back if it was.
-
-The State Machine pattern proves very useful and is used in the main game state (Main Menu/Exit/Playing/GameOver), as a sub state in the Playing State itself (Playing, Dying, Serving, LevelWin, LoadLevel). I'll probably also attach a state machine to the player to handle powerups and it may also factor into enemy movement.
+Based on this tutorial https://benryves.com/tutorials/tunnel/
 
